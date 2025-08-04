@@ -1,0 +1,39 @@
+<div class="dashboard-container">
+  <!-- Bienvenida -->
+  <div class="welcome-section card">
+    <div>
+      <h2 class="welcome-message">¡Un gusto volver a verte!</h2>
+      <div class="user-info">
+        <p>Usuario: <span>{{ userName }}</span></p>
+        <p>Matrícula: <span>{{ userMatricula }}</span></p>
+      </div>
+    </div>
+    <div class="logo-small"></div>
+  </div>
+
+  <!-- Notificación de tickets -->
+  <div class="tickets-notification card" (click)="viewTickets()">
+    <i class="material-icons notification-icon">notifications</i>
+    <p>
+      Tienes <span class="highlight-number">{{ ticketsToResolve }}</span>
+      tickets por resolver
+    </p>
+  </div>
+
+  <!-- Recordatorios -->
+  <div class="reminders-grid">
+    <div class="reminder-card card">
+      <img [src]="toolsReminder.image" alt="Herramientas" class="reminder-image" />
+      <p class="reminder-text">{{ toolsReminder.text }}</p>
+    </div>
+    <div class="reminder-card card">
+      <img [src]="safetyReminder.image" alt="Equipo de seguridad" class="reminder-image" />
+      <p class="reminder-text">{{ safetyReminder.text }}</p>
+    </div>
+  </div>
+
+  <!-- FAB -->
+  <button class="fab-button" (click)="openNewServiceForm()" aria-label="Nuevo servicio">
+    <span class="material-icons">add_circle</span>
+  </button>
+</div>

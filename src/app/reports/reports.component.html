@@ -1,0 +1,112 @@
+<div class="reports-container">
+  <div class="section-header">
+    <h1 class="section-title">Panel de Reportes</h1>
+    <div class="header-actions">
+      <ng-container *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
+        <button class="btn btn-secondary" routerLink="new">
+          <i class="material-icons">add</i> Nuevo reporte
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
+        <button class="btn btn-secondary" routerLink="message-report-form">
+          <i class="material-icons">add_comment</i> Nuevo Mensaje de Reporte
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
+        <select [(ngModel)]="selectedReportType" (change)="onReportTypeChange()" class="filter-dropdown">
+          <option value="overview">Visión General</option>
+          <option value="servicesByStatus">Servicios por Estado</option>
+          <option value="servicesByTechnician">Rendimiento de Técnicos</option>
+          <option value="clientsOverview">Resumen de Clientes</option>
+        </select>
+        <button class="btn btn-primary" (click)="downloadReport()">
+          <i class="material-icons">download</i> Descargar Reporte
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <router-outlet *ngIf="router.url.includes('/reports/new') || router.url.includes('/reports/message-report-form')"></router-outlet>
+
+  <div class="report-content-area card" *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
+    <div *ngIf="selectedReportType === 'overview'" class="overview-report">
+      <h2 class="report-subtitle">Resumen Ejecutivo de Servicios</h2>
+      <div class="overview-stats-grid">
+        <div class="stat-card">
+          <i class="material-icons stat-icon">assignment</i>
+          <h3 class="stat-label">Total de Servicios</h3>
+          <canvas #totalServicesChart></canvas>
+        </div>
+        <div class="stat-card open">
+          <i class="material-icons stat-icon">assignment_late</i>
+          <h3 class="stat-label">Servicios Abiertos</h3>
+          <canvas #openServicesChart></canvas>
+        </div>
+        <div class="stat-card closed">
+          <i class="material-icons stat-icon">assignment_turned_in</i>
+          <h3 class="stat-label">Servicios Cerrados</h3>
+          <canvas #closedServicesChart></canvas>
+        </div>
+        <div class="stat-card">
+          <i class="material-icons stat-icon">timer</i>
+          <h3 class="stat-label">Tiempo Prom. Resolución</h3>
+          <p class="stat-value">{{ overviewStats?.averageResolutionTime }}</p>
+        </div>
+        <div class="stat-card">
+          <i class="material-icons stat-icon">person_pin</i>
+          <h3 class="stat-label">Mejor Técnico (Mes)</h3>
+          <p class="stat-value">{{ overviewStats?.topTechnician }}</p>
+        </div>
+        <div class="stat-card">
+          <i class="material-icons stat-icon">group_add</i>
+          <h3 class="stat-label">Nuevos Clientes (Último Mes)</h3>
+          <canvas #newClientsChart></canvas>
+        </div>
+      </div>
+      <p class="report-description">Este resumen proporciona una vista rápida del estado general de la operación de servicios.</p>
+    </div>
+
+    <div *ngIf="selectedReportType === 'servicesByStatus'" class="chart-report">
+      <h2 class="report-subtitle">Distribución de Servicios por Estado</h2>
+      <div class="chart-container">
+        <canvas #servicesStatusChart></canvas>
+      </div>
+      <p class="report-description">Visualiza la proporción de servicios en cada estado (Pendiente, Asignado, En Proceso, Concluido, Cerrado, Cancelado).</p>
+    </div>
+
+    <div *ngIf="selectedReportType === 'servicesByTechnician'" class="chart-report">
+      <h2 class="report-subtitle">Servicios Completados por Técnico</h2>
+      <div class="chart-container">
+        <canvas #technicianPerformanceChart></canvas>
+      </div>
+      <p class="report-description">Compara el número de servicios completados por cada técnico en un período determinado.</p>
+    </div>
+
+    <div *ngIf="selectedReportType === 'clientsOverview'" class="clients-report">
+      <h2 class="report-subtitle">Resumen Demográfico y de Actividad de Clientes</h2>
+      <div class="clients-stats-list">
+        <p><strong>Total de Clientes Registrados:</strong> {{ clientsOverviewStats?.totalClients }}</p>
+        <div class="stat-card-inline">
+          <h3 class="stat-label">Clientes Activos</h3>
+          <canvas #activeClientsChart></canvas>
+        </div>
+        <div class="stat-card-inline">
+          <h3 class="stat-label">Clientes VIP</h3>
+          <canvas #vipClientsChart></canvas>
+        </div>
+        <p><strong>Promedio de Servicios por Cliente:</strong> {{ clientsOverviewStats?.averageServicesPerClient }}</p>
+      </div>
+      <div class="chart-container">
+        <h3 class="report-subtitle">Clientes por Industria Principal</h3>
+        <canvas #industriesChart></canvas>
+      </div>
+      <p class="report-description">Este reporte ofrece una vista general de la base de clientes y su interacción con FixFlow.</p>
+    </div>
+
+    <div *ngIf="!selectedReportType" class="no-report-selected">
+      <p>Selecciona un tipo de reporte para visualizarlo.</p>
+    </div>
+  </div>
+</div>

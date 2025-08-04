@@ -1,0 +1,351 @@
+/* src/app/services/service-detail/service-detail.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.service-detail-container {
+  padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .back-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    // Asumiendo que quieres el estilo de un botón de texto o enlace de styles.scss
+    // Aplica los estilos de .btn-text de styles.scss
+    color: global.$teal; // Color del enlace de vuelta
+    text-decoration: none;
+    font-family: global.$font-body;
+    font-weight: 500;
+    transition: text-decoration 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      text-decoration: underline;
+      color: color.adjust(global.$teal, $lightness: -10%);
+    }
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+
+  .section-title {
+    font-family: global.$font-headings; // Corregido: usa global.$
+    font-weight: 700;
+    font-size: 30px;
+    color: global.$dark-blue; // Corregido: usa global.$
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; // Espacio más reducido entre botones de acción
+    flex-wrap: wrap;
+
+    .btn {
+      // Si tienes un .btn base en styles.scss, podrías extenderlo aquí.
+      // Si no, estos son los estilos base para estos botones de acción.
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      padding: 8px 15px;
+      border-radius: 5px;
+      border: none; // Añadido para consistencia si no hay un .btn base
+      cursor: pointer; // Añadido para consistencia
+      font-family: global.$font-body; // Añadido para consistencia
+      font-weight: 600; // Añadido para consistencia
+      transition: background-color 0.3s ease; // Añadido para consistencia
+
+      .material-icons {
+        font-size: 18px;
+      }
+    }
+    // Colores específicos para botones de acción
+    .btn-resolve {
+      background-color: global.$success-green; // Corregido: usa global.$
+      color: global.$white; // Corregido: usa global.$
+      &:hover {
+        // Corregido: usa color.adjust() y global.$
+        background-color: color.adjust(global.$success-green, $lightness: -8%);
+      }
+    }
+    .btn-close {
+      background-color: global.$teal; // Corregido: usa global.$
+      color: global.$white; // Corregido: usa global.$
+      &:hover {
+        // Corregido: usa color.adjust() y global.$
+        background-color: color.adjust(global.$teal, $lightness: -8%);
+      }
+    }
+    .btn-delete {
+      background-color: global.$soft-red; // Corregido: usa global.$
+      color: global.$white; // Corregido: usa global.$
+      &:hover {
+        // Corregido: usa color.adjust() y global.$
+        background-color: color.adjust(global.$soft-red, $lightness: -10%);
+      }
+    }
+  }
+}
+
+.service-detail-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; // Columna principal (info) y columna lateral (resolución, notas, historial)
+  grid-template-rows: auto; // Las filas se ajustan a su contenido
+  gap: 30px;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+
+  // Define las áreas en el grid
+  .info-panel {
+    grid-column: 1 / 2; // Ocupa la primera columna
+    grid-row: 1 / span 3; // Puede ocupar varias filas si la información es larga
+    @media (max-width: 992px) {
+      grid-column: 1 / -1; // Ocupa todo el ancho en móvil
+      grid-row: auto;
+    }
+  }
+  .resolution-panel {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    @media (max-width: 992px) {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+  }
+  .notes-panel {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    @media (max-width: 992px) {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+  }
+  .history-panel {
+    grid-column: 2 / 3;
+    grid-row: 3 / 4;
+    @media (max-width: 992px) {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+  }
+}
+
+.card {
+  // Ya tienes la definición de .card en styles.scss, que incluye background-color, border-radius y box-shadow.
+  // Si los valores aquí son los mismos, puedes eliminar estas líneas, de lo contrario, déjalas para sobrescribir.
+  background-color: global.$white; // Agregado explícitamente si este .card difiere del global
+  border-radius: 8px; // O el valor que desees si difiere del global
+  box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.08); // O el valor que desees si difiere del global
+  padding: 30px; // Esto es una sobrescritura o adición al padding global
+}
+
+.info-panel, .resolution-panel, .notes-panel, .history-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-title {
+  font-family: global.$font-headings; // Corregido: usa global.$
+  font-weight: 600;
+  font-size: 24px;
+  color: global.$teal; // Corregido: usa global.$
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid global.$light-gray; // Corregido: usa global.$
+}
+
+.info-group {
+  display: flex;
+  margin-bottom: 15px;
+  align-items: baseline;
+
+  .label {
+    font-family: global.$font-body; // Corregido: usa global.$
+    font-weight: 500;
+    color: global.$dark-blue; // Corregido: usa global.$
+    width: 150px;
+    flex-shrink: 0;
+    margin-right: 15px;
+  }
+  .value {
+    font-family: global.$font-body; // Corregido: usa global.$
+    // Corregido: usa color.adjust() y global.$
+    color: color.adjust(global.$dark-blue, $lightness: 15%);
+    flex-grow: 1;
+  }
+
+  .linked-text {
+    color: global.$teal; // Corregido: usa global.$
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    &:hover {
+      text-decoration: underline;
+    }
+    .tiny-icon {
+      font-size: 16px;
+    }
+  }
+
+  .status-badge {
+    @extend .status-success; // Hereda los estilos base de la pastilla de estado
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .priority-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    &.priority-urgent {
+      background-color: global.$soft-red; // Corregido: usa global.$
+      color: global.$white; // Corregido: usa global.$
+    }
+    &.priority-high {
+      // Corregido: usa color.adjust() y global.$
+      background-color: color.adjust(global.$yellow-orange, $lightness: -10%);
+      color: global.$white; // Corregido: usa global.$
+    }
+    &.priority-medium {
+      background-color: global.$yellow-orange; // Corregido: usa global.$
+      color: global.$white; // Corregido: usa global.$
+    }
+    &.priority-low {
+      // Corregido: usa color.adjust() y global.$
+      background-color: color.adjust(global.$dark-blue, $lightness: 60%);
+      color: global.$dark-blue; // Corregido: usa global.$
+    }
+  }
+
+  &.description-group, &.notes-group {
+    flex-direction: column;
+    .label {
+      width: auto;
+      margin-bottom: 8px;
+    }
+  }
+  .description-text, .notes-text {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    padding-left: 5px; // Pequeño indentado
+  }
+}
+
+.add-note-section {
+  margin-top: 20px;
+  border-top: 1px solid global.$light-gray; // Corregido: usa global.$
+  padding-top: 20px;
+  textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    min-height: 80px;
+    font-size: 15px;
+    // Corregido: usa color.adjust() y global.$
+    border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
+    border-radius: 6px;
+    padding: 10px;
+    box-sizing: border-box;
+    &:focus {
+      outline: none;
+      border-color: global.$yellow-orange; // Corregido: usa global.$
+      // Corregido: usa global.$
+      box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+    }
+  }
+  .btn-primary {
+    width: auto;
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 10px;
+
+  .history-item {
+    padding: 15px;
+    background-color: global.$light-gray; // Corregido: usa global.$
+    border-left: 4px solid global.$teal; // Corregido: usa global.$
+    border-radius: 6px;
+    // Corregido: usa global.$
+    box-shadow: 0 1px 4px rgba(global.$dark-blue, 0.05);
+
+    .history-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-size: 13px;
+      // Corregido: usa color.adjust() y global.$
+      color: color.adjust(global.$dark-blue, $lightness: 40%);
+      margin-bottom: 8px;
+      .timestamp {
+        font-weight: 500;
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$dark-blue, $lightness: 20%);
+      }
+    }
+    .action-text {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-weight: 600;
+      color: global.$dark-blue; // Corregido: usa global.$
+      margin: 0 0 5px 0;
+      font-size: 16px;
+    }
+    .action-details {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-size: 14px;
+      // Corregido: usa color.adjust() y global.$
+      color: color.adjust(global.$dark-blue, $lightness: 25%);
+      margin: 0;
+      white-space: pre-wrap;
+    }
+  }
+}
+
+.no-data-message {
+  font-family: global.$font-body; // Corregido: usa global.$
+  font-size: 16px;
+  // Corregido: usa color.adjust() y global.$
+  color: color.adjust(global.$dark-blue, $lightness: 30%);
+  text-align: center;
+  padding: 30px 0;
+  background-color: global.$light-gray; // Corregido: usa global.$
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.loading-or-error {
+  text-align: center;
+  font-family: global.$font-body; // Corregido: usa global.$
+  font-size: 18px;
+  // Corregido: usa color.adjust() y global.$
+  color: color.adjust(global.$dark-blue, $lightness: 20%);
+  padding: 50px;
+}

@@ -1,0 +1,90 @@
+<div class="form-section roles-permissions-section">
+  <h3>Gestión de Roles y Permisos</h3>
+
+  <div class="roles-selection-area">
+    <div class="roles-list-container card">
+      <h4>Roles Existentes</h4>
+      <ul class="roles-list">
+        <li *ngFor="let role of roles" [class.active]="selectedRole === role" (click)="selectRole(role)">
+          {{ role.name }}
+          <p class="role-desc-short">{{ role.description }}</p>
+        </li>
+      </ul>
+      <div class="add-role-form">
+        <h4>Añadir Nuevo Rol</h4>
+        <div class="form-group">
+          <input type="text" [(ngModel)]="newRoleName" placeholder="Nombre del nuevo rol" required>
+        </div>
+        <div class="form-group">
+          <textarea [(ngModel)]="newRoleDescription" placeholder="Descripción del rol"></textarea>
+        </div>
+        <button class="btn btn-secondary" (click)="addNewRole()">Añadir Rol</button>
+      </div>
+    </div>
+
+    <div class="permissions-details-container card" *ngIf="selectedRole">
+      <h4>Permisos para: <strong>{{ selectedRole.name }}</strong></h4>
+      <p class="role-description">{{ selectedRole.description }}</p>
+
+      <form (ngSubmit)="saveRolePermissions()">
+        <div class="permissions-grid">
+          <div class="permission-item">
+            <label class="permission-label">Clientes</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="viewClients" [(ngModel)]="selectedRole.permissions.viewClients" name="viewClients">
+              <label for="viewClients">Ver</label>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="editClients" [(ngModel)]="selectedRole.permissions.editClients" name="editClients">
+              <label for="editClients">Editar</label>
+            </div>
+          </div>
+
+          <div class="permission-item">
+            <label class="permission-label">Servicios</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="viewServices" [(ngModel)]="selectedRole.permissions.viewServices" name="viewServices">
+              <label for="viewServices">Ver</label>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="editServices" [(ngModel)]="selectedRole.permissions.editServices" name="editServices">
+              <label for="editServices">Editar / Gestionar</label>
+            </div>
+          </div>
+          
+          <div class="permission-item">
+            <label class="permission-label">Usuarios</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="manageUsers" [(ngModel)]="selectedRole.permissions.manageUsers" name="manageUsers">
+              <label for="manageUsers">Gestionar Usuarios</label>
+            </div>
+          </div>
+
+          <div class="permission-item">
+            <label class="permission-label">Configuración</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="manageSettings" [(ngModel)]="selectedRole.permissions.manageSettings" name="manageSettings">
+              <label for="manageSettings">Gestionar Configuración</label>
+            </div>
+          </div>
+
+          <div class="permission-item">
+            <label class="permission-label">Reportes</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="viewReports" [(ngModel)]="selectedRole.permissions.viewReports" name="viewReports">
+              <label for="viewReports">Ver Reportes</label>
+            </div>
+          </div>
+          </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Guardar Permisos</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="no-role-selected card" *ngIf="!selectedRole">
+      <p>Selecciona un rol de la lista para ver o editar sus permisos.</p>
+    </div>
+  </div>
+</div>

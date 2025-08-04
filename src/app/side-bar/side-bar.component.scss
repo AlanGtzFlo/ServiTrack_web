@@ -1,0 +1,128 @@
+/* src/app/side-bar/side-bar.component.scss */
+
+// Asegúrate de que la ruta a tus variables globales sea correcta.
+// Si tu styles.scss está en la raíz de 'src/', entonces '../../styles.scss' es correcto.
+@use "../../styles.scss" as global;
+@use "sass:color"; // Importa si usas funciones de color de Sass
+
+.app-sidebar {
+  width: 250px; // Ancho fijo de la barra lateral
+  // Este es el color de fondo oscuro de la barra lateral en la imagen de login de FixFlow
+  background-color: global.$dark-blue; 
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  // Sombra para darle profundidad y separarla sutilmente
+  box-shadow: 2px 0 8px rgba(global.$dark-blue, 0.2); 
+  color: global.$white; // Color de texto por defecto blanco para contrastar
+  flex-shrink: 0; // Evita que la sidebar se encoja si el contenido es muy grande
+  height: 100vh; // Asegura que ocupe toda la altura de la ventana
+  position: sticky; // Lo mantiene pegado al borde superior al hacer scroll
+  top: 0; // Se pega a la parte superior
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 0 20px 20px 20px;
+  border-bottom: 1px solid rgba(global.$white, 0.1); // Línea divisoria sutil
+  margin-bottom: 20px;
+
+  .sidebar-logo {
+    height: 40px; // Ajusta el tamaño de tu logo si es necesario
+    width: auto;
+    margin-right: 10px;
+  }
+
+  .app-name {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 22px;
+    color: global.$white;
+  }
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; // Permite que el menú ocupe el espacio restante
+
+  .menu-item {
+    margin-bottom: 5px;
+
+    a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(global.$white, 0.8); // Color de texto de los ítems
+      text-decoration: none;
+      font-family: global.$font-body;
+      font-size: 16px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      border-left: 4px solid transparent;
+      outline: none; // Borde para el indicador de activo
+
+      .material-icons {
+        font-size: 24px;
+        margin-right: 15px;
+        color: rgba(global.$white, 0.7); // Color de los íconos
+      }
+
+      span {
+        flex-grow: 1;
+      }
+
+      &:hover {
+        background-color: rgba(global.$white, 0.05); // Fondo al pasar el mouse
+        color: global.$white;
+        .material-icons {
+          color: global.$white;
+        }
+      }
+
+      &.active {
+        // Estilo cuando el ítem está activo
+        background-color: rgba(global.$yellow-orange, 0.1); // Fondo suave con color de acento
+        color: global.$white;
+        border-left-color: global.$yellow-orange;
+        border-right: none; // Asegura que no haya otro borde a la derecha
+          border-top: none;    // Asegura que no haya otro borde arriba
+          border-bottom: none; // Asegura que no haya otro borde abajo // Borde de acento amarillo-naranja
+        .material-icons {
+          color: global.$yellow-orange; // Ícono con color de acento
+        }
+      }
+    }
+  }
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid rgba(global.$white, 0.1);
+  margin-top: 20px;
+  
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background-color: color.adjust(global.$dark-blue, $lightness: -5%); // Un poco más oscuro que el fondo de la sidebar
+    color: global.$white;
+    text-decoration: none;
+    font-family: global.$font-body;
+    font-weight: 500;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+
+    .material-icons {
+      font-size: 20px;
+      margin-right: 8px;
+      color: global.$white;
+    }
+
+    &:hover {
+      background-color: color.adjust(global.$dark-blue, $lightness: -10%);
+    }
+  }
+}

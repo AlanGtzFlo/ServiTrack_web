@@ -1,0 +1,51 @@
+<div class="policies-container">
+  <div class="section-header">
+    <h1 class="section-title">Gestión de Pólizas</h1>
+    <div class="header-actions">
+      <div class="search-box">
+        <i class="material-icons search-icon">search</i>
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar póliza o cliente..." class="search-input">
+      </div>
+      <select [(ngModel)]="filterStatus" class="status-filter">
+        <option value="all">Todos los Estados</option>
+        <option value="Vigente">Vigente</option>
+        <option value="Vencida">Vencida</option>
+        <option value="Pendiente">Pendiente</option>
+      </select>
+      <button class="btn btn-primary" (click)="addNewPolicy()">
+        <i class="material-icons">add</i> Nueva Póliza
+      </button>
+    </div>
+  </div>
+
+  <div class="policies-grid">
+    <div class="policy-card card" *ngFor="let policy of filteredPolicies" [routerLink]="['/policies', policy.id]">
+      <div class="card-header">
+        <span class="policy-type">{{ policy.type }}</span>
+        <span class="policy-status" [ngClass]="{
+          'status-success': policy.status === 'Vigente',
+          'status-error': policy.status === 'Vencida',
+          'status-pending': policy.status === 'Pendiente'
+        }">
+          {{ policy.status }}
+        </span>
+      </div>
+      <h3 class="policy-number">Póliza: #{{ policy.policyNumber }}</h3>
+      <p class="client-name"><i class="material-icons small-icon">people</i> Cliente: {{ policy.clientName }}</p>
+      <p class="policy-description">{{ policy.description }}</p>
+      <div class="policy-dates">
+        <p><i class="material-icons small-icon">event_note</i> Inicio: {{ policy.startDate }}</p>
+        <p><i class="material-icons small-icon">event_busy</i> Fin: {{ policy.endDate }}</p>
+      </div>
+      
+      <div class="card-footer">
+        <a [routerLink]="['/policies', policy.id]" class="btn-text">Ver Detalles</a>
+      </div>
+    </div>
+
+    <div *ngIf="filteredPolicies.length === 0" class="no-results-message card">
+      <p>No se encontraron pólizas que coincidan con la búsqueda o filtros aplicados.</p>
+      <button *ngIf="searchTerm || filterStatus !== 'all'" class="btn-secondary" (click)="searchTerm = ''; filterStatus = 'all'">Limpiar Filtros</button>
+    </div>
+  </div>
+</div>

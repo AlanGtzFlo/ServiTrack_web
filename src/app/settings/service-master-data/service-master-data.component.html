@@ -1,0 +1,53 @@
+<div class="form-section master-data-section">
+  <h3>Datos Maestros de Servicio</h3>
+
+  <div class="data-category-grid">
+    <div class="data-category-card card">
+      <h4>Tipos de Servicio</h4>
+      <ul class="data-list">
+        <li *ngFor="let type of serviceTypes">
+          {{ type }}
+          <button class="btn-icon delete-icon" (click)="removeServiceType(type)">
+            <i class="material-icons">close</i>
+          </button>
+        </li>
+      </ul>
+      <div class="add-item-form">
+        <input type="text" [(ngModel)]="newServiceType" placeholder="Nuevo tipo" (keyup.enter)="addServiceType()">
+        <button class="btn btn-secondary" (click)="addServiceType()">Añadir</button>
+      </div>
+    </div>
+
+    <div class="data-category-card card">
+      <h4>Prioridades</h4>
+      <ul class="data-list">
+        <li *ngFor="let priority of priorities">
+          {{ priority }}
+          <button class="btn-icon delete-icon" (click)="removePriority(priority)">
+            <i class="material-icons">close</i>
+          </button>
+        </li>
+      </ul>
+      <div class="add-item-form">
+        <input type="text" [(ngModel)]="newPriority" placeholder="Nueva prioridad" (keyup.enter)="addPriority()">
+        <button class="btn btn-secondary" (click)="addPriority()">Añadir</button>
+      </div>
+    </div>
+
+    <div class="data-category-card card">
+      <h4>Estados de Servicio</h4>
+      <ul class="data-list">
+        <li *ngFor="let status of serviceStatuses">
+          {{ status }}
+          <button class="btn-icon delete-icon" (click)="removeStatus(status)">
+            <i class="material-icons">close</i>
+          </button>
+        </li>
+      </ul>
+      <div class="add-item-form">
+        <input type="text" [(ngModel)]="newStatus" placeholder="Nuevo estado" (keyup.enter)="addStatus()">
+        <button class="btn btn-secondary" (click)="addStatus()">Añadir</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,23 +1,25 @@
-import { Component, ViewChild } from '@angular/core';
-import { DrawerModule } from 'primeng/drawer';
-import { ButtonModule } from 'primeng/button';
-import { Ripple } from 'primeng/ripple';
-import { AvatarModule } from 'primeng/avatar';
-import { StyleClass } from 'primeng/styleclass';
-import { Drawer } from 'primeng/drawer';
+// src/app/side-bar/side-bar.component.ts
+import { Component } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-side-bar',
-  imports: [DrawerModule, ButtonModule, Ripple, AvatarModule, StyleClass],
+  standalone: true,
+  imports: [RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './side-bar.component.html',
-  styleUrl: './side-bar.component.scss'
+  styleUrls: ['./side-bar.component.scss']
 })
 export class SideBarComponent {
-      @ViewChild('drawerRef') drawerRef!: Drawer;
-
-    closeCallback(e: any): void {
-        this.drawerRef.close(e);
-    }
-
-    visible: boolean = false;
+  navItems = [
+    { label: 'Dashboard', icon: 'dashboard', link: '/dashboard' },
+    { label: 'Clientes', icon: 'people', link: '/clients' },
+    { label: 'Pólizas', icon: 'description', link: '/policies' },
+    { label: 'Servicios', icon: 'build', link: '/services' },
+    { label: 'Usuarios', icon: 'account_circle', link: '/users' },
+    // ¡NUEVO ELEMENTO PARA REFACCIONES!
+    { label: 'Refacciones', icon: 'precision_manufacturing', link: '/refacciones' }, // Usé 'precision_manufacturing' como icono, puedes cambiarlo
+    { label: 'Reportes', icon: 'bar_chart', link: '/reports' },
+    { label: 'Satisfacción', icon: 'sentiment_satisfied_alt', link: '/satisfaction' }
+  ];
 }

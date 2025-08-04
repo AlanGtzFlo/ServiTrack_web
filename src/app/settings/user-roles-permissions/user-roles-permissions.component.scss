@@ -1,0 +1,201 @@
+/* src/app/settings/user-roles-permissions/user-roles-permissions.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.roles-permissions-section {
+  h3 {
+    // Si h3 tiene un estilo global en styles.scss (ej. @include heading-h3), podrías extenderlo aquí.
+    // Si no, estos estilos son directos.
+    font-family: global.$font-headings; // Asumiendo que h3 usa el font de encabezados
+    color: global.$dark-blue; // Asumiendo que h3 tiene un color primario
+    font-size: 28px; // Un tamaño base para h3
+    font-weight: 700; // Un peso de fuente base
+    margin-bottom: 25px; // Asegura espacio consistente
+  }
+
+  .roles-selection-area {
+    display: grid;
+    grid-template-columns: 1fr 2fr; // Lista de roles a la izquierda, detalles a la derecha
+    gap: 30px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr; // Una columna en móviles
+    }
+  }
+
+  .roles-list-container, .permissions-details-container {
+    // Estos son estilos para una "tarjeta" o panel.
+    // Podrías extender .card aquí si deseas que tengan el estilo global de tarjeta.
+    background-color: global.$white; // Corregido: usa global.$
+    border-radius: 8px; // Asumiendo un border-radius estándar para tarjetas
+    box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.08); // Asumiendo una sombra estándar
+    padding: 25px;
+
+    h4 {
+      font-family: global.$font-headings; // Corregido: usa global.$
+      font-size: 20px;
+      color: global.$teal; // Corregido: usa global.$
+      margin-top: 0;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      // Corregido: usa color.adjust() y global.$
+      border-bottom: 1px solid color.adjust(global.$light-gray, $lightness: 5%);
+    }
+  }
+
+  .roles-list-container {
+    .roles-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 30px 0;
+      max-height: 400px; // Limita la altura de la lista de roles
+      overflow-y: auto; // Permite scroll
+      border: 1px solid global.$light-gray; // Corregido: usa global.$
+      border-radius: 8px;
+
+      li {
+        padding: 15px 20px;
+        border-bottom: 1px solid global.$light-gray; // Corregido: usa global.$
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        font-family: global.$font-body; // Corregido: usa global.$
+        font-size: 17px;
+        color: global.$dark-blue; // Corregido: usa global.$
+        font-weight: 500;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          // Corregido: usa color.adjust() y global.$
+          background-color: color.adjust(global.$light-gray, $lightness: 2%);
+        }
+
+        &.active {
+          background-color: global.$teal; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+          font-weight: 600;
+          box-shadow: inset 3px 0 0 global.$yellow-orange; // Corregido: usa global.$
+          .role-desc-short {
+            // Corregido: usa color.adjust() y global.$
+            color: color.adjust(global.$white, $lightness: 20%);
+          }
+        }
+
+        .role-desc-short {
+          font-size: 13px;
+          // Corregido: usa color.adjust() y global.$
+          color: color.adjust(global.$dark-blue, $lightness: 25%);
+          margin-top: 5px;
+          line-height: 1.4;
+        }
+      }
+    }
+
+    .add-role-form {
+      padding-top: 20px;
+      border-top: 1px dashed global.$light-gray; // Corregido: usa global.$
+      .form-group {
+        margin-bottom: 15px; // Espacio para los inputs del nuevo rol
+        input, textarea {
+          padding: 10px 12px; // Un poco más pequeños para el formulario de añadir rol
+          // Añadidos estilos de input para consistencia si no extienden de una clase global
+          font-size: 15px;
+          border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
+          border-radius: 6px;
+          font-family: global.$font-body;
+          color: global.$dark-blue;
+          &:focus {
+            outline: none;
+            border-color: global.$yellow-orange;
+            box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+          }
+        }
+      }
+      .btn-secondary {
+        // Si tienes un btn-secondary global, @extend lo. Si no, añadir base aquí.
+        // @extend .btn-secondary; // Descomentar si existe y quieres extenderlo
+        width: 100%;
+        padding: 12px;
+      }
+    }
+  }
+
+  .permissions-details-container {
+    .role-description {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-size: 15px;
+      // Corregido: usa color.adjust() y global.$
+      color: color.adjust(global.$dark-blue, $lightness: 20%);
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed global.$light-gray; // Corregido: usa global.$
+    }
+
+    .permissions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); // Permisos en columnas
+      gap: 20px;
+      margin-bottom: 30px;
+
+      .permission-item {
+        // Corregido: usa color.adjust() y global.$
+        background-color: color.adjust(global.$teal, $lightness: 48%); // Fondo suave para cada grupo de permiso
+        padding: 15px;
+        border-radius: 8px;
+        
+        .permission-label {
+          font-family: global.$font-headings; // Corregido: usa global.$
+          font-weight: 600;
+          color: global.$teal; // Corregido: usa global.$
+          font-size: 18px;
+          margin-bottom: 15px;
+          display: block;
+          padding-bottom: 8px;
+          // Corregido: usa color.adjust() y global.$
+          border-bottom: 1px solid color.adjust(global.$teal, $lightness: 35%);
+        }
+
+        .checkbox-group {
+          margin-bottom: 10px;
+          &:last-child {
+            margin-bottom: 0;
+          }
+          // Asumiendo que el estilo del checkbox se maneja a través de un mixin o estilo global,
+          // o que ya tienen estilos predeterminados. Si necesitas estilos personalizados,
+          // asegúrate de que usen tus variables globales.
+          input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            transform: translateY(2px); // Alinea un poco mejor con el texto
+          }
+          label {
+            font-size: 15px;
+            font-weight: normal;
+            font-family: global.$font-body; // Asegura que el label también use tu fuente
+            color: global.$dark-blue; // Color del texto del label
+          }
+        }
+      }
+    }
+  }
+
+  .no-role-selected {
+    padding: 40px;
+    text-align: center;
+    font-family: global.$font-body; // Corregido: usa global.$
+    font-size: 18px;
+    // Corregido: usa color.adjust() y global.$
+    color: color.adjust(global.$dark-blue, $lightness: 30%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // Si quieres que ocupe todo el espacio vertical disponible en el grid
+    min-height: 200px;
+  }
+}

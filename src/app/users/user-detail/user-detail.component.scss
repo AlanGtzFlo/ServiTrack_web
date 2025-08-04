@@ -1,0 +1,256 @@
+/* src/app/users/user-detail/user-detail.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.user-detail-container {
+  padding: 30px;
+  max-width: 900px; // Un ancho más adecuado para perfiles de usuario
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .back-button {
+    // Si tienes un estilo global para botones de texto o enlaces, podrías @extend aquí
+    // Por ejemplo: @extend global.$btn-text;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    color: global.$teal; // Color de enlace
+    text-decoration: none; // Sin subrayado por defecto
+    font-family: global.$font-body;
+    font-weight: 500;
+    &:hover {
+      text-decoration: underline;
+      color: color.adjust(global.$teal, $lightness: -10%); // Un poco más oscuro al hover
+    }
+    .material-icons {
+      font-size: 20px;
+      color: global.$teal;
+    }
+  }
+
+  .section-title {
+    font-family: global.$font-headings; // Corregido: usa global.$
+    font-weight: 700;
+    font-size: 30px;
+    color: global.$dark-blue; // Corregido: usa global.$
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .btn {
+      // Si tienes estilos globales para .btn en styles.scss, podrías usar @extend .global-btn;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      padding: 8px 15px;
+      border-radius: 5px;
+      .material-icons {
+        font-size: 20px;
+      }
+    }
+    .btn-delete {
+      background-color: global.$soft-red; // Corregido: usa global.$
+      color: global.$white; // Corregido: usa global.$
+      border: 1px solid global.$soft-red; // Añadido para consistencia
+      &:hover {
+        // Corregido: usa color.adjust() y global.$
+        background-color: color.adjust(global.$soft-red, $lightness: -10%);
+        border-color: color.adjust(global.$soft-red, $lightness: -10%);
+      }
+    }
+  }
+}
+
+.user-profile-card {
+  background-color: global.$white; // Corregido: usa global.$
+  border-radius: 10px;
+  // Corregido: usa global.$
+  box-shadow: 0 6px 16px rgba(global.$dark-blue, 0.1);
+  padding: 30px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding-bottom: 25px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid global.$light-gray; // Corregido: usa global.$
+  flex-wrap: wrap; // Asegura que se adapte a pantallas pequeñas
+
+  .profile-avatar {
+    background-color: global.$teal; // Corregido: usa global.$
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    .user-icon {
+      font-size: 60px;
+      color: global.$white; // Corregido: usa global.$
+    }
+  }
+
+  .profile-info {
+    flex-grow: 1;
+    h2 {
+      font-family: global.$font-headings; // Corregido: usa global.$
+      font-weight: 700;
+      font-size: 28px;
+      color: global.$dark-blue; // Corregido: usa global.$
+      margin: 0 0 5px 0;
+    }
+    .user-email {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-size: 16px;
+      // Corregido: usa color.adjust() y global.$
+      color: color.adjust(global.$dark-blue, $lightness: 20%);
+      margin: 0 0 10px 0;
+    }
+    .user-role-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      text-transform: uppercase;
+      // Colores de rol, replicando los de la vista de lista
+      &.role-admin {
+        background-color: global.$teal; // Corregido: usa global.$
+        color: global.$white; // Corregido: usa global.$
+      }
+      &.role-technician {
+        // Corregido: usa color.adjust() y global.$
+        background-color: color.adjust(global.$teal, $lightness: -15%);
+        color: global.$white; // Corregido: usa global.$
+      }
+      &.role-customer-service {
+        background-color: global.$yellow-orange; // Corregido: usa global.$
+        color: global.$white; // Corregido: usa global.$
+      }
+      &.role-supervisor {
+        // Corregido: usa color.adjust() y global.$
+        background-color: color.adjust(global.$dark-blue, $lightness: 20%);
+        color: global.$white; // Corregido: usa global.$
+      }
+    }
+  }
+
+  .profile-status {
+    flex-shrink: 0;
+    .status-badge {
+      // Si .status-success es una clase global definida en styles.scss, el @extend es correcto.
+      // Asegúrate de que styles.scss también use `@use "sass:color";` para sus mixins/variables.
+      // @extend global.$status-success; // Si global.$status-success es un placeholder selector o mixin
+      // Si status-success es una clase real en styles.scss, se mantiene como está:
+      @extend .status-success; 
+      padding: 8px 15px;
+      font-size: 14px;
+      font-weight: 600;
+      // Si @extend .status-success no funciona o no trae los colores, podrías definirlos aquí
+      // background-color: global.$success-green;
+      // color: global.$white;
+    }
+  }
+}
+
+.profile-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); // 2 columnas en pantallas grandes
+  gap: 20px 30px; // Espacio vertical y horizontal
+
+  .info-group {
+    display: flex;
+    flex-direction: column; // Etiquetas arriba de los valores/inputs
+    margin-bottom: 0; // Se maneja el espaciado con gap del grid
+
+    &.full-width {
+      grid-column: 1 / -1; // Ocupa todo el ancho
+    }
+
+    .label {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-weight: 500;
+      color: global.$dark-blue; // Corregido: usa global.$
+      margin-bottom: 8px;
+      width: auto; // No fijo en este layout
+    }
+    .value {
+      font-family: global.$font-body; // Corregido: usa global.$
+      // Corregido: usa color.adjust() y global.$
+      color: color.adjust(global.$dark-blue, $lightness: 15%);
+      line-height: 1.5;
+    }
+
+    .form-control {
+      // Si tienes un .form-control global, @extend lo. Si no, añadir base aquí.
+      // @extend .global-form-control; // Descomentar si existe y quieres extenderlo
+      width: 100%;
+      padding: 10px 12px;
+      // Corregido: usa color.adjust() y global.$
+      border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
+      border-radius: 6px;
+      font-size: 15px;
+      color: global.$dark-blue; // Corregido: usa global.$
+      box-sizing: border-box; // Incluye padding y border en el width
+      &:focus {
+        border-color: global.$yellow-orange; // Corregido: usa global.$
+        // Corregido: usa global.$
+        box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+        outline: none;
+      }
+    }
+    textarea.form-control {
+      min-height: 80px;
+      resize: vertical;
+    }
+  }
+}
+
+.change-password-section {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px dashed global.$light-gray; // Corregido: usa global.$
+  .btn-secondary {
+    // Si tienes un btn-secondary global, @extend lo. Si no, añadir base aquí.
+    // @extend .global-btn-secondary; // Descomentar si existe y quieres extenderlo
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+}
+
+.loading-or-error {
+  text-align: center;
+  font-family: global.$font-body; // Corregido: usa global.$
+  font-size: 18px;
+  // Corregido: usa color.adjust() y global.$
+  color: color.adjust(global.$dark-blue, $lightness: 20%);
+  padding: 50px;
+}

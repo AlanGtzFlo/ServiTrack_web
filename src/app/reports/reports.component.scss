@@ -1,0 +1,251 @@
+/* src/app/reports/reports.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.reports-container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .section-title {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 48px; /* Ajustado a 48px para consistencia */
+    color: global.$white;
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    .filter-dropdown {
+      padding: 10px 15px;
+      border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
+      border-radius: 6px;
+      background-color: global.$white;
+      font-family: global.$font-body;
+      font-size: 16px;
+      color: global.$dark-blue;
+      appearance: none;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23003F4E%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4h-263.8c-7.9%200-14.4%206.5-14.4%2014.4s6.5%2014.4%2014.4%2014.4h263.8c4.5%200%208.5-2.2%2010.9-5.9%202.4-3.7%202.9-8.4%201.2-12.4l-11.2-22.4z%22%2F%3E%3C%2Fsvg%3E');
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 12px;
+      cursor: pointer;
+      &:focus {
+        outline: none;
+        border-color: global.$yellow-orange;
+        box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+      }
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Centra el contenido dentro del botón */
+      gap: 8px;
+      font-size: 15px; /* Tamaño de fuente consistente */
+      padding: 10px 18px; /* Padding consistente */
+      border-radius: 8px; /* Borde redondeado consistente */
+      min-width: 120px; /* Ancho mínimo para consistencia con otros botones */
+      text-align: center; /* Asegura que el texto esté centrado */
+
+      .material-icons {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+.report-content-area {
+  @extend .card; /* Extiende la clase .card para estilos base */
+  padding: 30px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Alinea el contenido al inicio */
+  align-items: flex-start; /* Alinea horizontalmente al inicio */
+  text-align: left; /* Asegura que el texto dentro esté alineado a la izquierda */
+}
+
+.report-subtitle {
+  font-family: global.$font-headings;
+  font-weight: 600;
+  font-size: 28px;
+  color: global.$teal;
+  margin-bottom: 30px;
+  width: 100%; /* Asegura que el subtítulo ocupe todo el ancho */
+  text-align: center; /* Centra el subtítulo */
+}
+
+.report-description {
+  font-family: global.$font-body;
+  font-size: 16px;
+  color: color.adjust(global.$dark-blue, $lightness: 25%);
+  margin-top: 30px;
+  line-height: 1.6;
+  max-width: 700px;
+  text-align: center; /* Centra la descripción */
+  width: 100%; /* Ocupa todo el ancho */
+}
+
+/* Estilos para el reporte de Visión General */
+.overview-report {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .overview-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    width: 100%;
+    max-width: 1000px;
+    margin-bottom: 20px;
+
+    .stat-card {
+      background-color: color.adjust(global.$teal, $lightness: 45%);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.05);
+      
+      &.open {
+        background-color: color.adjust(global.$yellow-orange, $lightness: 30%);
+      }
+      &.closed {
+        background-color: color.adjust(global.$success-green, $lightness: 30%);
+      }
+
+      .stat-icon {
+        font-size: 48px;
+        color: global.$teal;
+        margin-bottom: 10px;
+        &.open { color: global.$yellow-orange; }
+        &.closed { color: global.$success-green; }
+      }
+      .stat-label {
+        font-family: global.$font-body;
+        font-weight: 600; /* Ajustado a 600 para que sea más prominente */
+        font-size: 18px; /* Ajustado para que sea un buen tamaño para la etiqueta */
+        color: global.$dark-blue;
+        margin: 0;
+        text-align: center;
+      }
+      .stat-value { /* Se mantiene para los que no son gráfica */
+        font-family: global.$font-headings;
+        font-weight: 700;
+        font-size: 36px;
+        color: global.$dark-blue;
+        margin: 0;
+        text-align: center;
+      }
+
+      canvas { /* Estilos para las gráficas dentro de las stat-card */
+        max-height: 100px; /* Altura máxima para las gráficas pequeñas */
+        width: 100% !important;
+        height: auto !important;
+        margin-top: 10px; /* Espacio entre label y gráfica */
+      }
+    }
+  }
+}
+
+/* Estilos para los reportes de gráficos */
+.chart-report {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .chart-container {
+    width: 100%;
+    max-width: 700px; /* Ancho máximo para los gráficos principales */
+    height: 400px; /* Altura fija para los gráficos */
+    margin-bottom: 20px;
+    position: relative;
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+}
+
+/* Estilos para el reporte de Clientes */
+.clients-report {
+  width: 100%;
+  max-width: 1000px; /* Ajustado para que las gráficas quepan mejor */
+  text-align: left;
+
+  .clients-stats-list {
+    background-color: color.adjust(global.$teal, $lightness: 48%);
+    border-radius: 8px;
+    padding: 25px;
+    line-height: 1.8;
+    margin-bottom: 30px; /* Espacio antes de la gráfica de industrias */
+
+    p {
+      margin: 0 0 10px 0;
+      font-family: global.$font-body;
+      font-size: 16px;
+      color: global.$dark-blue;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      strong {
+        color: global.$teal;
+      }
+    }
+  }
+
+  .stat-card-inline { /* Nueva clase para las tarjetas de stats inline con gráficas */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    background-color: color.adjust(global.$yellow-orange, $lightness: 30%); /* Fondo para estas tarjetas */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.05);
+    margin-bottom: 15px;
+
+    h3.stat-label { /* Reutiliza stat-label para el título de la gráfica pequeña */
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+    canvas {
+      max-height: 80px; /* Gráficas más pequeñas */
+      width: 100% !important;
+      height: auto !important;
+    }
+  }
+}
+
+.no-report-selected {
+  font-family: global.$font-body;
+  font-size: 18px;
+  color: color.adjust(global.$dark-blue, $lightness: 30%);
+  padding: 50px;
+}

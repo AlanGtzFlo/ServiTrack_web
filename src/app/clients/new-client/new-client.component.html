@@ -1,0 +1,58 @@
+<div class="new-client-container">
+  <div class="header">
+    <button class="back-button" (click)="cancel()">
+      &larr; Volver a Clientes
+    </button>
+    <br>
+    <h1>{{ isEditing ? 'Editar Cliente' : 'Nuevo Cliente' }}</h1>
+  </div>
+
+  <div class="client-form-card card">
+    <form (ngSubmit)="saveClient()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Nombre Completo:</label>
+          <input type="text" id="name" [(ngModel)]="client.name" name="name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="rfc">RFC:</label>
+          <input type="text" id="rfc" [(ngModel)]="client.rfc" name="rfc" required>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="address">Dirección:</label>
+          <input type="text" id="address" [(ngModel)]="client.address" name="address" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email de Contacto:</label>
+          <input type="email" id="email" [(ngModel)]="client.contact.email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Teléfono de Contacto:</label>
+          <input type="tel" id="phone" [(ngModel)]="client.contact.phone" name="phone" required>
+        </div>
+
+        <div class="form-group">
+          <label for="status">Estado:</label>
+          <select id="status" [(ngModel)]="client.status" name="status">
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="isEditing">
+          <label>Fecha de Registro:</label>
+          <span>{{ client.registrationDate | date:'shortDate' }}</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">{{ isEditing ? 'Actualizar Cliente' : 'Crear Cliente' }}</button>
+      </div>
+    </form>
+  </div>
+</div>

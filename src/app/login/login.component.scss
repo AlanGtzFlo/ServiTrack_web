@@ -1,0 +1,166 @@
+/* src/app/login/login.component.scss */
+@use "../../styles.scss" as global;
+@use "sass:color";
+
+/* ─── Estilos Globales para HTML y Body ────────────────────── */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(135deg, global.$teal 0%, color.adjust(global.$teal, $lightness: 25%) 100%);
+  overflow-y: auto;
+}
+
+/* ─── Layout ────────────────────── */
+.layout {
+  display: flex;
+  flex-direction: column; /* Apila el encabezado y la caja de login verticalmente */
+  min-height: 100vh;
+  width: 100%;
+  background-color: transparent;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+/* ─── Public Header (Navbar) ────────────────────── */
+.public-header {
+  width: 100%; /* Asegura que el fondo del encabezado ocupe todo el ancho */
+  background-color: global.$white;
+  box-shadow: 0 2px 10px rgba(global.$dark-blue, 0.08);
+  display: flex; /* Habilita flexbox para el logo y la navegación */
+  justify-content: space-between; /* Separa el logo y la navegación */
+  align-items: center; /* Alinea verticalmente el logo y la navegación */
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+  padding: 15px 30px; /* Aplica el padding directamente aquí */
+  box-sizing: border-box; /* Incluye el padding en el cálculo del tamaño */
+}
+
+.public-header .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: global.$font-headings;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: global.$teal;
+  margin-right: 20px;
+
+ .sidebar-logo { // Usamos la clase `sidebar-logo` que ya tienes en el HTML
+      height: 40px; /* Ajusta esta altura según lo necesites */
+      width: auto; /* Mantiene la proporción de la imagen */
+      object-fit: contain; /* Asegura que la imagen se ajuste sin distorsionarse */
+    }
+    
+  .material-icons {
+    font-size: 2.2rem;
+    color: global.$yellow-orange;
+  }
+}
+
+.public-header .public-nav {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+
+  a {
+    text-decoration: none;
+    color: global.$dark-blue;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 5px 0;
+    transition: color 0.2s ease, border-bottom 0.2s ease;
+    border-bottom: 2px solid transparent;
+
+    &:hover, &.active {
+      color: global.$teal;
+      border-bottom-color: global.$yellow-orange;
+    }
+  }
+
+  .btn-login {
+    background-color: global.$teal;
+    color: global.$white;
+    padding: 8px 18px;
+    border-radius: 5px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover {
+      background-color: color.adjust(global.$teal, $lightness: -10%);
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin-top: 15px;
+
+    a {
+      width: 100%;
+      padding: 8px 0;
+      text-align: left;
+    }
+  }
+}
+
+/* ─── Login box y avatar ────────── */
+.login-box {
+  max-width: 500px;
+  width: 90%;
+  margin: 40px auto; /* Esto lo centrará horizontalmente y le dará margen superior/inferior */
+  text-align: center;
+  padding: 90px 20px;
+  background-color: global.$white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(global.$dark-blue, 0.1);
+  z-index: 100;
+  position: relative;
+  box-sizing: border-box;
+
+  min-height: 500px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+
+  h2 { color: global.$teal; margin-bottom: 5px; font-size: 2em; }
+  p  { color: global.$dark-blue; margin: 0 0 30px; font-size: 1.1em; }
+}
+
+.login-avatar {
+  width: 120px;
+  height: 120px;
+  background-color: global.$yellow-orange;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: -80px auto 20px;
+  box-shadow: 0 2px 10px rgba(global.$dark-blue, 0.2);
+  border: 5px solid global.$white;
+
+  .material-icons { font-size: 80px; color: global.$white; }
+}
+
+/* ─── Formulario ────────────────── */
+.form-group { margin-bottom: 20px; text-align: left; }
+
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+
+  .btn-primary { width: 100%; margin-bottom: 15px; }
+
+  .forgot-password {
+    color: global.$teal;
+    font-size: 0.9em;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+}

@@ -1,0 +1,58 @@
+<div class="users-container">
+  <div class="section-header">
+    <h1 class="section-title">Gestión de Usuarios</h1>
+    <div class="header-actions">
+      <div class="search-box">
+        <i class="material-icons search-icon">search</i>
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar por nombre o email..." class="search-input">
+      </div>
+      <select [(ngModel)]="filterRole" class="filter-dropdown">
+        <option value="all">Todos los Roles</option>
+        <option value="Administrador">Administrador</option>
+        <option value="Técnico">Técnico</option>
+        <option value="Atención a Cliente">Atención a Cliente</option>
+        <option value="Supervisor">Supervisor</option>
+      </select>
+      <select [(ngModel)]="filterStatus" class="filter-dropdown">
+        <option value="all">Todos los Estados</option>
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+        <option value="Pendiente">Pendiente</option>
+      </select>
+      <button class="btn btn-primary" routerLink="/users/new">
+        <i class="material-icons">person_add</i> Nuevo Usuario
+      </button>
+    </div>
+  </div>
+
+  <div class="users-grid">
+    <div class="user-card card" *ngFor="let user of filteredUsers" [routerLink]="['/users', user.id]">
+      <div class="card-header">
+        <div class="user-avatar">
+          <img *ngIf="user.imageUrl; else placeholder" [src]="user.imageUrl" alt="{{ user.name }}" class="avatar-img">
+          <ng-template #placeholder>
+            <i class="material-icons avatar-placeholder-icon">person</i>
+          </ng-template>
+        </div>
+        <h3 class="user-name">{{ user.name }}</h3>
+        <span class="user-status" [ngClass]="getStatusClass(user.status)">
+          {{ user.status }}
+        </span>
+      </div>
+      <div class="card-body">
+        <p class="user-email"><i class="material-icons small-icon">email</i> {{ user.email }}</p>
+        <p class="user-role"><i class="material-icons small-icon">badge</i> Rol: <span [ngClass]="getRoleClass(user.role)">{{ user.role }}</span></p>
+        <p class="user-last-login"><i class="material-icons small-icon">login</i> Último Acceso: {{ user.lastLogin }}</p>
+      </div>
+
+      <div class="card-footer">
+        <a [routerLink]="['/users', user.id]" class="btn-text">Ver Perfil</a>
+      </div>
+    </div>
+
+    <div *ngIf="filteredUsers.length === 0" class="no-results-message card">
+      <p>No se encontraron usuarios que coincidan con la búsqueda o filtros aplicados.</p>
+      <button *ngIf="searchTerm || filterRole !== 'all' || filterStatus !== 'all'" class="btn-secondary" (click)="searchTerm = ''; filterRole = 'all'; filterStatus = 'all'">Limpiar Filtros</button>
+    </div>
+  </div>
+</div>

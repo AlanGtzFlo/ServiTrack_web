@@ -1,0 +1,123 @@
+/* src/app/public-portal/public-layout/public-layout.component.scss */
+
+@use "../../../styles.scss" as global; // Asegúrate de la ruta correcta
+@use "sass:color";
+
+.public-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; // Ocupa toda la altura de la ventana
+  //background: linear-gradient(135deg, global.$light-gray 0%, color.adjust(global.$light-gray, $lightness: -5%) 100%); // Un degradado más suave para el público
+  color: global.$dark-blue; // Color de texto principal
+}
+
+.public-header {
+  background-color: global.$white;
+  padding: 15px 30px;
+  box-shadow: 0 2px 10px rgba(global.$dark-blue, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; // Permite que los elementos se envuelvan en pantallas pequeñas
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: global.$font-headings;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: global.$teal; // Color principal de la marca
+    margin-right: 20px; // Espacio entre logo y nav
+
+.sidebar-logo { // Usamos la clase `sidebar-logo` que ya tienes en el HTML
+      height: 40px; /* Ajusta esta altura según lo necesites */
+      width: auto; /* Mantiene la proporción de la imagen */
+      object-fit: contain; /* Asegura que la imagen se ajuste sin distorsionarse */
+    }
+
+    .material-icons {
+      font-size: 2.2rem;
+      color: global.$yellow-orange;
+    }
+  }
+
+  .public-nav {
+    display: flex;
+    gap: 25px; // Espacio entre enlaces de navegación
+    flex-wrap: wrap; // Permite que los enlaces se envuelvan
+
+    a {
+      text-decoration: none;
+      color: global.$dark-blue;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 5px 0;
+      transition: color 0.2s ease, border-bottom 0.2s ease;
+      border-bottom: 2px solid transparent; // Para el efecto hover
+
+      &:hover, &.active {
+        color: global.$teal;
+        border-bottom-color: global.$yellow-orange;
+      }
+    }
+
+    .btn-login {
+      @extend .btn-primary; // Reutiliza estilo de botón primario
+      background-color: global.$teal;
+      color: global.$white;
+      padding: 8px 18px;
+      border-radius: 5px;
+      border: none; // No border si ya tienes extend .btn-primary
+      text-transform: uppercase;
+      font-weight: 700;
+
+      &:hover {
+        background-color: color.adjust(global.$teal, $lightness: -10%);
+      }
+    }
+  }
+
+  // Media query para navegación móvil
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .public-nav {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+      margin-top: 15px;
+
+      a {
+        width: 100%;
+        padding: 8px 0;
+        text-align: left;
+      }
+    }
+  }
+}
+
+.public-content {
+  flex-grow: 1; // Ocupa el espacio restante
+  padding: 30px;
+  max-width: 1200px;
+  margin: 20px auto; // Margen superior/inferior para separar de header/footer
+  background-color: global.$white; // Fondo blanco para el contenido principal
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(global.$dark-blue, 0.05);
+  box-sizing: border-box; // Incluir padding en el cálculo del tamaño
+}
+
+.public-footer {
+  background-color: global.$dark-blue;
+  color: global.$light-gray;
+  padding: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: auto; // Empuja el footer al final
+
+  p {
+    margin: 5px 0;
+  }
+}

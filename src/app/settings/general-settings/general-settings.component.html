@@ -1,0 +1,47 @@
+<div class="form-section">
+  <h3>Configuración General del Sistema</h3>
+  <form (ngSubmit)="saveGeneralSettings()">
+    <div class="form-group">
+      <label for="appName">Nombre de la Aplicación:</label>
+      <input type="text" id="appName" [(ngModel)]="appName" name="appName" required>
+    </div>
+
+    <div class="form-group">
+      <label for="companyName">Nombre de la Empresa:</label>
+      <input type="text" id="companyName" [(ngModel)]="companyName" name="companyName">
+    </div>
+
+    <div class="form-group">
+      <label for="defaultLanguage">Idioma por Defecto:</label>
+      <select id="defaultLanguage" [(ngModel)]="defaultLanguage" name="defaultLanguage">
+        <option *ngFor="let lang of languages" [value]="lang.value">{{ lang.label }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="dateFormat">Formato de Fecha:</label>
+      <select id="dateFormat" [(ngModel)]="dateFormat" name="dateFormat">
+        <option *ngFor="let format of dateFormats" [value]="format.value">{{ format.label }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="timeZone">Zona Horaria:</label>
+      <input type="text" id="timeZone" [(ngModel)]="timeZone" name="timeZone" placeholder="Ej: America/Mexico_City">
+    </div>
+
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="allowClientRegistration" [(ngModel)]="allowClientRegistration" name="allowClientRegistration">
+      <label for="allowClientRegistration">Permitir Auto-registro de Clientes</label>
+    </div>
+
+    <div class="form-group">
+      <label for="maxFileSizeMB">Tamaño Máximo de Archivo Subido (MB):</label>
+      <input type="number" id="maxFileSizeMB" [(ngModel)]="maxFileSizeMB" name="maxFileSizeMB" min="1" max="100">
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </div>
+  </form>
+</div>
