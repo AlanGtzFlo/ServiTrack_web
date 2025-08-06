@@ -1,96 +1,127 @@
 // src/app/clients/new-client/new-client.component.ts
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common'; // Asegúrate de tener DatePipe si lo usas en el template
-import { FormsModule } from '@angular/forms'; // Necesario para ngModel
-import { ActivatedRoute, Router } from '@angular/router'; // Para rutas y navegación
-// CORRECCIÓN FINAL: Usar ruta absoluta para clients-data
-import { Client, CLIENTS_DATA, Contact } from '../clients-data';
+import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+
+// Interfaz que representa el formato recibido de la API
+interface ApiClient {
+  id?: number;
+  nombre: string;
+  correo: string;
+  telefono: string | null;
+  direccion: string | null;
+  is_active: boolean; // Propiedad que viene de la API
+  fecha_registro?: string;
+}
+
+// Interfaz interna usada en la app
+interface Client {
+  id?: number;
+  nombre: string;
+  correo: string;
+  telefono: string | null;
+  direccion: string | null;
+  status: 'Activo' | 'Inactivo' | 'Potencial';
+  fecha_registro?: string;
+}
 
 @Component({
   selector: 'app-new-client',
   standalone: true,
-  // Asegúrate de que DatePipe esté en imports si se usa en el template directamente
-  imports: [CommonModule, FormsModule, DatePipe], 
+  imports: [CommonModule, FormsModule, DatePipe],
   templateUrl: './new-client.component.html',
   styleUrls: ['./new-client.component.scss']
 })
 export class NewClientComponent implements OnInit {
-  client: Client = { // Inicializar un cliente vacío para el formulario
-    id: 0, // Se asignará un ID al guardar si es nuevo
-    name: '',
-    rfc: '',
-    address: '',
-    contact: {
-      email: '',
-      phone: ''
-    },
-    status: 'Activo', // Estado por defecto
-    registrationDate: new Date() // Fecha de registro por defecto
+  client: Client = {
+    nombre: '',
+    correo: '',
+    telefono: null,
+    direccion: null,
+    status: 'Activo'
   };
-  isEditing: boolean = false;
-  originalClientId: number | undefined; // Para mantener el ID original si se edita
+  isEditing = false;
+  clientId: number | null = null;
+
+  private apiUrl = 'http://18.222.150.133/api/clientes/';
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
-  ) { }
+    private router: Router,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       if (idParam) {
         this.isEditing = true;
-        this.originalClientId = +idParam;
-        // CORRECCIÓN: Especificar el tipo para 'c' en find
-        const foundClient = CLIENTS_DATA.find((c: Client) => c.id === this.originalClientId);
-        if (foundClient) {
-          // Clonar el objeto para evitar modificar el original directamente antes de guardar
-          // y clonar también el objeto 'contact' para evitar problemas de referencia
-          this.client = { ...foundClient, contact: { ...foundClient.contact } };
-        } else {
-          console.warn(`Cliente con ID ${this.originalClientId} no encontrado para edición.`);
-          this.router.navigate(['/clients/new']); // Si no se encuentra, ir a crear nuevo
-        }
+        this.clientId = +idParam;
+        this.loadClient(this.clientId);
       } else {
         this.isEditing = false;
-        // Reiniciar el cliente para un nuevo formulario si no hay ID
+      }
+    });
+  }
+
+  loadClient(id: number): void {
+    this.http.get<ApiClient>(`${this.apiUrl}${id}/`).subscribe({
+      next: (data) => {
+        // Convertir ApiClient a Client interno
         this.client = {
-          id: 0,
-          name: '',
-          rfc: '',
-          address: '',
-          contact: { email: '', phone: '' },
-          status: 'Activo',
-          registrationDate: new Date()
+          nombre: data.nombre,
+          correo: data.correo,
+          telefono: data.telefono,
+          direccion: data.direccion,
+          status: data.is_active ? 'Activo' : 'Inactivo',
+          fecha_registro: data.fecha_registro
         };
+      },
+      error: (err) => {
+        console.error('Error cargando cliente', err);
+        alert('No se pudo cargar la información del cliente.');
+        this.router.navigate(['/clients']);
       }
     });
   }
 
   saveClient(): void {
-    if (this.isEditing) {
-      // Lógica para editar cliente existente
-      // CORRECCIÓN: Especificar el tipo para 'c' en findIndex
-      const index = CLIENTS_DATA.findIndex((c: Client) => c.id === this.originalClientId);
-      if (index > -1) {
-        // Actualizar el cliente en la lista simulada
-        CLIENTS_DATA[index] = this.client;
-        console.log('Cliente actualizado (simulado):', this.client);
-      }
+    const payload = {
+      nombre: this.client.nombre,
+      correo: this.client.correo,
+      telefono: this.client.telefono,
+      direccion: this.client.direccion,
+      is_active: this.client.status === 'Activo'
+    };
+
+    if (this.isEditing && this.clientId) {
+      this.http.put(`${this.apiUrl}${this.clientId}/`, payload).subscribe({
+        next: () => {
+          alert('Cliente actualizado correctamente.');
+          this.router.navigate(['/clients']);
+        },
+        error: (err) => {
+          console.error('Error actualizando cliente', err);
+          alert('No se pudo actualizar el cliente.');
+        }
+      });
     } else {
-      // Lógica para crear nuevo cliente
-      // Asignar un nuevo ID (simulado, el más alto + 1)
-      // CORRECCIÓN: Especificar el tipo para 'c' en map
-      const newId = CLIENTS_DATA.length > 0 ? Math.max(...CLIENTS_DATA.map((c: Client) => c.id)) + 1 : 1;
-      this.client.id = newId;
-      this.client.registrationDate = new Date(); // Asegurar la fecha de registro al crear
-      CLIENTS_DATA.push(this.client); // Añadir a la lista simulada
-      console.log('Nuevo cliente creado (simulado):', this.client);
+      this.http.post(this.apiUrl, payload).subscribe({
+        next: () => {
+          alert('Cliente creado correctamente.');
+          this.router.navigate(['/clients']);
+        },
+        error: (err) => {
+          console.error('Error creando cliente', err);
+          alert('No se pudo crear el cliente.');
+        }
+      });
     }
-    this.router.navigate(['/clients']); // Redirigir al listado de clientes
   }
 
   cancel(): void {
-    this.router.navigate(['/clients']); // Volver al listado sin guardar
+    this.router.navigate(['/clients']);
   }
 }

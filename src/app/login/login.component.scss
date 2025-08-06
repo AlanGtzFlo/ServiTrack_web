@@ -47,12 +47,12 @@ html, body {
   color: global.$teal;
   margin-right: 20px;
 
- .sidebar-logo { // Usamos la clase `sidebar-logo` que ya tienes en el HTML
-      height: 40px; /* Ajusta esta altura según lo necesites */
-      width: auto; /* Mantiene la proporción de la imagen */
-      object-fit: contain; /* Asegura que la imagen se ajuste sin distorsionarse */
-    }
-    
+  .sidebar-logo { // Estilo para la imagen del logo
+    height: 40px; /* Ajusta esta altura según lo necesites */
+    width: auto; /* Mantiene la proporción de la imagen */
+    object-fit: contain; /* Asegura que la imagen se ajuste sin distorsionarse */
+  }
+
   .material-icons {
     font-size: 2.2rem;
     color: global.$yellow-orange;
@@ -90,7 +90,7 @@ html, body {
     cursor: pointer;
 
     &:hover {
-      background-color: color.adjust(global.$teal, $lightness: -10%);
+      background-color: color.adjust(global.$teal, $lightness: -10%); // Usando color.adjust
     }
   }
 
@@ -112,7 +112,7 @@ html, body {
 .login-box {
   max-width: 500px;
   width: 90%;
-  margin: 40px auto; /* Esto lo centrará horizontalmente y le dará margen superior/inferior */
+  margin: 40px auto;
   text-align: center;
   padding: 90px 20px;
   background-color: global.$white;
@@ -163,4 +163,16 @@ html, body {
 
     &:hover { text-decoration: underline; }
   }
+}
+
+/* Estilos para el mensaje de error */
+.error-message {
+  color: global.$soft-red;
+  background-color: color.adjust(global.$soft-red, $lightness: 40%);
+  border: 1px solid global.$soft-red;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-size: 0.95em;
+  text-align: center;
 }

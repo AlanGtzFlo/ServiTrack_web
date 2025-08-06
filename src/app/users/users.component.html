@@ -1,23 +1,26 @@
+<!-- src/app/users/users.component.html -->
 <div class="users-container">
   <div class="section-header">
     <h1 class="section-title">Gestión de Usuarios</h1>
     <div class="header-actions">
       <div class="search-box">
         <i class="material-icons search-icon">search</i>
-        <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar por nombre o email..." class="search-input">
+        <!-- Llama al método applyFilters() cuando cambia el valor del input -->
+        <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" placeholder="Buscar por nombre o email..." class="search-input">
       </div>
-      <select [(ngModel)]="filterRole" class="filter-dropdown">
+      <!-- Llama al método applyFilters() cuando cambia el rol -->
+      <select [(ngModel)]="filterRole" (ngModelChange)="applyFilters()" class="filter-dropdown">
         <option value="all">Todos los Roles</option>
-        <option value="Administrador">Administrador</option>
-        <option value="Técnico">Técnico</option>
-        <option value="Atención a Cliente">Atención a Cliente</option>
-        <option value="Supervisor">Supervisor</option>
+        <option value="admin">Administrador</option>
+        <option value="tecnico">Técnico</option>
+        <option value="atención a cliente">Atención a Cliente</option>
+        <option value="supervisor">Supervisor</option>
       </select>
-      <select [(ngModel)]="filterStatus" class="filter-dropdown">
+      <!-- Llama al método applyFilters() cuando cambia el estado -->
+      <select [(ngModel)]="filterStatus" (ngModelChange)="applyFilters()" class="filter-dropdown">
         <option value="all">Todos los Estados</option>
         <option value="Activo">Activo</option>
         <option value="Inactivo">Inactivo</option>
-        <option value="Pendiente">Pendiente</option>
       </select>
       <button class="btn btn-primary" routerLink="/users/new">
         <i class="material-icons">person_add</i> Nuevo Usuario
@@ -25,34 +28,50 @@
     </div>
   </div>
 
-  <div class="users-grid">
+  <!-- Manejo de estados de la UI (cargando, error, sin resultados) -->
+  <div *ngIf="isLoading" class="loading-message">
+    <p>Cargando usuarios...</p>
+  </div>
+  <div *ngIf="!isLoading && errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage" class="users-grid">
+    <!-- El bucle se hace sobre la lista filtrada: 'filteredUsers' -->
     <div class="user-card card" *ngFor="let user of filteredUsers" [routerLink]="['/users', user.id]">
       <div class="card-header">
         <div class="user-avatar">
-          <img *ngIf="user.imageUrl; else placeholder" [src]="user.imageUrl" alt="{{ user.name }}" class="avatar-img">
+          <!-- La propiedad para la imagen es 'user.foto' -->
+          <img *ngIf="user.foto; else placeholder" [src]="user.foto" [alt]="user.nombre" class="avatar-img">
           <ng-template #placeholder>
             <i class="material-icons avatar-placeholder-icon">person</i>
           </ng-template>
         </div>
-        <h3 class="user-name">{{ user.name }}</h3>
-        <span class="user-status" [ngClass]="getStatusClass(user.status)">
-          {{ user.status }}
+        <!-- La propiedad para el nombre es 'user.nombre' -->
+        <h3 class="user-name">{{ user.nombre }}</h3>
+        <!-- El estado es un booleano 'is_active', usamos un ternario para mostrar el texto -->
+        <span class="user-status" [ngClass]="getStatusClass(user.is_active)">
+          {{ user.is_active ? 'Activo' : 'Inactivo' }}
         </span>
       </div>
       <div class="card-body">
-        <p class="user-email"><i class="material-icons small-icon">email</i> {{ user.email }}</p>
-        <p class="user-role"><i class="material-icons small-icon">badge</i> Rol: <span [ngClass]="getRoleClass(user.role)">{{ user.role }}</span></p>
-        <p class="user-last-login"><i class="material-icons small-icon">login</i> Último Acceso: {{ user.lastLogin }}</p>
+        <!-- La propiedad para el correo es 'user.correo' -->
+        <p class="user-email"><i class="material-icons small-icon">email</i> {{ user.correo }}</p>
+        <!-- La propiedad para el rol es 'user.rol' -->
+        <p class="user-role"><i class="material-icons small-icon">badge</i> Rol: <span [ngClass]="getRoleClass(user.rol)">{{ user.rol }}</span></p>
+        <!-- La API no tiene 'lastLogin', usamos 'fecha_registro' y un pipe de fecha -->
+        <p class="user-last-login"><i class="material-icons small-icon">login</i> Registro: {{ user.fecha_registro | date:'short' }}</p>
       </div>
-
       <div class="card-footer">
         <a [routerLink]="['/users', user.id]" class="btn-text">Ver Perfil</a>
       </div>
     </div>
 
+    <!-- Mensaje si no hay resultados -->
     <div *ngIf="filteredUsers.length === 0" class="no-results-message card">
       <p>No se encontraron usuarios que coincidan con la búsqueda o filtros aplicados.</p>
-      <button *ngIf="searchTerm || filterRole !== 'all' || filterStatus !== 'all'" class="btn-secondary" (click)="searchTerm = ''; filterRole = 'all'; filterStatus = 'all'">Limpiar Filtros</button>
+      <!-- Se llama al método clearFilters() del componente -->
+      <button class="btn-secondary" (click)="clearFilters()">Limpiar Filtros</button>
     </div>
   </div>
 </div>

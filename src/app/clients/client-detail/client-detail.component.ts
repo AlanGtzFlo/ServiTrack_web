@@ -1,15 +1,23 @@
-// src/app/clients/client-detail/client-detail.component.ts
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common'; // Añadir DatePipe aquí
+import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-// CORRECCIÓN FINAL: Usar ruta absoluta para clients-data
-import { Client, CLIENTS_DATA } from '../clients-data';
+import { HttpClient } from '@angular/common/http';
+
+interface Client {
+  id: number;
+  nombre: string;
+  direccion: string;
+  telefono: string | null;
+  correo: string | null;
+  rfc: string;
+  status: 'Activo' | 'Inactivo' | 'Potencial';
+  fecha_registro: string; // ISO string (puede usarse para otros fines)
+}
 
 @Component({
   selector: 'app-client-detail',
   standalone: true,
-  // Asegurarse de que DatePipe esté en imports si se usa en el template directamente
-  imports: [CommonModule, RouterModule, DatePipe], 
+  imports: [CommonModule, RouterModule, DatePipe],
   templateUrl: './client-detail.component.html',
   styleUrls: ['./client-detail.component.scss']
 })
@@ -17,44 +25,53 @@ export class ClientDetailComponent implements OnInit {
   client: Client | undefined;
   clientId: number | undefined;
 
-  // CORRECCIÓN: Hacer 'router' público para que pueda ser accedido desde el HTML
+  private apiUrl = 'http://18.222.150.133/api/clientes/'; // URL real de la API
+
   constructor(
     private route: ActivatedRoute,
-    public router: Router // CAMBIO: de private a public
+    public router: Router,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       if (idParam) {
-        this.clientId = +idParam; // Convertir a número
-        // CORRECCIÓN: Especificar el tipo para 'c' en find
-        this.client = CLIENTS_DATA.find((c: Client) => c.id === this.clientId);
-        if (!this.client) {
-          console.warn(`Cliente con ID ${this.clientId} no encontrado.`);
-          // Opcional: redirigir a una página de error o al listado de clientes
-          // this.router.navigate(['/clients']);
-        }
+        this.clientId = +idParam;
+        this.loadClient(this.clientId);
+      }
+    });
+  }
+
+  loadClient(id: number): void {
+    this.http.get<Client>(`${this.apiUrl}${id}/`).subscribe({
+      next: (data) => this.client = data,
+      error: (err) => {
+        console.error('Error cargando cliente', err);
+        alert('No se pudo cargar la información del cliente.');
+        this.router.navigate(['/clients']);
       }
     });
   }
 
   editClient(): void {
     if (this.clientId) {
-      // Navegar al componente NewClientComponent para edición con el ID en los parámetros
-      this.router.navigate(['/clients/new', this.clientId]); // La ruta '/clients/new/:id' se encargará
+      this.router.navigate(['/clients/edit', this.clientId]);
     }
   }
 
   deleteClient(): void {
     if (this.clientId && confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
-      // CORRECCIÓN: Especificar el tipo para 'c' en findIndex
-      const index = CLIENTS_DATA.findIndex((c: Client) => c.id === this.clientId);
-      if (index > -1) {
-        CLIENTS_DATA.splice(index, 1); // Eliminar de los datos simulados
-        console.log(`Cliente con ID ${this.clientId} eliminado (simulado).`);
-        this.router.navigate(['/clients']); // Redirigir al listado de clientes
-      }
+      this.http.delete(`${this.apiUrl}${this.clientId}/`).subscribe({
+        next: () => {
+          alert('Cliente eliminado correctamente.');
+          this.router.navigate(['/clients']);
+        },
+        error: (err) => {
+          console.error('Error eliminando cliente', err);
+          alert('No se pudo eliminar el cliente.');
+        }
+      });
     }
   }
 }

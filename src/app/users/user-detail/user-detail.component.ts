@@ -1,51 +1,45 @@
-// src/app/users/user-detail/user-detail.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms'; // Para ngModel en el formulario
+import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 
-// Interfaz para usuario (consistente con users.component.ts)
 interface User {
   id: number;
   name: string;
   email: string;
   role: 'Administrador' | 'Técnico' | 'Atención a Cliente' | 'Supervisor';
-  status: 'Activo' | 'Inactivo' | 'Pendiente';
-  lastLogin: string;
-  phone?: string;
-  address?: string; // Opcional: para técnicos o administradores
-  hireDate?: string; // Fecha de contratación (YYYY-MM-DD)
+  status: 'Activo' | 'Inactivo';
+  hireDate?: string;
+  photo?: string;
+  phone?: string | null;
+  address?: string | null;
+  lastLogin?: string;
 }
 
 @Component({
   selector: 'app-user-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, HttpClientModule],
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.scss']
 })
 export class UserDetailComponent implements OnInit {
   userId: number | null = null;
-  user: User | undefined;
-  isEditing: boolean = false; // Controla si el formulario está en modo edición
-  originalUser: User | undefined; // Para revertir cambios si se cancela la edición
+  user?: User;
+  isEditing: boolean = false;
+  originalUser?: User;
 
-  // Opciones para los select de rol y estado
   roles = ['Administrador', 'Técnico', 'Atención a Cliente', 'Supervisor'];
-  statuses = ['Activo', 'Inactivo', 'Pendiente'];
+  statuses = ['Activo', 'Inactivo'];
 
-  // Datos simulados (FRONT-END ÚNICAMENTE)
-  private mockUsers: User[] = [
-    { id: 1, name: 'Admin Global', email: 'admin.global@fixflow.com', role: 'Administrador', status: 'Activo', lastLogin: '2024-06-30 14:00', phone: '5512345678', address: 'Calle Ficticia #10, Colonia Central' },
-    { id: 2, name: 'Carlos Ruiz', email: 'carlos.ruiz@fixflow.com', role: 'Técnico', status: 'Activo', lastLogin: '2024-06-30 13:45', phone: '5587654321', address: 'Av. Siempre Viva #42', hireDate: '2022-01-15' },
-    { id: 3, name: 'Ana García', email: 'ana.garcia@fixflow.com', role: 'Técnico', status: 'Activo', lastLogin: '2024-06-29 10:30', phone: '5523456789', address: 'Blvd. Las Flores #123', hireDate: '2023-03-01' },
-    { id: 4, name: 'María López', email: 'maria.lopez@fixflow.com', role: 'Atención a Cliente', status: 'Activo', lastLogin: '2024-06-30 11:00' },
-    { id: 5, name: 'Pedro Gómez', email: 'pedro.gomez@fixflow.com', role: 'Supervisor', status: 'Activo', lastLogin: '2024-06-28 16:00' },
-    { id: 6, name: 'Laura Fernández', email: 'laura.fernandez@fixflow.com', role: 'Atención a Cliente', status: 'Inactivo', lastLogin: '2024-06-15 09:00' },
-    { id: 7, name: 'Miguel Soto', email: 'miguel.soto@fixflow.com', role: 'Técnico', status: 'Pendiente', lastLogin: 'N/A', phone: '5598765432', hireDate: '2024-05-20' },
-  ];
+  private apiUrl = 'http://18.222.150.133/api/usuarios/';
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -53,82 +47,149 @@ export class UserDetailComponent implements OnInit {
       if (this.userId) {
         this.loadUserData(this.userId);
       } else {
-        console.warn('No se proporcionó un ID de usuario.');
         this.router.navigate(['/users']);
       }
     });
   }
 
-  // FRONT-END ÚNICAMENTE: Simula la carga de datos del usuario
-  private loadUserData(id: number): void {
-    const foundUser = this.mockUsers.find(u => u.id === id);
-    if (foundUser) {
-      // Crear una copia profunda para que los cambios en el formulario no afecten directamente el original
-      this.user = { ...foundUser };
-      this.originalUser = { ...foundUser };
-    } else {
-      console.error('Usuario no encontrado para el ID:', id);
-      this.router.navigate(['/users']);
-    }
-  }
-
-  goToUsersList(): void {
-    this.router.navigate(['/users']);
+  loadUserData(id: number): void {
+    this.http.get<any>(`${this.apiUrl}${id}/`).subscribe({
+      next: apiUser => {
+        this.user = this.mapApiUserToUser(apiUser);
+        if (this.user) {
+          this.originalUser = { ...this.user } as User;
+        }
+      },
+      error: () => {
+        alert('Usuario no encontrado.');
+        this.router.navigate(['/users']);
+      }
+    });
   }
 
   toggleEditMode(): void {
     this.isEditing = !this.isEditing;
     if (!this.isEditing && this.originalUser) {
-      // Si se cancela la edición, restaurar los datos originales
       this.user = { ...this.originalUser };
     }
   }
 
   saveUser(): void {
-    if (this.user) {
-      // Aquí se enviaría la información actualizada a tu API
-      console.log('Guardando usuario:', this.user);
-      alert('Usuario guardado (simulado).');
-      this.isEditing = false;
-      this.originalUser = { ...this.user }; // Actualizar el original con los nuevos datos
-      // En un caso real, recargarías el usuario o actualizarías la lista.
-    }
+    if (!this.user) return;
+
+    const payload = {
+      nombre: this.user.name,
+      correo: this.user.email,
+      rol: this.mapRoleToApi(this.user.role),
+      is_active: this.user.status === 'Activo',
+      fecha_registro: this.user.hireDate,
+      telefono: this.user.phone,
+      direccion: this.user.address
+    };
+
+    this.http.patch(`${this.apiUrl}${this.user.id}/`, payload).subscribe({
+      next: () => {
+        alert('Usuario actualizado correctamente.');
+        this.isEditing = false;
+        this.originalUser = { ...this.user } as User;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error al actualizar usuario:', err);
+        alert('No se pudo actualizar el usuario.');
+      }
+    });
   }
 
-  deleteUser(): void {
-    if (this.user && confirm(`¿Estás seguro de que quieres eliminar a ${this.user.name}?`)) {
-      // Aquí se enviaría la solicitud de eliminación a tu API
-      console.log('Eliminando usuario:', this.user.id);
-      alert('Usuario eliminado (simulado).');
-      this.router.navigate(['/users']); // Volver al listado después de eliminar
+  // Cambiar estado usando PATCH
+  changeUserStatus(): void {
+    if (!this.user) return;
+
+    const nuevoEstado = this.user.status === 'Activo' ? false : true;
+    const nuevoEstadoTexto = nuevoEstado ? 'Activo' : 'Inactivo';
+
+    if (confirm(`¿Cambiar el estado de ${this.user.name} a ${nuevoEstadoTexto}?`)) {
+      const url = `${this.apiUrl}${this.user.id}/cambio_estatus/`;
+      const payload = { is_active: nuevoEstado };
+
+      this.http.patch(url, payload).subscribe({
+        next: () => {
+          alert(`Estado cambiado a ${nuevoEstadoTexto} correctamente.`);
+          if (this.user) this.user.status = nuevoEstadoTexto;
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Error al cambiar estado:', err);
+          let mensaje = 'No se pudo cambiar el estado del usuario.';
+          if (err.error) {
+            if (typeof err.error === 'string') {
+              mensaje += ' Detalle: ' + err.error;
+            } else if (err.error.detail) {
+              mensaje += ' Detalle: ' + err.error.detail;
+            } else if (err.error.message) {
+              mensaje += ' Detalle: ' + err.error.message;
+            } else {
+              mensaje += ' Detalle: ' + JSON.stringify(err.error);
+            }
+          }
+          alert(mensaje);
+        }
+      });
     }
   }
 
   getStatusClass(status: User['status']): string {
     switch (status) {
-      case 'Activo':
-        return 'status-success';
-      case 'Inactivo':
-        return 'status-error';
-      case 'Pendiente':
-        return 'status-pending';
-      default:
-        return '';
+      case 'Activo': return 'status-success';
+      case 'Inactivo': return 'status-error';
+      default: return '';
     }
   }
 
   getRoleClass(role: User['role']): string {
     switch (role) {
-      case 'Administrador':
-        return 'role-admin';
-      case 'Técnico':
-        return 'role-technician';
-      case 'Atención a Cliente':
-        return 'role-customer-service';
-      case 'Supervisor':
-        return 'role-supervisor';
-      default:
-        return '';
+      case 'Administrador': return 'role-admin';
+      case 'Técnico': return 'role-technician';
+      case 'Atención a Cliente': return 'role-customer-service';
+      case 'Supervisor': return 'role-supervisor';
+      default: return '';
     }
+  }
+
+  private mapApiUserToUser(apiUser: any): User {
+    return {
+      id: apiUser.id,
+      name: apiUser.nombre,
+      email: apiUser.correo,
+      role: this.mapRole(apiUser.rol),
+      status: apiUser.is_active ? 'Activo' : 'Inactivo',
+      hireDate: apiUser.fecha_registro ? apiUser.fecha_registro.split('T')[0] : undefined,
+      photo: apiUser.foto,
+      phone: apiUser.telefono,
+      address: apiUser.direccion,
+      lastLogin: undefined
+    };
+  }
+
+  private mapRole(apiRole: string): User['role'] {
+    switch (apiRole.toLowerCase()) {
+      case 'admin': return 'Administrador';
+      case 'tecnico': return 'Técnico';
+      case 'cliente': return 'Atención a Cliente';
+      case 'supervisor': return 'Supervisor';
+      default: return 'Atención a Cliente';
+    }
+  }
+
+  private mapRoleToApi(role: User['role']): string {
+    switch (role) {
+      case 'Administrador': return 'admin';
+      case 'Técnico': return 'tecnico';
+      case 'Atención a Cliente': return 'cliente';
+      case 'Supervisor': return 'supervisor';
+      default: return 'cliente';
+    }
+  }
+
+  goToUsersList(): void {
+    this.router.navigate(['/users']);
   }
 }

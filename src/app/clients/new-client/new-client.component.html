@@ -11,28 +11,23 @@
     <form (ngSubmit)="saveClient()">
       <div class="form-grid">
         <div class="form-group">
-          <label for="name">Nombre Completo:</label>
-          <input type="text" id="name" [(ngModel)]="client.name" name="name" required>
+          <label for="nombre">Nombre Completo:</label>
+          <input type="text" id="nombre" [(ngModel)]="client.nombre" name="nombre" required>
         </div>
 
         <div class="form-group">
-          <label for="rfc">RFC:</label>
-          <input type="text" id="rfc" [(ngModel)]="client.rfc" name="rfc" required>
+          <label for="correo">Correo:</label>
+          <input type="email" id="correo" [(ngModel)]="client.correo" name="correo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono:</label>
+          <input type="tel" id="telefono" [(ngModel)]="client.telefono" name="telefono">
         </div>
 
         <div class="form-group full-width">
-          <label for="address">Dirección:</label>
-          <input type="text" id="address" [(ngModel)]="client.address" name="address" required>
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email de Contacto:</label>
-          <input type="email" id="email" [(ngModel)]="client.contact.email" name="email" required>
-        </div>
-
-        <div class="form-group">
-          <label for="phone">Teléfono de Contacto:</label>
-          <input type="tel" id="phone" [(ngModel)]="client.contact.phone" name="phone" required>
+          <label for="direccion">Dirección:</label>
+          <input type="text" id="direccion" [(ngModel)]="client.direccion" name="direccion">
         </div>
 
         <div class="form-group">
@@ -40,12 +35,8 @@
           <select id="status" [(ngModel)]="client.status" name="status">
             <option value="Activo">Activo</option>
             <option value="Inactivo">Inactivo</option>
+            <option value="Potencial">Potencial</option>
           </select>
-        </div>
-
-        <div class="form-group" *ngIf="isEditing">
-          <label>Fecha de Registro:</label>
-          <span>{{ client.registrationDate | date:'shortDate' }}</span>
         </div>
       </div>
 
@@ -56,3 +47,4 @@
     </form>
   </div>
 </div>
+

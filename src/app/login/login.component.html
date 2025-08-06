@@ -1,3 +1,4 @@
+<!-- src/app/login/login.component.html -->
 <div class="layout">
   <header class="public-header">
     <div class="logo">
@@ -23,7 +24,7 @@
 
     <form (ngSubmit)="onLogin()" #loginForm="ngForm">
       <div class="form-group">
-        <label for="username">ID de usuario</label>
+        <label for="username">Correo</label>
         <input type="text"
                id="username"
                name="username"
@@ -38,6 +39,11 @@
                name="password"
                [(ngModel)]="password"
                required />
+      </div>
+
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
       </div>
 
       <div class="login-actions">

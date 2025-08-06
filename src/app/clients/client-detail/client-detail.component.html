@@ -8,8 +8,13 @@
 
   <div *ngIf="client" class="client-card card">
     <div class="card-header">
-      <h2>{{ client.name }}</h2>
-      <span class="status" [ngClass]="{'active': client.status === 'Activo', 'inactive': client.status === 'Inactivo'}">
+      <h2>{{ client.nombre }}</h2>
+      <span class="status" 
+        [ngClass]="{
+          'active': client.status === 'Activo', 
+          'inactive': client.status === 'Inactivo',
+          'potential': client.status === 'Potencial'
+        }">
         {{ client.status }}
       </span>
     </div>
@@ -25,21 +30,17 @@
       </div>
       <div class="detail-group">
         <label>Dirección:</label>
-        <span>{{ client.address }}</span>
+        <span>{{ client.direccion }}</span>
       </div>
       <div class="detail-group">
-        <label>Email:</label>
-        <span>{{ client.contact.email }}</span>
+        <label>Correo:</label>
+        <span>{{ client.correo || 'N/A' }}</span>
       </div>
       <div class="detail-group">
         <label>Teléfono:</label>
-        <span>{{ client.contact.phone }}</span>
+        <span>{{ client.telefono || 'N/A' }}</span>
       </div>
-      <div class="detail-group">
-        <label>Fecha de Registro:</label>
-        <span>{{ client.registrationDate | date:'shortDate' }}</span>
-      </div>
-      </div>
+    </div>
 
     <div class="card-actions">
       <button class="btn btn-secondary" (click)="editClient()">Editar Cliente</button>
