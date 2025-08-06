@@ -1,0 +1,254 @@
+/* src/app/policies/policies.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.policies-container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.section-title {
+  font-family: global.$font-headings; // Corregido: usa global.$
+  font-weight: 700;
+  font-size: 32px;
+  color: global.$white; // Corregido: usa global.$
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  .search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      // Corregido: usa color.adjust() y global.$
+      color: color.adjust(global.$white, $lightness: 30%);
+      font-size: 20px;
+    }
+    .search-input {
+      min-width: 250px;
+      padding-left: 40px;
+      // Corregido: usa color.adjust() y global.$
+      border: 1px solid color.adjust(global.$white, $lightness: 60%);
+      border-radius: 6px;
+      font-size: 16px;
+      color: global.$white; // Corregido: usa global.$
+      &::placeholder {
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$white, $lightness: 40%);
+      }
+      &:focus {
+        outline: none;
+        border-color: global.$yellow-orange; // Corregido: usa global.$
+        // Corregido: usa global.$
+        box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+      }
+    }
+  }
+
+  .status-filter {
+    padding: 10px 15px;
+    // Corregido: usa color.adjust() y global.$
+    border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
+    background-color: global.$white; // Corregido: usa global.$
+    border-radius: 6px;
+    font-family: global.$font-body; // Corregido: usa global.$
+    font-size: 16px;
+    color: global.$dark-blue; // Corregido: usa global.$
+    appearance: none; // Elimina estilos por defecto del select
+    // El background-image para el SVG del icono de flecha.
+    // Asegúrate de que el color fill sea uno de tus colores globales si quieres que sea consistente.
+    // Actualmente, es #003F4E, que es cercano a $dark-blue.
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23003F4E%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4h-263.8c-7.9%200-14.4%206.5-14.4%2014.4s6.5%2014.4%2014.4%2014.4h263.8c4.5%200%208.5-2.2%2010.9-5.9%202.4-3.7%202.9-8.4%201.2-12.4l-11.2-22.4z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    cursor: pointer;
+    &:focus {
+      outline: none;
+      border-color: global.$yellow-orange; // Corregido: usa global.$
+      // Corregido: usa global.$
+      box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+    }
+  }
+
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+}
+
+.policies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); // Grid con tarjetas más anchas
+  gap: 25px;
+
+  .policy-card {
+    background-color: global.$white; // Corregido: usa global.$
+    border-radius: 10px;
+    // Corregido: usa global.$
+    box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08);
+    padding: 30px;
+    position: relative;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-5px);
+      // Corregido: usa global.$
+      box-shadow: 0 8px 20px rgba(global.$dark-blue, 0.15);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .policy-type {
+        background-color: global.$teal; // Corregido: usa global.$
+        color: global.$white; // Corregido: usa global.$
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .policy-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        &.status-success {
+          background-color: global.$success-green; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+        }
+        &.status-error {
+          background-color: global.$soft-red; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+        }
+        &.status-pending {
+          background-color: global.$yellow-orange; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+        }
+      }
+    }
+
+    .policy-number {
+      font-family: global.$font-headings; // Corregido: usa global.$
+      font-weight: 700;
+      font-size: 26px; // Número de póliza más grande
+      color: global.$dark-blue; // Corregido: usa global.$
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    .client-name {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-size: 16px;
+      // Corregido: usa color.adjust() y global.$
+      color: color.adjust(global.$dark-blue, $lightness: 20%);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      .small-icon {
+        font-size: 20px;
+        color: global.$teal; // Corregido: usa global.$
+        margin-right: 8px;
+      }
+    }
+    .policy-description {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-size: 15px;
+      color: global.$dark-blue; // Corregido: usa global.$
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .policy-dates {
+      display: flex;
+      justify-content: space-between; // Alinea fechas a los extremos
+      gap: 15px; // Espacio entre las fechas
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid global.$light-gray; // Corregido: usa global.$
+
+      p {
+        font-family: global.$font-body; // Corregido: usa global.$
+        font-size: 14px;
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$dark-blue, $lightness: 30%);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        .small-icon {
+          font-size: 18px;
+          color: global.$teal; // Corregido: usa global.$
+        }
+      }
+    }
+
+    .card-footer {
+      margin-top: 20px;
+      text-align: right;
+    }
+    .btn-text {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-weight: 500;
+      font-size: 15px;
+      color: global.$teal; // Corregido: usa global.$
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$teal, $lightness: -10%);
+      }
+    }
+  }
+}
+
+.no-results-message {
+  grid-column: 1 / -1; // Ocupa todo el ancho de la cuadrícula
+  text-align: center;
+  font-family: global.$font-body; // Corregido: usa global.$
+  font-size: 18px;
+  // Corregido: usa color.adjust() y global.$
+  color: color.adjust(global.$dark-blue, $lightness: 20%);
+  padding: 40px;
+  .btn-secondary {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    border: 1px solid global.$yellow-orange; // Corregido: usa global.$
+    color: global.$yellow-orange; // Corregido: usa global.$
+    background-color: transparent;
+    &:hover {
+      background-color: global.$yellow-orange; // Corregido: usa global.$
+      color: global.$white; // Corregido: usa global.$
+    }
+  }
+}

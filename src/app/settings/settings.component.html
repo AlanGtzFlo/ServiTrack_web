@@ -1,0 +1,48 @@
+<div class="settings-container">
+  <div class="section-header">
+    <h1 class="section-title">Configuración del Sistema</h1>
+  </div>
+
+  <div class="settings-layout">
+    <aside class="settings-sidebar card">
+      <nav>
+        <ul>
+          <li>
+            <a routerLink="general" routerLinkActive="active-link" (click)="setActiveSection('general')">
+              <i class="material-icons">settings</i> General
+            </a>
+          </li>
+          <li>
+            <a routerLink="user-roles" routerLinkActive="active-link" (click)="setActiveSection('user-roles')">
+              <i class="material-icons">people</i> Roles y Permisos
+            </a>
+          </li>
+          <li>
+            <a routerLink="service-master-data" routerLinkActive="active-link" (click)="setActiveSection('service-master-data')">
+              <i class="material-icons">category</i> Datos Maestros de Servicio
+            </a>
+          </li>
+          <li>
+            <a routerLink="notifications" routerLinkActive="active-link" (click)="setActiveSection('notifications')">
+              <i class="material-icons">notifications</i> Notificaciones
+            </a>
+          </li>
+          <li>
+            <a routerLink="audit-log" routerLinkActive="active-link" (click)="setActiveSection('audit-log')">
+              <i class="material-icons">history</i> Registro de Auditoría
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="settings-content card">
+      <router-outlet></router-outlet>
+      
+      <div *ngIf="!activeSection" class="no-selection-message">
+        <i class="material-icons large-icon">settings_applications</i>
+        <p>Selecciona una categoría de configuración de la izquierda.</p>
+      </div>
+    </main>
+  </div>
+</div>

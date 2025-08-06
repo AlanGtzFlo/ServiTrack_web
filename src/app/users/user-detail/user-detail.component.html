@@ -1,0 +1,103 @@
+<div class="user-detail-container" *ngIf="user">
+  <div class="section-header">
+    <button class="btn-text back-button" (click)="goToUsersList()">
+      <i class="material-icons">arrow_back</i> Volver a Usuarios
+    </button>
+    <h1 class="section-title">Perfil de Usuario: {{ user.name }}</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="toggleEditMode()">
+        <i class="material-icons">{{ isEditing ? 'close' : 'edit' }}</i> {{ isEditing ? 'Cancelar' : 'Editar' }}
+      </button>
+      <button class="btn btn-primary" *ngIf="isEditing" (click)="saveUser()">
+        <i class="material-icons">save</i> Guardar
+      </button>
+      <!-- Botón para cambiar estado en vez de eliminar -->
+      <button class="btn btn-secondary" (click)="changeUserStatus()" *ngIf="!isEditing">
+        <i class="material-icons">toggle_on</i> Cambiar Estado
+      </button>
+    </div>
+  </div>
+
+  <div class="user-profile-card card">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <img *ngIf="user.photo; else defaultAvatar" [src]="user.photo" alt="Foto de {{ user.name }}" class="user-photo" />
+        <ng-template #defaultAvatar>
+          <i class="material-icons user-icon">account_circle</i>
+        </ng-template>
+      </div>
+      <div class="profile-info">
+        <h2>{{ user.name }}</h2>
+        <p class="user-email">{{ user.email }}</p>
+        <span class="user-role-badge" [ngClass]="getRoleClass(user.role)">{{ user.role }}</span>
+      </div>
+      <div class="profile-status">
+        <span class="status-badge" [ngClass]="getStatusClass(user.status)">{{ user.status }}</span>
+      </div>
+    </div>
+
+    <div class="profile-details-grid">
+      <div class="info-group">
+        <p class="label">Email:</p>
+        <p class="value" *ngIf="!isEditing">{{ user.email }}</p>
+        <input type="email" [(ngModel)]="user.email" *ngIf="isEditing" class="form-control" />
+      </div>
+
+      <div class="info-group">
+        <p class="label">Nombre Completo:</p>
+        <p class="value" *ngIf="!isEditing">{{ user.name }}</p>
+        <input type="text" [(ngModel)]="user.name" *ngIf="isEditing" class="form-control" />
+      </div>
+
+      <div class="info-group">
+        <p class="label">Rol:</p>
+        <p class="value" *ngIf="!isEditing">{{ user.role }}</p>
+        <select [(ngModel)]="user.role" *ngIf="isEditing" class="form-control">
+          <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+        </select>
+      </div>
+
+      <div class="info-group">
+        <p class="label">Estado:</p>
+        <p class="value" *ngIf="!isEditing">{{ user.status }}</p>
+        <select [(ngModel)]="user.status" *ngIf="isEditing" class="form-control">
+          <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+        </select>
+      </div>
+
+      <div class="info-group">
+        <p class="label">Teléfono:</p>
+        <p class="value" *ngIf="!isEditing">{{ user.phone || 'N/A' }}</p>
+        <input
+          type="text"
+          [(ngModel)]="user.phone"
+          *ngIf="isEditing"
+          class="form-control"
+          placeholder="Ej: 5512345678"
+        />
+      </div>
+
+      <div class="info-group">
+        <p class="label">Fecha de Registro:</p>
+        <p class="value" *ngIf="!isEditing">{{ user.hireDate || 'N/A' }}</p>
+        <input type="date" [(ngModel)]="user.hireDate" *ngIf="isEditing" class="form-control" />
+      </div>
+
+      <div class="info-group full-width">
+        <p class="label">Dirección:</p>
+        <p class="value" *ngIf="!isEditing">{{ user.address || 'No especificada' }}</p>
+        <textarea
+          [(ngModel)]="user.address"
+          *ngIf="isEditing"
+          class="form-control"
+          rows="3"
+          placeholder="Calle, número, colonia..."
+        ></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!user" class="loading-or-error">
+  <p>Cargando información del usuario o el usuario no fue encontrado...</p>
+</div>

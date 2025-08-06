@@ -1,0 +1,131 @@
+<div class="service-detail-container" *ngIf="service">
+  <div class="section-header">
+    <button class="btn-text back-button" (click)="goToServicesList()">
+      <i class="material-icons">arrow_back</i> Volver a Servicios
+    </button>
+    <h1 class="section-title">Servicio #{{ service.id }} - {{ service.title }}</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="assignTechnician()" *ngIf="service.status === 'Pendiente' || service.status === 'Asignado'">
+        <i class="material-icons">person_add</i> Asignar
+      </button>
+      <button class="btn btn-primary" (click)="startService()" *ngIf="service.status === 'Asignado' || service.status === 'Pendiente'">
+        <i class="material-icons">play_arrow</i> Iniciar
+      </button>
+      <button class="btn btn-resolve" (click)="resolveService()" *ngIf="service.status === 'En Proceso'">
+        <i class="material-icons">check_circle</i> Resolver
+      </button>
+      <button class="btn btn-close" (click)="closeService()" *ngIf="service.status === 'Concluido'">
+        <i class="material-icons">lock</i> Cerrar
+      </button>
+      <button class="btn btn-delete" (click)="cancelService()" *ngIf="service.status !== 'Concluido' && service.status !== 'Cerrado' && service.status !== 'Cancelado'">
+        <i class="material-icons">cancel</i> Cancelar
+      </button>
+    </div>
+  </div>
+
+  <div class="service-detail-grid">
+    <div class="info-panel card">
+      <h2 class="panel-title">Información del Servicio</h2>
+      <div class="info-group">
+        <p class="label">Título:</p>
+        <p class="value">{{ service.title }}</p>
+      </div>
+      <div class="info-group">
+        <p class="label">Cliente:</p>
+        <p class="value">
+          <a [routerLink]="['/clients', service.clientId]" class="linked-text">
+            {{ service.clientName }} <i class="material-icons tiny-icon">open_in_new</i>
+          </a>
+        </p>
+      </div>
+      <div class="info-group" *ngIf="service.policyNumber">
+        <p class="label">Póliza:</p>
+        <p class="value">
+          <a [routerLink]="['/policies', service.policyId]" class="linked-text">
+            #{{ service.policyNumber }} <i class="material-icons tiny-icon">open_in_new</i>
+          </a>
+        </p>
+      </div>
+      <div class="info-group">
+        <p class="label">Tipo:</p>
+        <p class="value">{{ service.type }}</p>
+      </div>
+      <div class="info-group">
+        <p class="label">Prioridad:</p>
+        <p class="value"><span class="priority-badge" [ngClass]="getPriorityClass(service.priority)">{{ service.priority }}</span></p>
+      </div>
+      <div class="info-group">
+        <p class="label">Estado Actual:</p>
+        <p class="value"><span class="status-badge" [ngClass]="getStatusClass(service.status)">{{ service.status }}</span></p>
+      </div>
+      <div class="info-group">
+        <p class="label">Fecha Reporte:</p>
+        <p class="value">{{ service.reportedDate }}</p>
+      </div>
+      <div class="info-group" *ngIf="service.dueDate">
+        <p class="label">Fecha Límite:</p>
+        <p class="value">{{ service.dueDate }}</p>
+      </div>
+      <div class="info-group" *ngIf="service.assignedTechnician">
+        <p class="label">Técnico Asignado:</p>
+        <p class="value">{{ service.assignedTechnician }}</p>
+      </div>
+      <div class="info-group description-group">
+        <p class="label">Descripción:</p>
+        <p class="value description-text">{{ service.description }}</p>
+      </div>
+      <div class="info-group notes-group">
+        <p class="label">Ubicación del Servicio:</p>
+        <p class="value notes-text">{{ service.location || 'No especificada' }}</p>
+      </div>
+      <div class="info-group notes-group">
+        <p class="label">Persona de Contacto:</p>
+        <p class="value notes-text">{{ service.contactPerson || 'N/A' }} (Tel: {{ service.contactPhone || 'N/A' }})</p>
+      </div>
+    </div>
+
+    <div class="resolution-panel card" *ngIf="service.status === 'Concluido' || service.status === 'Cerrado'">
+      <h2 class="panel-title">Detalles de Resolución</h2>
+      <div class="info-group">
+        <p class="label">Fecha Resolución:</p>
+        <p class="value">{{ service.resolutionDate || 'Pendiente' }}</p>
+      </div>
+      <div class="info-group description-group">
+        <p class="label">Detalles:</p>
+        <p class="value description-text">{{ service.resolutionDetails || 'No se han ingresado detalles de resolución.' }}</p>
+      </div>
+    </div>
+
+    <div class="notes-panel card">
+      <h2 class="panel-title">Notas Internas</h2>
+      <div class="info-group notes-group">
+        <p class="value notes-text">{{ service.notes || 'No hay notas internas registradas.' }}</p>
+      </div>
+      <div class="add-note-section">
+        <textarea [(ngModel)]="newNote" placeholder="Añadir nueva nota..." rows="3"></textarea>
+        <button class="btn btn-primary" (click)="saveNote()">Añadir Nota</button>
+      </div>
+    </div>
+
+    <div class="history-panel card">
+      <h2 class="panel-title">Historial de Actividad ({{ history.length }})</h2>
+      <div class="no-data-message" *ngIf="history.length === 0">
+        <p>No hay historial de actividad para este servicio.</p>
+      </div>
+      <div class="history-list" *ngIf="history.length > 0">
+        <div class="history-item" *ngFor="let entry of history">
+          <div class="history-meta">
+            <span class="timestamp">{{ entry.timestamp }}</span>
+            <span class="user">{{ entry.user }}</span>
+          </div>
+          <p class="action-text">{{ entry.action }}</p>
+          <p class="action-details" *ngIf="entry.details">{{ entry.details }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!service" class="loading-or-error">
+  <p>Cargando información del servicio o el servicio no fue encontrado...</p>
+</div>

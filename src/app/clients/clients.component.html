@@ -1,0 +1,45 @@
+<div class="clients-container">
+  <div class="section-header">
+    <h1 class="section-title">Clientes y Ubicaciones</h1>
+    <div class="header-actions">
+      <div class="search-box">
+        <i class="material-icons search-icon">search</i>
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar cliente..." class="search-input" />
+      </div>
+      <button class="btn btn-primary" routerLink="/clients/new">
+        <i class="material-icons">add</i> Nuevo Cliente
+      </button>
+    </div>
+  </div>
+
+  <div class="clients-grid">
+    <div class="client-card card" *ngFor="let client of filteredClients" [routerLink]="['/clients', client.id]">
+      <div class="card-header">
+        <i class="material-icons card-header-icon">location_on</i>
+        <span
+          class="client-status"
+          [ngClass]="{
+            'status-success': client.status === 'Activo',
+            'status-error': client.status === 'Inactivo',
+            'status-warning': client.status === 'Potencial'
+          }"
+        >
+          {{ client.status }}
+        </span>
+      </div>
+      <h3 class="client-name">{{ client.nombre }}</h3>
+      <p class="client-address"><i class="material-icons small-icon">location_on</i> {{ client.direccion }}</p>
+      <p class="client-contact"><i class="material-icons small-icon">phone</i> {{ client.telefono }}</p>
+      <p class="client-registration-date"><small>Registrado: {{ client.fecha_registro | date:'mediumDate' }}</small></p>
+
+      <div class="card-footer">
+        <a [routerLink]="['/clients', client.id]" class="btn-text">Ver Detalles</a>
+      </div>
+    </div>
+
+    <div *ngIf="filteredClients.length === 0" class="no-results-message card">
+      <p>No se encontraron clientes que coincidan con la búsqueda.</p>
+      <button *ngIf="searchTerm" class="btn-secondary" (click)="searchTerm = ''">Mostrar todos los clientes</button>
+    </div>
+  </div>
+</div>

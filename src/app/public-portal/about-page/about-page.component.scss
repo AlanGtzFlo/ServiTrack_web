@@ -1,0 +1,80 @@
+/* src/app/public-portal/about-page/about-page.component.scss */
+
+@use "../../../styles.scss" as global;
+@use "sass:color";
+
+.about-page-content {
+  padding: 20px 0;
+}
+
+.page-title {
+  font-family: global.$font-headings;
+  font-size: 2.2rem;
+  color: global.$dark-blue;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.page-description {
+  font-family: global.$font-body;
+  font-size: 1.1rem;
+  color: color.adjust(global.$dark-blue, $lightness: 20%);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.about-section, .about-contact-info {
+  @extend .card; // Reutiliza la clase base de tarjeta
+  padding: 30px;
+  margin-bottom: 30px;
+  background-color: global.$white;
+  box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08);
+
+  h2 {
+    font-family: global.$font-headings;
+    font-size: 1.8rem;
+    color: global.$teal;
+    margin-bottom: 20px;
+    border-bottom: 2px solid global.$light-gray;
+    padding-bottom: 10px;
+  }
+
+  p {
+    font-family: global.$font-body;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: global.$dark-blue;
+    margin-bottom: 15px;
+  }
+
+  .values-list, ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      display: flex;
+      align-items: flex-start; // Alinea ícono y texto
+      margin-bottom: 15px;
+      font-family: global.$font-body;
+      font-size: 1.05rem;
+      color: global.$dark-blue;
+
+      .material-icons {
+        font-size: 24px;
+        color: global.$yellow-orange; // Color para los íconos de valores/contacto
+        margin-right: 10px;
+        flex-shrink: 0; // Evita que el ícono se encoja
+      }
+
+      strong {
+        color: global.$teal;
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .about-contact-info ul li {
+    margin-bottom: 10px;
+  }
+}

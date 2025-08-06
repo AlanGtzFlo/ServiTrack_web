@@ -1,5 +1,44 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+/* src/app/app.component.scss */
+
+@use "../styles.scss" as global;
+@use "sass:color";
+
+/* ─── Contenedor Principal de la Aplicación ────────────────────── */
+.app-layout {
+  display: flex; // Habilita Flexbox para que la barra lateral y el contenido se pongan uno al lado del otro
+  min-height: 100vh; // Asegura que el layout ocupe toda la altura de la ventana
+  width: 100%; // Ocupa todo el ancho disponible
+  // Este gradiente será el fondo de toda la aplicación, visible detrás del content-area transparente.
+  background: linear-gradient(to bottom right, global.$yellow-orange, color.adjust(global.$teal, $lightness: 25%));
+}
+
+/* ─── Área de Contenido Principal ─────────────────── */
+.content-area {
+  flex-grow: 1; // Permite que el contenido ocupe todo el espacio restante horizontalmente
+  overflow-y: auto; // Permite el scroll vertical si el contenido excede la altura
+  
+  background-color: transparent; // Fondo transparente para que se vea el gradiente del .app-layout
+  box-sizing: border-box; // Incluye padding y border en el tamaño total del elemento
+
+  // ¡CLAVE! Margen izquierdo para dejar espacio a la sidebar cuando está visible
+  // Asume que tu sidebar tiene 240px de ancho. Ajusta si es diferente.
+  margin-left: 240px; 
+  
+  // Transición para un efecto suave al mostrar/ocultar la sidebar
+  transition: margin-left 0.3s ease;
+
+  // Estilo cuando la sidebar NO está visible (se le añade la clase 'full-width' desde app.component.html)
+  &.full-width {
+    margin-left: 0; // Elimina el margen izquierdo para que ocupe todo el ancho
+  }
+}
+
+/* ─── Estilos para HTML y Body (Asegúrate de que estos estén en styles.scss o aquí si es el único lugar) ─── */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: global.$font-body; // Aplica la fuente del cuerpo a toda la app
+  color: global.$yellow-orange; // Color de texto base
 }

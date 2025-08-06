@@ -1,0 +1,134 @@
+/* src/app/users/new-user/new-user.component.scss o similar */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.form-container {
+  padding: 30px;
+  max-width: 900px; /* Ancho máximo para el formulario */
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; /* Margen inferior consistente */
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .section-title {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 48px; /* Título grande */
+    color: global.$white; /* Color blanco para el título */
+    margin: 0;
+    flex-grow: 1;
+    text-align: left;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Centra el contenido dentro del botón */
+      gap: 8px;
+      font-size: 15px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      min-width: 120px; /* Establece un ancho mínimo para que los botones tengan el mismo tamaño */
+      text-align: center; /* Asegura que el texto esté centrado si el ancho es fijo */
+      
+      /* Colores de los botones, según tu SCSS original */
+      color: global.$white;
+      background-color: global.$dark-blue;
+
+      &:hover {
+        background-color: darken(global.$dark-blue, 10%); /* Oscurece al pasar el ratón */
+        /* No se especifica border-color ni color en hover, se mantiene el de arriba */
+      }
+
+      .material-icons {
+        font-size: 20px;
+      }
+    }
+
+    /* Las reglas .btn-secondary y .btn-primary específicas de color no son necesarias aquí
+       ya que .btn ya define el color y fondo para ambos, y el hover se aplica a .btn */
+  }
+}
+
+.user-form-card { /* Asegúrate de que esta clase sea la correcta para tu tarjeta de formulario */
+  background-color: global.$white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(global.$dark-blue, 0.1);
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px 30px;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+
+      &.full-width {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        display: block;
+        font-family: global.$font-body;
+        font-weight: 500;
+        color: global.$dark-blue;
+        margin-bottom: 8px;
+        font-size: 16px;
+
+        .required {
+          color: global.$soft-red;
+          margin-left: 4px;
+        }
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"], /* Añadido para los campos de contraseña */
+      input[type="file"], /* Añadido para el nuevo campo de imagen */
+      input[type="date"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
+        border-radius: 8px;
+        font-family: global.$font-body;
+        font-size: 16px;
+        color: global.$dark-blue;
+        box-sizing: border-box;
+
+        &::placeholder {
+          color: color.adjust(global.$dark-blue, $lightness: 40%);
+        }
+
+        &:focus {
+          outline: none;
+          border-color: global.$yellow-orange;
+          box-shadow: 0 0 0 3px rgba(global.$yellow-orange, 0.2);
+        }
+      }
+
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+    }
+  }
+}

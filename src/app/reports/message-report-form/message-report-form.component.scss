@@ -1,0 +1,122 @@
+.message-report-form-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+
+  .form-title {
+    text-align: center;
+    color: #3f51b5; /* Example primary color */
+    margin-bottom: 25px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box; /* Include padding and border in the element's total width and height */
+      font-size: 1rem;
+      resize: vertical; /* Allow vertical resizing for textarea */
+    }
+
+    textarea {
+      min-height: 100px;
+    }
+
+    .form-text {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 5px;
+      display: block;
+    }
+  }
+
+  .file-upload {
+    .file-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      input[type="file"] {
+        display: none; /* Hide the default file input */
+      }
+
+      .upload-button {
+        padding: 8px 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #f0f0f0;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: #333;
+
+        &:hover {
+          background-color: #e0e0e0;
+        }
+      }
+
+      .file-name {
+        flex-grow: 1;
+        border: 1px solid #ddd;
+        padding: 8px 10px;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+        color: #555;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+
+      &.btn-primary {
+        background-color: #4CAF50; /* Green for submit */
+        color: white;
+
+        &:disabled {
+          background-color: #a5d6a7;
+          cursor: not-allowed;
+        }
+      }
+
+      &.btn-secondary {
+        background-color: #007bff; /* Blue for back/cancel */
+        color: white;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,197 @@
+/* src/app/satisfaction/satisfaction.component.scss */
+
+@use "../../styles.scss" as global;
+@use "sass:color";
+
+.satisfaction-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+  background-color: transparent;
+  box-sizing: border-box;
+  padding-bottom: 30px;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.satisfaction-header {
+  margin-bottom: 30px;
+  text-align: center;
+
+  .section-title {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 38px;
+    color: global.$white;
+    margin: 0 0 10px 0;
+    text-shadow: 1px 1px 3px rgba(global.$dark-blue, 0.2);
+  }
+
+  .description-message {
+    font-family: global.$font-body;
+    font-size: 23px;
+    color: global.$white;
+    margin: 0;
+  }
+}
+
+.satisfaction-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-card {
+    @extend .card;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 25px;
+    background-color: global.$white;
+    box-shadow: 0 6px 18px rgba(global.$dark-blue, 0.1);
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    aspect-ratio: 1 / 1;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(global.$dark-blue, 0.2);
+    }
+
+    .metric-icon-wrapper {
+      background-color: global.$teal;
+      border-radius: 50%;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+
+      .metric-icon {
+        font-size: 56px;
+        color: global.$white;
+      }
+    }
+
+    .metric-title {
+      font-family: global.$font-body;
+      font-weight: 600;
+      font-size: 24px;
+      color: global.$dark-blue;
+      margin: 0 0 5px 0;
+      text-align: center;
+    }
+
+    /* Estilos para los canvas dentro de las tarjetas de métricas */
+    canvas {
+      max-height: 150px; /* Altura máxima para las gráficas pequeñas */
+      width: 100% !important; /* Asegura que la gráfica ocupe el ancho completo de la tarjeta */
+      height: auto !important; /* Mantiene la proporción */
+    }
+  }
+}
+
+/* Nueva sección para la gráfica de desglose de Sentimiento */
+.sentiment-chart-container {
+  @extend .card; /* Reutiliza estilos base de tarjeta */
+  padding: 30px;
+  margin-top: 40px; /* Espacio desde la cuadrícula de métricas */
+
+  .chart-title {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 24px;
+    color: global.$dark-blue;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid global.$light-gray;
+  }
+
+  canvas {
+    max-height: 300px; /* Altura para la gráfica más grande */
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+
+
+.feedback-section {
+  @extend .card;
+  padding: 30px;
+  margin-top: 40px; /* Añadido margen superior para separarlo de la gráfica de sentimiento */
+
+  .card-section-title {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 24px;
+    color: global.$dark-blue;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid global.$light-gray;
+  }
+
+  .feedback-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .feedback-item {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed rgba(global.$dark-blue, 0.1);
+
+      &:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+      }
+
+      .feedback-rating {
+        color: global.$yellow-orange;
+        font-size: 1.2em;
+        margin-bottom: 5px;
+      }
+
+      .feedback-comment {
+        font-family: global.$font-body;
+        font-size: 16px;
+        color: color.adjust(global.$dark-blue, $lightness: 10%);
+        line-height: 1.5;
+        margin-bottom: 10px;
+      }
+
+      .feedback-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: color.adjust(global.$dark-blue, $lightness: 30%);
+
+        .feedback-date {
+          font-style: italic;
+        }
+      }
+    }
+  }
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 0 30px;
+}

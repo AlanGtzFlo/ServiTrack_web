@@ -1,0 +1,60 @@
+<div class="form-section notification-settings-section">
+  <h3>Configuración de Notificaciones</h3>
+  <p class="description-text">Gestiona qué notificaciones se envían a cada tipo de usuario.</p>
+
+  <form (ngSubmit)="saveNotificationSettings()">
+    <div class="notification-groups-grid">
+      <div class="notification-group card">
+        <h4>Notificaciones para Administradores / Supervisores</h4>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="adminNewService" [(ngModel)]="adminNewService" name="adminNewService">
+          <label for="adminNewService">Nuevo Servicio Creado</label>
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="adminServiceStatusChange" [(ngModel)]="adminServiceStatusChange" name="adminServiceStatusChange">
+          <label for="adminServiceStatusChange">Cambio de Estado de Servicio Importante</label>
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="adminLowStockAlert" [(ngModel)]="adminLowStockAlert" name="adminLowStockAlert">
+          <label for="adminLowStockAlert">Alerta de Bajo Stock de Materiales</label>
+        </div>
+      </div>
+
+      <div class="notification-group card">
+        <h4>Notificaciones para Técnicos</h4>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="technicianAssignedService" [(ngModel)]="technicianAssignedService" name="technicianAssignedService">
+          <label for="technicianAssignedService">Servicio Asignado</label>
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="technicianServiceDueSoon" [(ngModel)]="technicianServiceDueSoon" name="technicianServiceDueSoon">
+          <label for="technicianServiceDueSoon">Servicio Próximo a Vencer</label>
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="technicianClientMessage" [(ngModel)]="technicianClientMessage" name="technicianClientMessage">
+          <label for="technicianClientMessage">Nuevo Mensaje de Cliente</label>
+        </div>
+      </div>
+
+      <div class="notification-group card">
+        <h4>Notificaciones para Clientes</h4>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="clientServiceUpdate" [(ngModel)]="clientServiceUpdate" name="clientServiceUpdate">
+          <label for="clientServiceUpdate">Actualización de Estado de su Servicio</label>
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="clientServiceCompletion" [(ngModel)]="clientServiceCompletion" name="clientServiceCompletion">
+          <label for="clientServiceCompletion">Servicio Completado</label>
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="clientNewInvoice" [(ngModel)]="clientNewInvoice" name="clientNewInvoice">
+          <label for="clientNewInvoice">Nueva Factura Disponible</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Guardar Configuración</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,73 @@
+/* src/app/header/header.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../styles.scss" as global;
+
+.app-header {
+  background-color: global.$teal; // Corregido: usa global.$
+  color: global.$white; // Corregido: usa global.$
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(global.$dark-blue, 0.1); // Corregido: usa global.$
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 70px; // Altura fija para el header
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  .logo-icon {
+    width: 25px;
+    height: 25px;
+    background-color: global.$yellow-orange; // Corregido: usa global.$
+    border-radius: 3px;
+    position: relative;
+    transform: translateX(-5px); // Ajuste para el efecto de doble rectángulo
+    &::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: global.$yellow-orange; // Corregido: usa global.$
+      border-radius: 3px;
+      transform: translateX(5px) translateY(-5px);
+    }
+  }
+  .logo-text {
+    font-family: global.$font-headings; // Corregido: usa global.$
+    font-weight: 700;
+    font-size: 24px;
+    color: global.$white; // Corregido: usa global.$
+    margin-left: 15px;
+  }
+}
+
+.user-profile {
+  .profile-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: global.$white; // Corregido: usa global.$
+    .material-icons {
+      font-size: 28px;
+      color: global.$yellow-orange; // Corregido: usa global.$
+      margin-right: 5px;
+    }
+    .username {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-weight: 500;
+      font-size: 16px;
+    }
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

@@ -1,0 +1,59 @@
+<!-- src/app/login/login.component.html -->
+<div class="layout">
+  <header class="public-header">
+    <div class="logo">
+      <img src="images/logo-fixflow.png" alt="ServiTrack Logo" class="sidebar-logo">
+      <span>FixFlow</span>
+    </div>
+    <nav class="public-nav">
+      <a routerLink="/public/home" routerLinkActive="active">Inicio</a>
+      <a routerLink="/public/status" routerLinkActive="active">Estado de Servicio</a>
+      <a routerLink="/public/feedback" routerLinkActive="active">Dejar Comentario</a>
+      <a routerLink="/public/about" routerLinkActive="active">Nosotros</a>
+      <a routerLink="/login" class="btn-login">Acceso empleados</a>
+    </nav>
+  </header>
+
+  <div class="login-box card">
+    <div class="login-avatar">
+      <span class="material-icons">person</span>
+    </div>
+
+    <h2>Bienvenido</h2>
+    <p>Compañero, ingresa tus datos</p>
+
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="username">Correo</label>
+        <input type="text"
+               id="username"
+               name="username"
+               [(ngModel)]="username"
+               required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password"
+               id="password"
+               name="password"
+               [(ngModel)]="password"
+               required />
+      </div>
+
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <div class="login-actions">
+        <button type="submit"
+                class="btn btn-primary"
+                [disabled]="!loginForm.valid">
+          Ingresar
+        </button>
+        <a href="#" class="forgot-password">¿Olvidaste la contraseña?</a>
+      </div>
+    </form>
+  </div>
+</div>

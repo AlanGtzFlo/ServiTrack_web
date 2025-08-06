@@ -1,0 +1,64 @@
+<div class="refaccion-detail-container">
+  <div class="section-header">
+    <a routerLink="/refacciones" class="back-button">
+      <i class="material-icons">arrow_back</i> Volver a Refacciones
+    </a>
+    <h1 class="section-title">Detalles de la Refacción</h1>
+    <div class="header-actions">
+      <button class="btn btn-primary" routerLink="/refacciones/editar/{{ refaccionId }}">
+        <i class="material-icons">edit</i> Editar
+      </button>
+      <button class="btn btn-delete">
+        <i class="material-icons">delete</i> Eliminar
+      </button>
+    </div>
+  </div>
+
+  <div class="detail-content-card">
+    <p *ngIf="refaccionId">Mostrando detalles para la refacción con ID: {{ refaccionId }}</p>
+    <p *ngIf="!refaccionId">No se encontró el ID de la refacción.</p>
+
+    <div class="image-wrapper" [class.no-image]="!refaccionImageUrl">
+      <img *ngIf="refaccionImageUrl" [src]="refaccionImageUrl" alt="Imagen de la refacción" class="refaccion-image">
+      <div *ngIf="!refaccionImageUrl" class="placeholder-image">
+        <p>No hay imagen disponible para esta refacción.</p>
+      </div>
+    </div>
+
+    <h2 class="panel-title">Información General</h2>
+    <div class="info-group">
+      <span class="label">Nombre:</span>
+      <span class="value">{{ refaccionName || 'N/A' }}</span>
+    </div>
+    <div class="info-group">
+      <span class="label">Número de Parte:</span>
+      <span class="value">{{ refaccionPartNumber || 'N/A' }}</span>
+    </div>
+    <div class="info-group">
+      <span class="label">Modelo Máquina:</span>
+      <span class="value">{{ refaccionMachineModel || 'N/A' }}</span>
+    </div>
+    <div class="info-group">
+      <span class="label">Stock:</span>
+      <span class="value">{{ refaccionStock !== undefined ? refaccionStock : 'N/A' }}</span>
+    </div>
+    <div class="info-group">
+      <span class="label">Estado:</span>
+      <span class="status-badge" 
+            [ngClass]="{
+              'status-success': refaccionStock !== undefined && refaccionStock > 0, 
+              'status-error': refaccionStock !== undefined && refaccionStock === 0,  
+              'status-pending': refaccionStock !== undefined && refaccionStock > 0 && refaccionStock < 10 
+            }">
+        {{ refaccionStock !== undefined ? (refaccionStock > 0 ? 'Disponible' : 'Agotado') : 'Cargando...' }}
+      </span>
+    </div>
+
+    <h2 class="panel-title">Notas</h2>
+    <div class="info-group notes-group">
+      <span class="label">Notas Adicionales:</span>
+      <span class="notes-text">{{ refaccionNotes || 'No hay notas.' }}</span>
+    </div>
+
+    </div>
+</div>

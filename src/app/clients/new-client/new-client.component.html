@@ -1,0 +1,50 @@
+<div class="new-client-container">
+  <div class="header">
+    <button class="back-button" (click)="cancel()">
+      &larr; Volver a Clientes
+    </button>
+    <br>
+    <h1>{{ isEditing ? 'Editar Cliente' : 'Nuevo Cliente' }}</h1>
+  </div>
+
+  <div class="client-form-card card">
+    <form (ngSubmit)="saveClient()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nombre">Nombre Completo:</label>
+          <input type="text" id="nombre" [(ngModel)]="client.nombre" name="nombre" required>
+        </div>
+
+        <div class="form-group">
+          <label for="correo">Correo:</label>
+          <input type="email" id="correo" [(ngModel)]="client.correo" name="correo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono:</label>
+          <input type="tel" id="telefono" [(ngModel)]="client.telefono" name="telefono">
+        </div>
+
+        <div class="form-group full-width">
+          <label for="direccion">Dirección:</label>
+          <input type="text" id="direccion" [(ngModel)]="client.direccion" name="direccion">
+        </div>
+
+        <div class="form-group">
+          <label for="status">Estado:</label>
+          <select id="status" [(ngModel)]="client.status" name="status">
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+            <option value="Potencial">Potencial</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">{{ isEditing ? 'Actualizar Cliente' : 'Crear Cliente' }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+

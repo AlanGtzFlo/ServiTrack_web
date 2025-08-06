@@ -1,0 +1,59 @@
+/* src/app/settings/notifications-settings/notifications-settings.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.notification-settings-section {
+  h3 {
+    // Si h3 tiene un estilo global en styles.scss (ej. @include heading-h3), podrías extenderlo aquí.
+    // Si no, estos estilos son directos.
+    font-family: global.$font-headings; // Asumiendo que h3 usa el font de encabezados
+    color: global.$dark-blue; // Asumiendo que h3 tiene un color primario
+    font-size: 28px; // Un tamaño base para h3
+    font-weight: 700; // Un peso de fuente base
+    margin-bottom: 15px;
+  }
+  .description-text {
+    font-family: global.$font-body; // Corregido: usa global.$
+    font-size: 16px;
+    // Corregido: usa color.adjust() y global.$
+    color: color.adjust(global.$dark-blue, $lightness: 20%);
+    margin-bottom: 30px;
+    line-height: 1.5;
+  }
+
+  .notification-groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+
+    .notification-group {
+      // Estos son estilos para una "tarjeta" o panel que agrupa las notificaciones.
+      // Podrías extender .card aquí si deseas que tenga el estilo global de tarjeta.
+      background-color: global.$white; // Corregido: usa global.$
+      border-radius: 8px; // Asumiendo un border-radius estándar para tarjetas
+      box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.08); // Asumiendo una sombra estándar
+      padding: 25px;
+
+      h4 {
+        font-family: global.$font-headings; // Corregido: usa global.$
+        font-size: 20px;
+        color: global.$teal; // Corregido: usa global.$
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        // Corregido: usa color.adjust() y global.$
+        border-bottom: 1px solid color.adjust(global.$light-gray, $lightness: 5%);
+      }
+      .form-group.checkbox-group {
+        margin-bottom: 15px; // Espacio entre cada checkbox
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}

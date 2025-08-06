@@ -1,0 +1,270 @@
+/* src/app/users/users.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.users-container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .section-title {
+    font-family: global.$font-headings; // Corregido: usa global.$
+    font-weight: 700;
+    font-size: 32px;
+    color: global.$white; // Corregido: usa global.$
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$white, $lightness: 30%);
+        font-size: 20px;
+      }
+      .search-input {
+        min-width: 200px;
+        padding-left: 40px;
+        // Corregido: usa color.adjust() y global.$
+        border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
+        border-radius: 6px;
+        font-size: 16px;
+        color: global.$white; // Corregido: usa global.$
+        &::placeholder {
+          // Corregido: usa color.adjust() y global.$
+          color: color.adjust(global.$white, $lightness: 40%);
+        }
+        &:focus {
+          outline: none;
+          border-color: global.$yellow-orange; // Corregido: usa global.$
+          // Corregido: usa global.$
+          box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+        }
+      }
+    }
+
+    .filter-dropdown {
+      padding: 10px 15px;
+      // Corregido: usa color.adjust() y global.$
+      border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
+      border-radius: 6px;
+      background-color: global.$white; // Corregido: usa global.$
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-size: 16px;
+      color: global.$dark-blue; // Corregido: usa global.$
+      appearance: none;
+      // El background-image para el SVG del icono de flecha.
+      // Asegúrate de que el color fill sea uno de tus colores globales si quieres que sea consistente.
+      // Actualmente, es #003F4E, que es cercano a $dark-blue.
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23003F4E%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4h-263.8c-7.9%200-14.4%206.5-14.4%2014.4s6.5%2014.4%2014.4%2014.4h263.8c4.5%200%208.5-2.2%2010.9-5.9%202.4-3.7%202.9-8.4%201.2-12.4l-11.2-22.4z%22%2F%3E%3C%2Fsvg%3E');
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 12px;
+      cursor: pointer;
+      &:focus {
+        outline: none;
+        border-color: global.$yellow-orange; // Corregido: usa global.$
+        // Corregido: usa global.$
+        box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+      }
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      .material-icons {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); // Adaptado para tarjetas de usuario
+  gap: 25px;
+
+  .user-card {
+    background-color: global.$white; // Corregido: usa global.$
+    border-radius: 10px;
+    // Corregido: usa global.$
+    box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08);
+    padding: 25px;
+    position: relative;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-5px);
+      // Corregido: usa global.$
+      box-shadow: 0 8px 20px rgba(global.$dark-blue, 0.15);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      gap: 15px; // Add gap for spacing between avatar and name
+
+      .user-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: global.$light-gray; // Placeholder background
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0; // Prevent avatar from shrinking
+
+        .avatar-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover; // Ensure the image covers the area
+        }
+
+        .avatar-placeholder-icon {
+          font-size: 40px;
+          color: color.adjust(global.$dark-blue, $lightness: 70%); // Lighter color for the icon
+        }
+      }
+
+      .user-name {
+        font-family: global.$font-headings; // Corregido: usa global.$
+        font-weight: 700;
+        font-size: 24px;
+        color: global.$dark-blue; // Corregido: usa global.$
+        margin: 0;
+        line-height: 1.3;
+        flex-grow: 1;
+        padding-right: 10px;
+      }
+      .user-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        flex-shrink: 0;
+
+        &.status-success {
+          background-color: global.$success-green; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+        }
+        &.status-error {
+          background-color: global.$soft-red; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+        }
+        &.status-pending {
+          background-color: global.$yellow-orange; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+        }
+      }
+    }
+
+    .card-body {
+      margin-bottom: 20px;
+
+      .user-email, .user-role, .user-last-login {
+        font-family: global.$font-body; // Corregido: usa global.$
+        font-size: 15px;
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$dark-blue, $lightness: 20%);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        .small-icon {
+          font-size: 18px;
+          color: global.$teal; // Corregido: usa global.$
+          margin-right: 8px;
+        }
+      }
+      .user-role {
+        span {
+          font-weight: 500;
+          &.role-admin {
+            color: global.$teal; // Corregido: usa global.$
+            font-weight: 600;
+          }
+          &.role-technician {
+            // Corregido: usa color.adjust() y global.$
+            color: color.adjust(global.$teal, $lightness: -15%);
+          }
+          &.role-customer-service {
+            color: global.$yellow-orange; // Corregido: usa global.$
+          }
+          &.role-supervisor {
+            // Corregido: usa color.adjust() y global.$
+            color: color.adjust(global.$dark-blue, $lightness: -5%);
+          }
+        }
+      }
+    }
+
+    .card-footer {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid global.$light-gray; // Corregido: usa global.$
+      text-align: right;
+    }
+    .btn-text {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-weight: 500;
+      font-size: 15px;
+      color: global.$teal; // Corregido: usa global.$
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$teal, $lightness: -10%);
+      }
+    }
+  }
+}
+
+.no-results-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-family: global.$font-body; // Corregido: usa global.$
+  font-size: 18px;
+  // Corregido: usa color.adjust() y global.$
+  color: color.adjust(global.$dark-blue, $lightness: 20%);
+  padding: 40px;
+  .btn-secondary {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    border: 1px solid global.$yellow-orange; // Corregido: usa global.$
+    color: global.$yellow-orange; // Corregido: usa global.$
+    background-color: transparent;
+    &:hover {
+      background-color: global.$yellow-orange; // Corregido: usa global.$
+      color: global.$white; // Corregido: usa global.$
+    }
+  }
+}

@@ -1,0 +1,54 @@
+<div class="client-detail-container">
+  <div class="header">
+    <button class="back-button" (click)="router.navigate(['/clients'])">
+      &larr; Volver a Clientes
+    </button>
+    <h1>Detalle del Cliente</h1>
+  </div>
+
+  <div *ngIf="client" class="client-card card">
+    <div class="card-header">
+      <h2>{{ client.nombre }}</h2>
+      <span class="status" 
+        [ngClass]="{
+          'active': client.status === 'Activo', 
+          'inactive': client.status === 'Inactivo',
+          'potential': client.status === 'Potencial'
+        }">
+        {{ client.status }}
+      </span>
+    </div>
+
+    <div class="card-body">
+      <div class="detail-group">
+        <label>ID:</label>
+        <span>{{ client.id }}</span>
+      </div>
+      <div class="detail-group">
+        <label>RFC:</label>
+        <span>{{ client.rfc }}</span>
+      </div>
+      <div class="detail-group">
+        <label>Dirección:</label>
+        <span>{{ client.direccion }}</span>
+      </div>
+      <div class="detail-group">
+        <label>Correo:</label>
+        <span>{{ client.correo || 'N/A' }}</span>
+      </div>
+      <div class="detail-group">
+        <label>Teléfono:</label>
+        <span>{{ client.telefono || 'N/A' }}</span>
+      </div>
+    </div>
+
+    <div class="card-actions">
+      <button class="btn btn-secondary" (click)="editClient()">Editar Cliente</button>
+      <button class="btn btn-danger" (click)="deleteClient()">Eliminar Cliente</button>
+    </div>
+  </div>
+
+  <div *ngIf="!client" class="not-found-message">
+    <p>Cliente no encontrado o ID inválido.</p>
+  </div>
+</div>

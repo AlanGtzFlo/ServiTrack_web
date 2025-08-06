@@ -1,0 +1,116 @@
+/* src/app/new-report/new-report.component.scss */
+.new-report-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f5f8fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-family: 'Arial', sans-serif;
+  position: relative; // Para posicionar el botón de regreso
+
+  h2 {
+    margin-bottom: 20px;
+    color: #004d40;
+    text-align: center;
+  }
+
+  // Estilos para el botón de regreso
+  .btn-back {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    color: #00796b;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s;
+    margin-bottom: 15px; // Espacio entre el botón y el título
+
+    i {
+      margin-right: 5px;
+      font-size: 20px;
+    }
+
+    &:hover {
+      color: #004d40;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-top: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input, select, textarea {
+      margin-top: 5px;
+      padding: 8px 10px;
+      border: 1px solid #b0bec5;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: 'Arial', sans-serif;
+      transition: border-color 0.3s;
+      
+      &:focus {
+        border-color: #00796b;
+        outline: none;
+      }
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .error {
+      color: #e53935;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-top: 15px;
+      
+      input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        cursor: pointer;
+      }
+
+      label {
+        margin: 0;
+        font-weight: 400;
+        cursor: pointer;
+      }
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 10px;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:disabled {
+        background-color: #a7a7a7;
+        cursor: not-allowed;
+      }
+
+      &:hover:not(:disabled) {
+        background-color: #004d40;
+      }
+    }
+  }
+}
