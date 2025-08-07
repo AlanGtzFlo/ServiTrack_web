@@ -22,7 +22,7 @@ export interface User {
 export class UserService {
 
   // Asumiendo que esta es la URL de tu API
-  private apiUrl = 'http://18.222.150.133/api/usuarios/'; 
+  private apiUrl = 'https://54f8a907472b.ngrok-free.app/api/usuarios/'; 
 
   constructor(private http: HttpClient) { }
 
