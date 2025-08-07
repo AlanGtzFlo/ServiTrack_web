@@ -14,7 +14,9 @@ export interface User {
   foto: string;
   telefono: string | null;
   direccion: string | null;
+
 }
+
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +24,7 @@ export interface User {
 export class UserService {
 
   // Asumiendo que esta es la URL de tu API
-  private apiUrl = 'http://18.222.150.133/api/usuarios/'; 
+  private apiUrl = 'http://18.222.150.133/api/usuarios/';
 
   constructor(private http: HttpClient) { }
 
