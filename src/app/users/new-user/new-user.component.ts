@@ -38,7 +38,7 @@ export class NewUserComponent implements OnInit {
   statuses = ['Activo', 'Inactivo'];
   selectedFile: File | null = null;
 
-  private apiUrl = 'https://54f8a907472b.ngrok-free.app/api/usuarios/';
+  private apiUrl = 'https://fixflow-backend.onrender.com/api/usuarios/';
 
   constructor(private router: Router, private http: HttpClient) {}
 

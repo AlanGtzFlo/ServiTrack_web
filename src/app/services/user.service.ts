@@ -24,7 +24,7 @@ export interface User {
 export class UserService {
 
   // Asumiendo que esta es la URL de tu API
-  private apiUrl = 'https://54f8a907472b.ngrok-free.app/api/usuarios/';
+  private apiUrl = 'https://fixflow-backend.onrender.com/api/usuarios/';
 
   constructor(private http: HttpClient) { }
 
