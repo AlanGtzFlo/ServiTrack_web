@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
   /* ─── Autenticación con API ─── */
   onLogin(): void {
     this.errorMessage = null; // Limpia cualquier mensaje de error anterior
-    const loginUrl = 'http://18.222.150.133/api/login/'; // Tu endpoint de login
+    const loginUrl = 'https://54f8a907472b.ngrok-free.app/api/login/'; // Tu endpoint de login
 
     // La API de Django espera 'correo' y 'password'
     const payload = {
@@ -59,9 +59,9 @@ export class LoginComponent implements OnInit {
           console.log('LoginComponent: access_token guardado en localStorage.');
 
           // Guarda toda la respuesta si es útil, incluyendo nombre y rol
-          localStorage.setItem('user_data', JSON.stringify(response)); 
+          localStorage.setItem('user_data', JSON.stringify(response));
           console.log('LoginComponent: user_data guardado en localStorage:', JSON.stringify(response));
-          
+
           this.router.navigate(['/inicio']); // Navega a la página de inicio
         } else {
           this.errorMessage = 'Login exitoso, pero no se recibió un token de acceso válido.';
