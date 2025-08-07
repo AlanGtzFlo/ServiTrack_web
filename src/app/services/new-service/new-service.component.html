@@ -1,68 +1,85 @@
-<div class="form-container">
-  <div class="section-header">
-    <h1 class="section-title">Crear Nuevo Servicio</h1>
-    <div class="header-actions">
-      <button class="btn btn-secondary" (click)="cancel()">
-        <i class="material-icons">cancel</i> Cancelar
-      </button>
-      <button class="btn btn-primary" (click)="saveNewService()">
-        <i class="material-icons">save</i> Guardar Servicio
-      </button>
-    </div>
+<div class="p-6 max-w-2xl mx-auto bg-white rounded-xl shadow-md">
+  <h2 class="text-2xl font-bold mb-6 text-center text-indigo-700">Crear Nuevo Servicio</h2>
+
+  <!-- Muestra un loader o un mensaje mientras se cargan los datos -->
+  <div *ngIf="isLoading" class="text-center p-4">
+    Cargando datos...
   </div>
 
-  <div class="service-form-card card">
-    <form (ngSubmit)="saveNewService()">
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="clientId">Cliente <span class="required">*</span></label>
-          <select id="clientId" [(ngModel)]="newService.clientId" name="clientId" (change)="onClientSelected()" required>
-            <option [value]="0" disabled>Selecciona un cliente</option>
-            <option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="title">Título del Servicio <span class="required">*</span></label>
-          <input type="text" id="title" [(ngModel)]="newService.title" name="title" required placeholder="Ej: Revisión de equipo de red">
-        </div>
-        <div class="form-group">
-          <label for="serviceType">Tipo de Servicio <span class="required">*</span></label>
-          <select id="serviceType" [(ngModel)]="newService.serviceType" name="serviceType" required>
-            <option *ngFor="let type of serviceTypes" [value]="type">{{ type }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="priority">Prioridad <span class="required">*</span></label>
-          <select id="priority" [(ngModel)]="newService.priority" name="priority" required>
-            <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="assignedToId">Asignar a Técnico</label>
-          <select id="assignedToId" [(ngModel)]="newService.assignedToId" name="assignedToId" (change)="onTechnicianSelected()">
-            <option [value]="undefined">No asignado</option>
-            <option *ngFor="let tech of technicians" [value]="tech.id">{{ tech.name }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="startDate">Fecha de Inicio <span class="required">*</span></label>
-          <input type="date" id="startDate" [(ngModel)]="newService.startDate" name="startDate" required>
-        </div>
-        <div class="form-group">
-          <label for="dueDate">Fecha Límite <span class="required">*</span></label>
-          <input type="date" id="dueDate" [(ngModel)]="newService.dueDate" name="dueDate" required>
-        </div>
-        <div class="form-group">
-          <label for="status">Estado <span class="required">*</span></label>
-          <select id="status" [(ngModel)]="newService.status" name="status" required>
-            <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
-          </select>
-        </div>
-        <div class="form-group full-width">
-          <label for="description">Descripción del Servicio <span class="required">*</span></label>
-          <textarea id="description" [(ngModel)]="newService.description" name="description" rows="4" required placeholder="Describe el problema o el trabajo a realizar..."></textarea>
-        </div>
-      </div>
-    </form>
-  </div>
+  <!-- El formulario solo se muestra cuando los datos han sido cargados -->
+  <form (ngSubmit)="saveNewService()" class="space-y-4" *ngIf="!isLoading">
+    <div>
+      <label for="titulo" class="block text-sm font-medium text-gray-700">Título</label>
+      <input type="text" id="titulo" name="titulo" [(ngModel)]="newService.titulo"
+             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+    </div>
+
+    <div>
+      <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
+      <textarea id="descripcion" name="descripcion" [(ngModel)]="newService.descripcion" rows="3"
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+    </div>
+
+    <div>
+      <label for="usuario_creador" class="block text-sm font-medium text-gray-700">Cliente (Creador)</label>
+      <select id="usuario_creador" name="usuario_creador" [(ngModel)]="newService.usuario_creador"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md" required>
+        <option [ngValue]="undefined" disabled>Selecciona un cliente</option>
+        <option *ngFor="let client of clients" [ngValue]="client.id">{{ client.nombre }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="tecnico_asignado" class="block text-sm font-medium text-gray-700">Técnico Asignado (Opcional)</label>
+      <select id="tecnico_asignado" name="tecnico_asignado" [(ngModel)]="newService.tecnico_asignado"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md">
+        <option [ngValue]="undefined">Selecciona un técnico (sin asignar)</option>
+        <option *ngFor="let technician of technicians" [ngValue]="technician.id">{{ technician.nombre }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="prioridad" class="block text-sm font-medium text-gray-700">Prioridad</label>
+      <select id="prioridad" name="prioridad" [(ngModel)]="newService.prioridad"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md" required>
+        <option [ngValue]="null" disabled>Selecciona una prioridad</option>
+        <option *ngFor="let priority of priorities" [ngValue]="priority">{{ priority }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="estado" class="block text-sm font-medium text-gray-700">Estado</label>
+      <select id="estado" name="estado" [(ngModel)]="newService.estado"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md" required>
+        <option [ngValue]="null" disabled>Selecciona un estado</option>
+        <option *ngFor="let status of statuses" [ngValue]="status">{{ status }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="fecha_limite" class="block text-sm font-medium text-gray-700">Fecha de Vencimiento</label>
+      <input type="date" id="fecha_limite" name="fecha_limite" [(ngModel)]="newService.fecha_limite"
+             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+    </div>
+
+    <div>
+      <label for="ubicacion" class="block text-sm font-medium text-gray-700">Ubicación (Opcional)</label>
+      <select id="ubicacion" name="ubicacion" [(ngModel)]="newService.ubicacion"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md">
+        <option [ngValue]="undefined">Selecciona una ubicación (opcional)</option>
+        <option *ngFor="let ubicacion of ubicaciones" [ngValue]="ubicacion.id">{{ ubicacion.nombre }}</option>
+      </select>
+    </div>
+
+    <div class="flex justify-between mt-6">
+      <button type="button" (click)="cancel()"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Cancelar
+      </button>
+      <button type="submit"
+              class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Guardar
+      </button>
+    </div>
+  </form>
 </div>

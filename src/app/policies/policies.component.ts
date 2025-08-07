@@ -1,18 +1,17 @@
-// src/app/policies/policies.component.ts
+// policies.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router'; // ← AÑADIDO: Router
+import { RouterModule, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 interface Policy {
   id: number;
-  policyNumber: string;
-  clientName: string;
-  type: 'Interna' | 'Externa';
-  startDate: string;
-  endDate: string;
-  status: 'Vigente' | 'Vencida' | 'Pendiente';
-  description: string;
+  nombre: string;
+  tipo_poliza: string | null;
+  fecha_inicio_poliza: string | null;
+  fecha_fin_poliza: string | null;
+  estatus: boolean;
 }
 
 @Component({
@@ -24,45 +23,53 @@ interface Policy {
 })
 export class PoliciesComponent implements OnInit {
 
-  policies: Policy[] = [
-    { id: 101, policyNumber: 'POL-AGUILA-001', clientName: 'Transportes El Águila S.A. de C.V.', type: 'Externa', startDate: '2024-01-01', endDate: '2024-12-31', status: 'Vigente', description: 'Póliza de mantenimiento preventivo anual para flota de camiones.' },
-    { id: 102, policyNumber: 'POL-AGUILA-002', clientName: 'Transportes El Águila S.A. de C.V.', type: 'Interna', startDate: '2023-07-01', endDate: '2024-06-30', status: 'Vigente', description: 'Póliza de soporte técnico de sistemas de monitoreo.' },
-    { id: 103, policyNumber: 'POL-VALLE-001', clientName: 'Comercializadora del Valle S. de R.L. de C.V.', type: 'Externa', startDate: '2023-01-01', endDate: '2023-12-31', status: 'Vencida', description: 'Póliza de servicios correctivos para equipos de almacén.' },
-    { id: 104, policyNumber: 'POL-OMEGA-001', clientName: 'Servicios Integrales Omega S.C.', type: 'Interna', startDate: '2024-03-01', endDate: '2025-02-28', status: 'Vigente', description: 'Póliza de mantenimiento integral de infraestructura.' },
-    { id: 105, policyNumber: 'POL-ALFA-001', clientName: 'Constructora Alfa del Sureste S.A.', type: 'Externa', startDate: '2022-09-01', endDate: '2023-08-31', status: 'Vencida', description: 'Póliza de garantía de obra civil.' },
-    { id: 106, policyNumber: 'POL-LOGISTICA-001', clientName: 'Logística Rápida Express', type: 'Interna', startDate: '2024-07-01', endDate: '2025-06-30', status: 'Pendiente', description: 'Póliza de inicio de servicios de consultoría.' },
-  ];
+  policies: Policy[] = [];
 
   searchTerm: string = '';
-  filterStatus: 'all' | 'Vigente' | 'Vencida' | 'Pendiente' = 'all';
+  filterStatus: 'all' | 'Activo' | 'Inactivo' = 'all';
 
-  constructor(private router: Router) {} // ← AÑADIDO: inyección del Router
+  private apiUrl = 'https://fixflow-backend.onrender.com/api/empresas/';
+
+  constructor(private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Aquí podrías cargar datos desde un servicio en un futuro
+    this.loadPolicies();
+  }
+
+  loadPolicies(): void {
+    this.http.get<Policy[]>(this.apiUrl).subscribe({
+      next: data => {
+        this.policies = data;
+      },
+      error: err => {
+        console.error('Error cargando pólizas', err);
+        alert('Error al cargar las pólizas.');
+      }
+    });
   }
 
   get filteredPolicies(): Policy[] {
     let result = this.policies;
 
     if (this.searchTerm) {
-      const lowerCaseSearchTerm = this.searchTerm.toLowerCase();
-      result = result.filter(policy =>
-        policy.policyNumber.toLowerCase().includes(lowerCaseSearchTerm) ||
-        policy.clientName.toLowerCase().includes(lowerCaseSearchTerm) ||
-        policy.description.toLowerCase().includes(lowerCaseSearchTerm)
+      const lowerTerm = this.searchTerm.toLowerCase();
+      result = result.filter(p =>
+        p.nombre.toLowerCase().includes(lowerTerm) ||
+        (p.tipo_poliza ? p.tipo_poliza.toLowerCase().includes(lowerTerm) : false)
       );
     }
 
     if (this.filterStatus !== 'all') {
-      result = result.filter(policy => policy.status === this.filterStatus);
+      const statusBool = this.filterStatus === 'Activo';
+      result = result.filter(p => p.estatus === statusBool);
     }
 
     return result;
   }
 
   addNewPolicy(): void {
-    console.log('Action: Abrir formulario o modal para añadir una nueva póliza.');
+    // Navegar o abrir modal para crear nueva póliza
+    console.log('Abrir formulario para nueva póliza');
     this.router.navigate(['/policies/new']);
   }
 }

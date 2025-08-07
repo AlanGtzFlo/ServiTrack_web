@@ -31,18 +31,17 @@
   <div class="services-grid">
     <div class="service-card card" *ngFor="let service of filteredServices" [routerLink]="['/services', service.id]">
       <div class="card-header">
-        <h3 class="service-title">{{ service.title }}</h3>
-        <span class="service-status" [ngClass]="getStatusClass(service.status)">
-          {{ service.status }}
+        <h3 class="service-title">{{ service.titulo }}</h3>
+        <span class="service-status" [ngClass]="getStatusClass(service.estado)">
+          {{ service.estado }}
         </span>
       </div>
       <div class="card-body">
-        <p class="client-info"><i class="material-icons small-icon">business</i> Cliente: {{ service.clientName }}</p>
-        <p class="service-meta"><i class="material-icons small-icon">category</i> Tipo: {{ service.type }}</p>
-        <p class="service-meta"><i class="material-icons small-icon">label_important</i> Prioridad: <span [ngClass]="getPriorityClass(service.priority)">{{ service.priority }}</span></p>
-        <p class="service-meta"><i class="material-icons small-icon">event</i> Reportado: {{ service.reportedDate }}</p>
-        <p class="service-meta" *ngIf="service.assignedTechnician"><i class="material-icons small-icon">build</i> Técnico: {{ service.assignedTechnician }}</p>
-        <p class="service-meta" *ngIf="service.dueDate"><i class="material-icons small-icon">schedule</i> Límite: {{ service.dueDate }}</p>
+        <p class="client-info"><i class="material-icons small-icon">business</i> Cliente: {{ service.usuario_creador.nombre }}</p>
+        <p class="service-meta"><i class="material-icons small-icon">category</i> Tipo: Correctivo</p>
+        <p class="service-meta"><i class="material-icons small-icon">label_important</i> Prioridad: <span [ngClass]="getPriorityClass(service.prioridad)">{{ service.prioridad }}</span></p>
+        <p class="service-meta" *ngIf="service.tecnico_asignado"><i class="material-icons small-icon">build</i> Técnico: {{ service.tecnico_asignado.nombre }}</p>
+        <p class="service-meta" *ngIf="service.fecha_limite"><i class="material-icons small-icon">schedule</i> Límite: {{ service.fecha_limite }}</p>
       </div>
       
       <div class="card-footer">

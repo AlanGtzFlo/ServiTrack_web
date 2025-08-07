@@ -1,131 +1,128 @@
-<div class="service-detail-container" *ngIf="service">
-  <div class="section-header">
-    <button class="btn-text back-button" (click)="goToServicesList()">
-      <i class="material-icons">arrow_back</i> Volver a Servicios
-    </button>
-    <h1 class="section-title">Servicio #{{ service.id }} - {{ service.title }}</h1>
-    <div class="header-actions">
-      <button class="btn btn-secondary" (click)="assignTechnician()" *ngIf="service.status === 'Pendiente' || service.status === 'Asignado'">
-        <i class="material-icons">person_add</i> Asignar
-      </button>
-      <button class="btn btn-primary" (click)="startService()" *ngIf="service.status === 'Asignado' || service.status === 'Pendiente'">
-        <i class="material-icons">play_arrow</i> Iniciar
-      </button>
-      <button class="btn btn-resolve" (click)="resolveService()" *ngIf="service.status === 'En Proceso'">
-        <i class="material-icons">check_circle</i> Resolver
-      </button>
-      <button class="btn btn-close" (click)="closeService()" *ngIf="service.status === 'Concluido'">
-        <i class="material-icons">lock</i> Cerrar
-      </button>
-      <button class="btn btn-delete" (click)="cancelService()" *ngIf="service.status !== 'Concluido' && service.status !== 'Cerrado' && service.status !== 'Cancelado'">
-        <i class="material-icons">cancel</i> Cancelar
-      </button>
-    </div>
-  </div>
-
-  <div class="service-detail-grid">
-    <div class="info-panel card">
-      <h2 class="panel-title">Información del Servicio</h2>
-      <div class="info-group">
-        <p class="label">Título:</p>
-        <p class="value">{{ service.title }}</p>
-      </div>
-      <div class="info-group">
-        <p class="label">Cliente:</p>
-        <p class="value">
-          <a [routerLink]="['/clients', service.clientId]" class="linked-text">
-            {{ service.clientName }} <i class="material-icons tiny-icon">open_in_new</i>
-          </a>
-        </p>
-      </div>
-      <div class="info-group" *ngIf="service.policyNumber">
-        <p class="label">Póliza:</p>
-        <p class="value">
-          <a [routerLink]="['/policies', service.policyId]" class="linked-text">
-            #{{ service.policyNumber }} <i class="material-icons tiny-icon">open_in_new</i>
-          </a>
-        </p>
-      </div>
-      <div class="info-group">
-        <p class="label">Tipo:</p>
-        <p class="value">{{ service.type }}</p>
-      </div>
-      <div class="info-group">
-        <p class="label">Prioridad:</p>
-        <p class="value"><span class="priority-badge" [ngClass]="getPriorityClass(service.priority)">{{ service.priority }}</span></p>
-      </div>
-      <div class="info-group">
-        <p class="label">Estado Actual:</p>
-        <p class="value"><span class="status-badge" [ngClass]="getStatusClass(service.status)">{{ service.status }}</span></p>
-      </div>
-      <div class="info-group">
-        <p class="label">Fecha Reporte:</p>
-        <p class="value">{{ service.reportedDate }}</p>
-      </div>
-      <div class="info-group" *ngIf="service.dueDate">
-        <p class="label">Fecha Límite:</p>
-        <p class="value">{{ service.dueDate }}</p>
-      </div>
-      <div class="info-group" *ngIf="service.assignedTechnician">
-        <p class="label">Técnico Asignado:</p>
-        <p class="value">{{ service.assignedTechnician }}</p>
-      </div>
-      <div class="info-group description-group">
-        <p class="label">Descripción:</p>
-        <p class="value description-text">{{ service.description }}</p>
-      </div>
-      <div class="info-group notes-group">
-        <p class="label">Ubicación del Servicio:</p>
-        <p class="value notes-text">{{ service.location || 'No especificada' }}</p>
-      </div>
-      <div class="info-group notes-group">
-        <p class="label">Persona de Contacto:</p>
-        <p class="value notes-text">{{ service.contactPerson || 'N/A' }} (Tel: {{ service.contactPhone || 'N/A' }})</p>
-      </div>
+<!-- src/app/services/service-detail/service-detail.component.html -->
+<div class="min-h-screen p-4 md:p-8 font-sans bg-gray-100">
+  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8">
+    <!-- Indicador de carga -->
+    <div *ngIf="isLoading" class="flex justify-center items-center py-12 w-full">
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
     </div>
 
-    <div class="resolution-panel card" *ngIf="service.status === 'Concluido' || service.status === 'Cerrado'">
-      <h2 class="panel-title">Detalles de Resolución</h2>
-      <div class="info-group">
-        <p class="label">Fecha Resolución:</p>
-        <p class="value">{{ service.resolutionDate || 'Pendiente' }}</p>
-      </div>
-      <div class="info-group description-group">
-        <p class="label">Detalles:</p>
-        <p class="value description-text">{{ service.resolutionDetails || 'No se han ingresado detalles de resolución.' }}</p>
-      </div>
-    </div>
-
-    <div class="notes-panel card">
-      <h2 class="panel-title">Notas Internas</h2>
-      <div class="info-group notes-group">
-        <p class="value notes-text">{{ service.notes || 'No hay notas internas registradas.' }}</p>
-      </div>
-      <div class="add-note-section">
-        <textarea [(ngModel)]="newNote" placeholder="Añadir nueva nota..." rows="3"></textarea>
-        <button class="btn btn-primary" (click)="saveNote()">Añadir Nota</button>
-      </div>
-    </div>
-
-    <div class="history-panel card">
-      <h2 class="panel-title">Historial de Actividad ({{ history.length }})</h2>
-      <div class="no-data-message" *ngIf="history.length === 0">
-        <p>No hay historial de actividad para este servicio.</p>
-      </div>
-      <div class="history-list" *ngIf="history.length > 0">
-        <div class="history-item" *ngFor="let entry of history">
-          <div class="history-meta">
-            <span class="timestamp">{{ entry.timestamp }}</span>
-            <span class="user">{{ entry.user }}</span>
+    <ng-container *ngIf="!isLoading && service">
+      <!-- Encabezado y botones de acción -->
+      <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <div class="flex flex-col md:flex-row md:items-center">
+          <h1 class="text-3xl font-bold text-gray-800 mr-4">
+            <span *ngIf="!isEditing">{{ service.titulo }}</span>
+            <input *ngIf="isEditing" type="text" [(ngModel)]="editedTitle" name="editedTitle"
+                   class="w-full text-3xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg px-2">
+          </h1>
+          <div class="flex items-center space-x-2 mt-2 md:mt-0">
+            <span class="px-3 py-1 rounded-full text-sm font-semibold text-white"
+                  [ngClass]="getPriorityClass(service.prioridad)">{{ service.prioridad }}</span>
+            <span class="px-3 py-1 rounded-full text-sm font-semibold text-white"
+                  [ngClass]="getStatusClass(service.estado)">{{ service.estado }}</span>
           </div>
-          <p class="action-text">{{ entry.action }}</p>
-          <p class="action-details" *ngIf="entry.details">{{ entry.details }}</p>
         </div>
+        <button (click)="goToServicesList()" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+          <i class="material-icons mr-1 text-base">arrow_back</i>
+          Volver
+        </button>
       </div>
+
+      <!-- Formulario de detalles y edición -->
+      <form class="space-y-6">
+        <!-- Título (no editable en el formulario) -->
+        <div *ngIf="!isEditing" class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Título</label>
+          <p class="mt-1 text-lg text-gray-900">{{ service.titulo }}</p>
+        </div>
+        
+        <!-- Descripción -->
+        <div>
+          <label for="editedDescription" class="block text-sm font-medium text-gray-700">Descripción</label>
+          <textarea id="editedDescription" [(ngModel)]="editedDescription" name="editedDescription" [disabled]="!isEditing" rows="4"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900"
+                    [ngClass]="{'bg-gray-100 cursor-not-allowed': !isEditing}"></textarea>
+        </div>
+        
+        <!-- Ubicación, Fecha Límite, Prioridad, Estado y Técnico Asignado -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div>
+            <label for="editedLocation" class="block text-sm font-medium text-gray-700">Ubicación</label>
+            <ng-container *ngIf="!isEditing">
+              <p class="mt-1 text-gray-900">{{ locationName }}</p>
+            </ng-container>
+            <select *ngIf="isEditing" id="editedLocation" [(ngModel)]="selectedLocationId" name="editedLocation"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900">
+              <option [ngValue]="null">No asignada</option>
+              <option *ngFor="let ubicacion of ubicaciones" [ngValue]="ubicacion.id">{{ ubicacion.nombre }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="editedDueDate" class="block text-sm font-medium text-gray-700">Fecha Límite</label>
+            <input id="editedDueDate" type="date" [(ngModel)]="editedDueDate" name="editedDueDate" [disabled]="!isEditing"
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900"
+                   [ngClass]="{'bg-gray-100 cursor-not-allowed': !isEditing}">
+          </div>
+          <div>
+            <label for="editedPriority" class="block text-sm font-medium text-gray-700">Prioridad</label>
+            <select id="editedPriority" [(ngModel)]="editedPriority" name="editedPriority" [disabled]="!isEditing"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900"
+                    [ngClass]="{'bg-gray-100 cursor-not-allowed': !isEditing}">
+              <option value="baja">Baja</option>
+              <option value="media">Media</option>
+              <option value="alta">Alta</option>
+            </select>
+          </div>
+          <div>
+            <label for="editedStatus" class="block text-sm font-medium text-gray-700">Estado</label>
+            <select id="editedStatus" [(ngModel)]="editedStatus" name="editedStatus" [disabled]="!isEditing"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900"
+                    [ngClass]="{'bg-gray-100 cursor-not-allowed': !isEditing}">
+              <option value="pendiente">Pendiente</option>
+              <option value="en_proceso">En proceso</option>
+              <option value="completado">Completado</option>
+              <option value="cerrado">Cerrado</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Campos de usuario creador y técnico asignado -->
+        <div class="border-t pt-6 space-y-4">
+          <p class="text-sm text-gray-600">
+            <span class="font-semibold text-gray-800">Creado por:</span> {{ creatorName }}
+          </p>
+          <div>
+            <label for="assignedTechnician" class="block text-sm font-medium text-gray-700">Técnico asignado</label>
+            <select id="assignedTechnician" [(ngModel)]="selectedTechnicianId" name="assignedTechnician" [disabled]="!isEditing"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900"
+                    [ngClass]="{'bg-gray-100 cursor-not-allowed': !isEditing}">
+              <option [ngValue]="null">No asignado</option>
+              <option *ngFor="let user of users" [ngValue]="user.id">{{ user.nombre }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Botones de edición y guardado -->
+        <div class="flex justify-end space-x-4 pt-6">
+          <button *ngIf="!isEditing" type="button" (click)="enterEditMode()"
+                  class="px-6 py-2 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+            Editar
+          </button>
+          <button *ngIf="isEditing" type="button" (click)="cancelEditMode()"
+                  class="px-6 py-2 rounded-lg font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors">
+            Cancelar
+          </button>
+          <button *ngIf="isEditing" type="button" (click)="saveChanges()"
+                  class="px-6 py-2 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors">
+            Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </ng-container>
+
+    <!-- Mensaje si no se encuentra el servicio -->
+    <div *ngIf="!isLoading && !service" class="text-center text-gray-500 w-full py-12">
+      <p>No se pudo cargar la información del servicio.</p>
     </div>
   </div>
-</div>
-
-<div *ngIf="!service" class="loading-or-error">
-  <p>Cargando información del servicio o el servicio no fue encontrado...</p>
 </div>
