@@ -15,7 +15,7 @@ export class SideBarComponent {
     { label: 'Dashboard', icon: 'dashboard', link: '/dashboard' },
     { label: 'Clientes', icon: 'people', link: '/clients' },
     { label: 'Pólizas', icon: 'description', link: '/policies' },
-    { label: 'Servicios', icon: 'build', link: '/services' },
+    { label: 'Tickets', icon: 'assignment', link: '/services' },
     { label: 'Usuarios', icon: 'account_circle', link: '/users' },
     // ¡NUEVO ELEMENTO PARA REFACCIONES!
     { label: 'Refacciones', icon: 'precision_manufacturing', link: '/refacciones' }, // Usé 'precision_manufacturing' como icono, puedes cambiarlo

@@ -26,7 +26,7 @@ export class ClientsComponent implements OnInit {
   clients: Client[] = [];
   searchTerm: string = '';
 
-  private apiUrl = 'http://18.222.150.133/api/clientes/'; // Cambia esta URL si es necesario
+  private apiUrl = 'https://fixflow-backend.onrender.com/api/clientes/'; // Cambia esta URL si es necesario
 
   constructor(private http: HttpClient) { }
 

@@ -7,6 +7,7 @@ import { filter } from 'rxjs/operators'; // Importa filter para filtrar eventos 
 import { HeaderComponent } from './header/header.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
 import { ButtonModule } from 'primeng/button'; // Mantén si lo usas en app.component.html
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,9 @@ import { ButtonModule } from 'primeng/button'; // Mantén si lo usas en app.comp
     RouterOutlet,
     HeaderComponent,
     SideBarComponent, // La sidebar se importará siempre, su visibilidad se controla con *ngIf
-    ButtonModule // Mantén si lo usas en app.component.html
+    ButtonModule,
+    FormsModule, // Agrega FormsModule aquí
+    ReactiveFormsModule // Agrega ReactiveFormsModule aquí// Mantén si lo usas en app.component.html
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

@@ -25,7 +25,7 @@ export class ClientDetailComponent implements OnInit {
   client: Client | undefined;
   clientId: number | undefined;
 
-  private apiUrl = 'http://18.222.150.133/api/clientes/'; // URL real de la API
+  private apiUrl = 'https://fixflow-backend.onrender.com/api/clientes/'; // URL real de la API
 
   constructor(
     private route: ActivatedRoute,

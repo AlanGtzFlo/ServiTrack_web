@@ -1,9 +1,9 @@
-<div class="policy-detail-container" *ngIf="policy">
+<div class="policy-detail-container" *ngIf="policy && !isEditing">
   <div class="section-header">
     <button class="btn-text back-button" (click)="goToPoliciesList()">
       <i class="material-icons">arrow_back</i> Volver a Pólizas
     </button>
-    <h1 class="section-title">Póliza: #{{ policy.policyNumber }}</h1>
+    <h1 class="section-title">Póliza: #{{ policy.nombre }}</h1>
     <div class="header-actions">
       <button class="btn btn-secondary" (click)="editPolicy()">
         <i class="material-icons">edit</i> Editar
@@ -13,60 +13,45 @@
       </button>
     </div>
   </div>
-
   <div class="policy-detail-grid">
     <div class="info-panel card">
       <h2 class="panel-title">Información General</h2>
       <div class="info-group">
-        <p class="label">Número de Póliza:</p>
-        <p class="value">{{ policy.policyNumber }}</p>
+        <p class="label">Nombre:</p>
+        <p class="value">{{ policy.nombre || 'No especificado' }}</p>
       </div>
       <div class="info-group">
-        <p class="label">Cliente:</p>
-        <p class="value">
-          <a [routerLink]="['/clients', policy.clientId]" class="client-link">
-            {{ policy.clientName }} <i class="material-icons tiny-icon">open_in_new</i>
-          </a>
-        </p>
+        <p class="label">Tipo de Póliza:</p>
+        <p class="value">{{ policy.tipo_poliza || 'No especificado' }}</p>
       </div>
       <div class="info-group">
-        <p class="label">Tipo:</p>
-        <p class="value">{{ policy.type }}</p>
+        <p class="label">Fecha de Inicio:</p>
+        <p class="value">{{ (policy.fecha_inicio_poliza | date) || 'No especificado' }}</p>
       </div>
       <div class="info-group">
-        <p class="label">Inicio Vigencia:</p>
-        <p class="value">{{ policy.startDate }}</p>
+        <p class="label">Fecha de Fin:</p>
+        <p class="value">{{ (policy.fecha_fin_poliza | date) || 'No especificado' }}</p>
       </div>
       <div class="info-group">
-        <p class="label">Fin Vigencia:</p>
-        <p class="value">{{ policy.endDate }}</p>
-      </div>
-      <div class="info-group">
-        <p class="label">Estado:</p>
+        <p class="label">Estatus:</p>
         <p class="value">
           <span class="status-badge" [ngClass]="{
-            'status-success': policy.status === 'Vigente',
-            'status-error': policy.status === 'Vencida',
-            'status-pending': policy.status === 'Pendiente'
+            'status-success': policy.estatus === true,
+            'status-error': policy.estatus === false
           }">
-            {{ policy.status }}
+            {{ policy.estatus ? 'Vigente' : 'Vencida' }}
           </span>
         </p>
       </div>
-      <div class="info-group">
-        <p class="label">Agente Asignado:</p>
-        <p class="value">{{ policy.assignedAgent }}</p>
-      </div>
       <div class="info-group description-group">
         <p class="label">Descripción:</p>
-        <p class="value description-text">{{ policy.description }}</p>
+        <p class="value description-text">{{ policy.description || 'No hay descripción disponible.' }}</p>
       </div>
       <div class="info-group notes-group">
         <p class="label">Notas Internas:</p>
         <p class="value notes-text">{{ policy.notes || 'No hay notas adicionales para esta póliza.' }}</p>
       </div>
     </div>
-
     <div class="terms-coverage-panel card">
       <h2 class="panel-title">Términos y Cobertura</h2>
       <div class="info-group terms-group">
@@ -75,36 +60,60 @@
       </div>
       <div class="info-group covered-items-group">
         <p class="label">Elementos Cubiertos:</p>
-        <ul class="covered-items-list" *ngIf="policy.coveredItems && policy.coveredItems.length > 0; else noCoveredItems">
-          <li *ngFor="let item of policy.coveredItems">{{ item }}</li>
-        </ul>
-        <ng-template #noCoveredItems>
-          <p class="value">No hay elementos cubiertos especificados.</p>
-        </ng-template>
-      </div>
-    </div>
-
-    <div class="documents-panel card">
-      <h2 class="panel-title">Documentos Adjuntos ({{ documents.length }})</h2>
-      <div class="no-data-message" *ngIf="documents.length === 0">
-        <p>No hay documentos adjuntos para esta póliza.</p>
-      </div>
-      <div class="document-list" *ngIf="documents.length > 0">
-        <div class="document-item" *ngFor="let doc of documents" (click)="downloadDocument(doc.url)">
-          <i class="material-icons document-icon">
-            {{ doc.type === 'PDF' ? 'picture_as_pdf' : (doc.type === 'DOCX' ? 'description' : 'image') }}
-          </i>
-          <div class="document-info">
-            <p class="document-name">{{ doc.name }}</p>
-            <span class="document-type">{{ doc.type }}</span>
-          </div>
-          <button class="btn-text download-button">Descargar <i class="material-icons tiny-icon">file_download</i></button>
-        </div>
+        <p class="value">{{ policy.coveredItems || 'No hay elementos cubiertos especificados.' }}</p>
       </div>
     </div>
   </div>
 </div>
-
-<div *ngIf="!policy" class="loading-or-error">
+<div class="policy-edit-container" *ngIf="policyToEdit && isEditing">
+  <div class="section-header">
+    <h1 class="section-title">Editando Póliza: #{{ policyToEdit.nombre }}</h1>
+  </div>
+  <div class="edit-policy-form card">
+    <form (ngSubmit)="saveChanges()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" [(ngModel)]="policyToEdit.nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="tipo_poliza">Tipo de Póliza</label>
+          <select id="tipo_poliza" [(ngModel)]="policyToEdit.tipo_poliza" name="tipo_poliza" required>
+            <option value="Interna">Interna</option>
+            <option value="Externa">Externa</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fecha_inicio_poliza">Fecha de Inicio</label>
+          <input type="date" id="fecha_inicio_poliza" [(ngModel)]="policyToEdit.fecha_inicio_poliza" name="fecha_inicio_poliza" required>
+        </div>
+        <div class="form-group">
+          <label for="fecha_fin_poliza">Fecha de Fin</label>
+          <input type="date" id="fecha_fin_poliza" [(ngModel)]="policyToEdit.fecha_fin_poliza" name="fecha_fin_poliza" required>
+        </div>
+        <div class="form-group">
+          <label for="estatus">Estatus</label>
+          <select id="estatus" [(ngModel)]="policyToEdit.estatus" name="estatus" required>
+            <option [ngValue]="true">Vigente</option>
+            <option [ngValue]="false">Vencida</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="description">Descripción</label>
+          <textarea id="description" [(ngModel)]="policyToEdit.description" name="description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="notes">Notas Internas</label>
+          <textarea id="notes" [(ngModel)]="policyToEdit.notes" name="notes"></textarea>
+        </div>
+      </div>
+      <div class="form-actions" style="margin-top: 1rem;">
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEditing()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div *ngIf="!policy && !isEditing" class="loading-or-error">
   <p>Cargando información de la póliza o la póliza no fue encontrada...</p>
 </div>

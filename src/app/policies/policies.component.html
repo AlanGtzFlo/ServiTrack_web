@@ -4,13 +4,12 @@
     <div class="header-actions">
       <div class="search-box">
         <i class="material-icons search-icon">search</i>
-        <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar póliza o cliente..." class="search-input">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar póliza o cliente..." class="search-input" />
       </div>
       <select [(ngModel)]="filterStatus" class="status-filter">
         <option value="all">Todos los Estados</option>
-        <option value="Vigente">Vigente</option>
-        <option value="Vencida">Vencida</option>
-        <option value="Pendiente">Pendiente</option>
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
       </select>
       <button class="btn btn-primary" (click)="addNewPolicy()">
         <i class="material-icons">add</i> Nueva Póliza
@@ -19,25 +18,20 @@
   </div>
 
   <div class="policies-grid">
-    <div class="policy-card card" *ngFor="let policy of filteredPolicies" [routerLink]="['/policies', policy.id]">
+    <div class="policy-card card" *ngFor="let policy of filteredPolicies">
       <div class="card-header">
-        <span class="policy-type">{{ policy.type }}</span>
+        <span class="policy-type">{{ policy.tipo_poliza || 'N/A' }}</span>
         <span class="policy-status" [ngClass]="{
-          'status-success': policy.status === 'Vigente',
-          'status-error': policy.status === 'Vencida',
-          'status-pending': policy.status === 'Pendiente'
+          'status-success': policy.estatus === true,
+          'status-error': policy.estatus === false
         }">
-          {{ policy.status }}
+          {{ policy.estatus ? 'Activo' : 'Inactivo' }}
         </span>
       </div>
-      <h3 class="policy-number">Póliza: #{{ policy.policyNumber }}</h3>
-      <p class="client-name"><i class="material-icons small-icon">people</i> Cliente: {{ policy.clientName }}</p>
-      <p class="policy-description">{{ policy.description }}</p>
-      <div class="policy-dates">
-        <p><i class="material-icons small-icon">event_note</i> Inicio: {{ policy.startDate }}</p>
-        <p><i class="material-icons small-icon">event_busy</i> Fin: {{ policy.endDate }}</p>
-      </div>
-      
+      <h3 class="policy-number">Empresa: {{ policy.nombre }}</h3>
+      <p class="policy-description">
+        Fecha Inicio: {{ policy.fecha_inicio_poliza || 'N/A' }} | Fecha Fin: {{ policy.fecha_fin_poliza || 'N/A' }}
+      </p>
       <div class="card-footer">
         <a [routerLink]="['/policies', policy.id]" class="btn-text">Ver Detalles</a>
       </div>
