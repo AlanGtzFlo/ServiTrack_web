@@ -28,11 +28,9 @@ export class ClientDetailComponent implements OnInit {
   clientId: number | undefined;
   isAdmin = false; // Nueva propiedad para controlar el rol
 
-<<<<<<< HEAD
+
   private apiUrl = 'https://fixflow-backend.onrender.com/api/clientes/'; // URL real de la API
-=======
-  private apiUrl = 'https://fixflow-backend.onrender.com/api/clientes/'; // URL real de la API
->>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
+
 
   constructor(
     private route: ActivatedRoute,

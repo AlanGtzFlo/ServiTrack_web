@@ -27,15 +27,8 @@ export class LoginComponent implements OnInit {
   /* ─── Autenticación con API ─── */
   onLogin(): void {
     this.errorMessage = null; // Limpia cualquier mensaje de error anterior
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     const loginUrl = 'https://fixflow-backend.onrender.com/api/login/' // Tu endpoint de login
-=======
-    const loginUrl = 'https://fixflow-backend.onrender.com/api/login/'; // Tu endpoint de login
->>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
-=======
-    const loginUrl = 'https://54f8a907472b.ngrok-free.app/api/login/'; // Tu endpoint de login
->>>>>>> 6cecdab48fee5f4832f7a7ad520fce6db685ea73
 
     // La API de Django espera 'correo' y 'password'
     const payload = {

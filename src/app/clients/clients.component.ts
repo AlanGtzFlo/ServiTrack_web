@@ -29,13 +29,11 @@ export class ClientsComponent implements OnInit {
   filterStatus: 'all' | true | false = 'all';
   isLoading = false;
 
-<<<<<<< HEAD
+
   private apiUrl = 'https://fixflow-backend.onrender.com/api/clientes/';
   // URL para exportar el PDF
   private exportPdfUrl = 'https://fixflow-backend.onrender.com/api/clientes/exportar_pdf/';
-=======
-  private apiUrl = 'https://fixflow-backend.onrender.com/api/clientes/'; // Cambia esta URL si es necesario
->>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
+
 
   constructor(private router: Router, private http: HttpClient) { }
 
