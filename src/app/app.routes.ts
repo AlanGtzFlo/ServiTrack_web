@@ -116,7 +116,7 @@ export const routes: Routes = [
   // Rutas accesibles por todos (admin y tecnico)
   { path: 'inicio', component: InicioComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
-  
+
   // Clientes y Políticas
   { path: 'clients', component: ClientsComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
   { path: 'clients/new', component: NewClientComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
@@ -152,14 +152,14 @@ export const routes: Routes = [
   { path: 'refacciones', component: RefaccionesListComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
   { path: 'refacciones/nueva', component: NuevaRefaccionComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
   { path: 'refacciones/:id', component: RefaccionDetailComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } }, // Acceso a detalle para técnico
-  
+
   // Ubicaciones, Satisfacción y Configuración
   { path: 'satisfaction', component: SatisfactionComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
-  
+
   { path: 'ubicaciones', component: UbicacionesListComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
   { path: 'ubicaciones/nueva', component: UbicacionFormComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
   { path: 'ubicaciones/:id', component: UbicacionDetailComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } }, // Acceso a detalle para técnico
-  
+
   {
     path: 'settings',
     component: SettingsComponent,

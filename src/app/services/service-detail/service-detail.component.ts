@@ -1,3 +1,4 @@
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -21,11 +22,11 @@ interface Service {
   titulo: string;
   descripcion: string;
   prioridad: 'baja' | 'media' | 'alta';
-  estado: 'pendiente' | 'en_proceso' | 'completado' | 'cerrado'; 
+  estado: 'pendiente' | 'en_proceso' | 'completado' | 'cerrado';
   fecha_creacion: string;
   fecha_limite: string | null;
   ubicacion: number | null;
-  usuario_creador: number; 
+  usuario_creador: number;
   tecnico_asignado: number | null;
 }
 
@@ -44,10 +45,11 @@ export class ServiceDetailComponent implements OnInit {
   apiBaseUrl = 'https://fixflow-backend.onrender.com/api/tickets/';
   usersApiUrl = 'https://fixflow-backend.onrender.com/api/usuarios/';
   locationsApiUrl = 'https://fixflow-backend.onrender.com/api/ubicaciones/';
-  
+
   users: User[] = [];
   ubicaciones: Ubicacion[] = [];
   creatorName: string = 'Cargando...';
+  assignedTechnicianName: string = 'Cargando...';
   locationName: string = 'Cargando...';
 
   isEditing = false;
