@@ -29,12 +29,61 @@
     <router-outlet *ngIf="router.url.includes('/reports/new') || router.url.includes('/reports/message-report-form')"></router-outlet>
 
     <div class="report-content-area card" *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')" style="background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px; padding: 20px; margin-bottom: 20px;">
+
         <div *ngIf="selectedReportType === 'overview'" class="overview-report">
             <h2 class="report-subtitle" style="font-size: 20px; color: #555; margin-bottom: 15px;">Resumen Ejecutivo de Servicios</h2>
             <div class="chart-container" style="position: relative; height: 300px;">
                 <canvas #overviewChart></canvas>
             </div>
             <p class="report-description" style="color: #777; margin-top: 10px;">Este gráfico muestra la distribución de todos los tickets por su estado actual (Pendiente, En Proceso, Cerrado).</p>
+
+            <div *ngIf="allReports.length > 0" class="reports-list" style="margin-top: 30px;">
+                <h3 style="font-size: 18px; color: #555; margin-bottom: 10px;">Reportes Existentes</h3>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead style="background-color: #ddd;">
+                            <tr>
+                                <th style="padding: 10px; border: 1px solid #ccc;">ID</th>
+                                <th style="padding: 10px; border: 1px solid #ccc;">Título del Ticket</th>
+                                <th style="padding: 10px; border: 1px solid #ccc;">Técnico</th>
+                                <th style="padding: 10px; border: 1px solid #ccc;">Ubicación</th>
+                                <th style="padding: 10px; border: 1px solid #ccc;">Descripción</th>
+                                <th style="padding: 10px; border: 1px solid #ccc;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let report of allReports" style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 10px; border: 1px solid #ccc;">{{ report.id }}</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">{{ report.ticket }}</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">{{ report.tecnico }}</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">{{ report.ubicacion }}</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">{{ report.descripcion }}</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">
+                                    <a [href]="'https://fixflow-backend.onrender.com/api/reportes/' + report.id + '/exportar_reporte/'" target="_blank" download>
+                                        <button class="btn btn-sm btn-info" style="background-color: #17a2b8; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                                            <i class="material-icons" style="vertical-align: middle;">picture_as_pdf</i>
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div *ngIf="reportMessages.length > 0" class="report-messages-section" style="margin-top: 30px;">
+                <h3 style="font-size: 18px; color: #555; margin-bottom: 15px;">Mensajes de Reportes</h3>
+                <div class="messages-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    <div *ngFor="let message of reportMessages" class="message-card" style="border: 1px solid #ccc; border-radius: 8px; padding: 15px; width: 300px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); background-color: white;">
+                        <p style="font-weight: bold; margin-bottom: 5px;">Reporte: {{ message.reporteDescripcion }}</p>
+                        <p style="color: #777; font-size: 14px; margin-bottom: 10px;">Fecha: {{ message.fecha | date:'short' }}</p>
+                        <p>{{ message.mensaje }}</p>
+                        <div *ngIf="message.imagen" class="message-image" style="margin-top: 10px; text-align: center;">
+                            <img [src]="message.imagen" alt="Imagen del mensaje" style="max-width: 100%; height: auto; border-radius: 5px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div *ngIf="selectedReportType === 'ticketsByTechnician'" class="chart-report">

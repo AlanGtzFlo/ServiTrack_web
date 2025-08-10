@@ -1,32 +1,229 @@
 // src/app/public-portal/feedback-form/feedback-form.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Necesario para ngModel en el formulario
+import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-feedback-form',
   standalone: true,
-  imports: [CommonModule, FormsModule], // Importar FormsModule
-  templateUrl: './feedback-form.component.html',
-  styleUrls: ['./feedback-form.component.scss']
+  imports: [CommonModule, FormsModule, HttpClientModule],
+  template: `
+    <div class="form-container">
+      <div class="form-header">
+        <h1 class="page-title">Déjanos tu Comentario</h1>
+        <p class="page-description">Tu opinión es muy importante para nosotros. Ayúdanos a mejorar nuestros servicios.</p>
+      </div>
+
+      <div class="feedback-form-card">
+        <form (ngSubmit)="submitFeedback()">
+          <div class="form-group">
+            <label for="calificacion">Calificación</label>
+            <div class="rating-stars">
+              <span class="material-icons star"
+                    *ngFor="let star of [1, 2, 3, 4, 5]"
+                    [ngClass]="{'filled': star <= feedback.calificacion}"
+                    (click)="setRating(star)">
+                star
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="comentario">Comentario</label>
+            <textarea id="comentario" name="comentario" [(ngModel)]="feedback.comentario" rows="5" placeholder="Escribe tu experiencia aquí..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="ticket">Ticket</label>
+            <select id="ticket" name="ticket" [(ngModel)]="feedback.ticket" (ngModelChange)="onTicketChange()" required>
+              <option value="" disabled>Selecciona un Ticket</option>
+              <option *ngFor="let ticket of tickets" [ngValue]="ticket.id">
+                {{ ticket.titulo }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="tecnico">Técnico</label>
+            <input type="text" id="tecnico" name="tecnico" [value]="tecnicoSeleccionado ? tecnicoSeleccionado.nombre : '-----'" disabled>
+          </div>
+
+          <div *ngIf="errorMessage" class="alert alert-error">
+            {{ errorMessage }}
+          </div>
+
+          <div *ngIf="submitted" class="alert alert-success">
+            ¡Gracias por tu comentario! Lo valoramos mucho.
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">POST</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .form-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: #f0f2f5;
+      border-radius: 8px;
+    }
+    .form-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .page-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #333;
+    }
+    .page-description {
+      color: #777;
+    }
+    .feedback-form-card {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+    .form-group input[type="text"],
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+    .form-group input[type="text"]:disabled {
+      background-color: #f8f8f8;
+    }
+    .form-group textarea {
+      resize: vertical;
+    }
+    .rating-stars {
+      display: flex;
+      align-items: center;
+    }
+    .rating-stars .star {
+      font-size: 2rem;
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.2s ease-in-out;
+    }
+    .rating-stars .star.filled {
+      color: #f6ad55;
+    }
+    .alert {
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .form-actions {
+      text-align: right;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      color: #fff;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s ease-in-out;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+  `],
 })
 export class FeedbackFormComponent implements OnInit {
+  // URL de la API
+  private apiUrl = 'https://fixflow-backend.onrender.com/api';
 
   // Modelo para el formulario de feedback
   feedback = {
-    serviceCode: '',
-    rating: 0, // Escala de 1 a 5
-    comment: '',
-    name: '',
-    email: ''
+    calificacion: 0,
+    comentario: '',
+    ticket: null,
+    tecnico: null
   };
 
-  submitted: boolean = false; // Para mostrar mensaje de éxito
-  errorMessage: string = ''; // Para mostrar errores de validación
+  submitted: boolean = false;
+  errorMessage: string = '';
+  tickets: any[] = [];
+  tecnicos: any[] = [];
+  tecnicoSeleccionado: any = null;
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.fetchTickets();
+    this.fetchTecnicos();
+  }
+
+  // Obtiene la lista de tickets de la API
+  fetchTickets(): void {
+    this.http.get<any[]>(`${this.apiUrl}/tickets/`).subscribe({
+      next: (data) => {
+        this.tickets = data;
+      },
+      error: (err) => {
+        console.error('Error al obtener los tickets:', err);
+        this.errorMessage = 'No se pudieron cargar los tickets. Inténtalo de nuevo más tarde.';
+      }
+    });
+  }
+
+  // Obtiene la lista de técnicos de la API
+  fetchTecnicos(): void {
+    this.http.get<any[]>(`${this.apiUrl}/usuarios/`).subscribe({
+      next: (data) => {
+        // Filtra solo los usuarios que tienen el rol de 'tecnico'
+        this.tecnicos = data.filter(user => user.rol === 'tecnico');
+      },
+      error: (err) => {
+        console.error('Error al obtener los técnicos:', err);
+        this.errorMessage = 'No se pudieron cargar los técnicos. Inténtalo de nuevo más tarde.';
+      }
+    });
+  }
+
+  // Maneja el cambio de selección del ticket
+  onTicketChange(): void {
+    const selectedTicket = this.tickets.find(t => t.id === this.feedback.ticket);
+    if (selectedTicket) {
+      // Busca el técnico por el ID asignado en el ticket
+      this.tecnicoSeleccionado = this.tecnicos.find(t => t.id === selectedTicket.tecnico_asignado);
+      this.feedback.tecnico = this.tecnicoSeleccionado ? this.tecnicoSeleccionado.id : null;
+    } else {
+      this.tecnicoSeleccionado = null;
+      this.feedback.tecnico = null;
+    }
   }
 
   // Método para manejar el envío del formulario
@@ -34,25 +231,38 @@ export class FeedbackFormComponent implements OnInit {
     this.submitted = false;
     this.errorMessage = '';
 
-    // Validación básica
-    if (!this.feedback.serviceCode || !this.feedback.rating || !this.feedback.comment || !this.feedback.name || !this.feedback.email) {
-      this.errorMessage = 'Por favor, completa todos los campos.';
+    // Validación
+    if (!this.feedback.calificacion || !this.feedback.comentario || !this.feedback.ticket || !this.feedback.tecnico) {
+      this.errorMessage = 'Por favor, completa todos los campos requeridos.';
       return;
     }
 
-    // Aquí iría la lógica para enviar el feedback a un servicio/API
-    console.log('Comentario enviado:', this.feedback);
+    // El objeto a enviar debe coincidir con la estructura de la API
+    const feedbackData = {
+      calificacion: this.feedback.calificacion,
+      comentario: this.feedback.comentario,
+      ticket: this.feedback.ticket,
+      tecnico: this.feedback.tecnico
+    };
 
-    // Simulación de éxito
-    this.submitted = true;
-    // Resetear el formulario después de un envío exitoso (opcional)
-    this.feedback = { serviceCode: '', rating: 0, comment: '', name: '', email: '' };
-
-    // En un caso real, podrías redirigir al usuario o mostrar un modal de éxito más sofisticado.
+    // Envía el feedback a la API
+    this.http.post(`${this.apiUrl}/satisfaccion/`, feedbackData).subscribe({
+      next: (response) => {
+        console.log('Comentario enviado:', response);
+        this.submitted = true;
+        // Resetear el formulario
+        this.feedback = { calificacion: 0, comentario: '', ticket: null, tecnico: null };
+        this.tecnicoSeleccionado = null;
+      },
+      error: (err) => {
+        console.error('Error al enviar el comentario:', err);
+        this.errorMessage = 'Ocurrió un error al enviar tu comentario. Inténtalo de nuevo.';
+      }
+    });
   }
 
-  // Para manejar el cambio de calificación por estrellas si se implementa
+  // Para manejar el cambio de calificación por estrellas
   setRating(stars: number): void {
-    this.feedback.rating = stars;
+    this.feedback.calificacion = stars;
   }
 }
