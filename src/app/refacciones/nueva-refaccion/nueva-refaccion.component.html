@@ -1,45 +1,75 @@
-<div class="new-refaccion-container">
-  <div class="card form-card">
-    <div class="form-header">
-      <a routerLink="/refacciones" class="back-link">
-        <i class="material-icons">arrow_back</i> Volver a Refacciones
+<div class="new-refaccion-container p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="card form-card bg-white p-8 rounded-lg shadow-xl w-full max-w-2xl">
+    <div class="form-header flex items-center justify-between mb-6 border-b pb-4">
+      <a routerLink="/refacciones" class="back-link flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+        Volver a Refacciones
       </a>
-      <h2>Nueva Refacción</h2>
+      <h2 class="text-2xl font-semibold text-gray-800">Nueva Refacción</h2>
     </div>
 
-    <form (ngSubmit)="crearRefaccion()">
-      <div class="form-grid">
+    <form (ngSubmit)="crearRefaccion()" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Nombre de la Refacción -->
         <div class="form-group">
-          <label for="nombre">Nombre de la Refacción:</label>
-          <input type="text" id="nombre" name="nombre" [(ngModel)]="refaccion.nombre" required class="form-control">
+          <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Refacción:</label>
+          <input type="text" id="nombre" name="nombre" [(ngModel)]="refaccion.nombre" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
+        <!-- Código de Pieza -->
         <div class="form-group">
-          <label for="codigo_pieza">Código de Pieza:</label>
-          <input type="text" id="codigo_pieza" name="codigo_pieza" [(ngModel)]="refaccion.codigo_pieza" required class="form-control">
+          <label for="codigo" class="block text-sm font-medium text-gray-700 mb-1">Código de Pieza:</label>
+          <input type="text" id="codigo" name="codigo" [(ngModel)]="refaccion.codigo" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
       </div>
 
-      <div class="form-group full-width">
-        <label for="descripcion">Descripción:</label>
-        <textarea id="descripcion" name="descripcion" [(ngModel)]="refaccion.descripcion" rows="4" class="form-control"></textarea>
+      <!-- Descripción -->
+      <div class="form-group">
+        <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-1">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" [(ngModel)]="refaccion.descripcion" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
       </div>
 
-      <div class="form-group full-width">
-        <label for="fabricante">Fabricante:</label>
-        <input type="text" id="fabricante" name="fabricante" [(ngModel)]="refaccion.fabricante" class="form-control">
+      <!-- Fabricante -->
+      <div class="form-group">
+        <label for="fabricante" class="block text-sm font-medium text-gray-700 mb-1">Fabricante:</label>
+        <input type="text" id="fabricante" name="fabricante" [(ngModel)]="refaccion.fabricante" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
       </div>
 
-      <div class="form-group full-width">
-        <label for="imagen">URL de la Imagen (opcional):</label>
-        <input type="url" id="imagen" name="imagen" [(ngModel)]="refaccion.imagen" class="form-control">
-        <small class="form-text-muted">Pega aquí la URL de una imagen de la refacción.</small>
+      <!-- Vida Útil Estimada -->
+      <div class="form-group">
+        <label for="vida_util_estimada" class="block text-sm font-medium text-gray-700 mb-1">Vida Útil Estimada:</label>
+        <input type="text" id="vida_util_estimada" name="vida_util_estimada" [(ngModel)]="refaccion.vida_util_estimada" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
       </div>
 
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" routerLink="/refacciones">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Crear Refacción</button>
+      <!-- Campo de Subida de Imagen (requerido) -->
+      <div class="form-group">
+        <label for="imagen" class="block text-sm font-medium text-gray-700 mb-1">Imagen de la Refacción:</label>
+        <input type="file" id="imagen" name="imagen" (change)="onFileSelected($event)" required class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        <p *ngIf="selectedFile" class="mt-2 text-sm text-gray-600">Archivo seleccionado: {{ selectedFile.name }}</p>
+      </div>
+
+      <!-- Estatus -->
+      <div class="form-group">
+        <label for="estatus" class="inline-flex items-center">
+          <input type="checkbox" id="estatus" name="estatus" [(ngModel)]="refaccion.estatus" class="form-checkbox h-5 w-5 text-blue-600 rounded">
+          <span class="ml-2 text-gray-700">Estatus activo</span>
+        </label>
+      </div>
+
+      <!-- Acciones del formulario -->
+      <div class="form-actions flex justify-end space-x-4 mt-6">
+        <button type="button" class="btn btn-secondary px-6 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50" routerLink="/refacciones">Cancelar</button>
+        <button type="submit" class="btn btn-primary px-6 py-2 rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="!selectedFile">Crear Refacción</button>
       </div>
     </form>
   </div>
 </div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+</style>

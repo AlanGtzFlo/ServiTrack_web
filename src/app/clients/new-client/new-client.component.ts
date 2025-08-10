@@ -45,7 +45,7 @@ export class NewClientComponent implements OnInit {
   isEditing = false;
   clientId: number | null = null;
 
-  private apiUrl = 'http://18.222.150.133/api/clientes/';
+  private apiUrl = 'https://fixflow-backend.onrender.com/api/clientes/';
 
   constructor(
     private route: ActivatedRoute,

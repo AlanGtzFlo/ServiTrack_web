@@ -1,11 +1,12 @@
-// src/app/reports/reports.component.ts
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router'; // ¡Importación corregida! Se ha añadido RouterModule
-import Chart from 'chart.js/auto'; // Importa Chart.js
+import { Router, RouterModule } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import Chart from 'chart.js/auto';
 
-// Definición de colores para Chart.js
 const COLORS = {
   yellowOrange: '#F4A300',
   teal: '#006D77',
@@ -16,474 +17,215 @@ const COLORS = {
   softRed: '#E74C3C',
   mediumGray: '#757575',
   darkGray: '#424242',
-  // Colores adicionales para las gráficas si es necesario
   blueChart: '#007BFF',
   greenChart: '#28A745',
   orangeChart: '#FFC107',
   redChart: '#DC3545',
-  lightBlue: '#ADD8E6',
-  lightGreen: '#90EE90',
-  lightOrange: '#FFD700',
-  lightRed: '#FFA07A',
 };
+
+// Interfaz para el conteo de estados de tickets totales
+interface ContarEstadosTotalesResponse {
+  en_proceso: number;
+  pendiente: number;
+  cerrado: number;
+}
+
+// Interfaz para la respuesta de tickets por técnico por cantidad
+// (Adaptada a la estructura {"id_tecnico": cantidad_tickets})
+interface TicketsPorTecnicoCantidadResponse {
+    [tecnicoId: string]: number;
+}
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  // La clave es añadir RouterModule aquí para que 'router-outlet' sea reconocido
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, HttpClientModule],
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss']
 })
 export class ReportsComponent implements OnInit, AfterViewInit {
-  selectedReportType: 'overview' | 'servicesByStatus' | 'servicesByTechnician' | 'clientsOverview' = 'overview';
-
-  // Datos para Reporte de Visión General
+  selectedReportType: 'overview' | 'ticketsByTechnician' = 'overview';
+  
+  private contarEstadosTotalesApiUrl = 'https://fixflow-backend.onrender.com/api/tickets/contar_estados_totales/';
+  // El endpoint correcto que devuelve el conteo total de tickets por técnico
+  private ticketsPorTecnicoApiUrl = 'https://fixflow-backend.onrender.com/api/tickets/por_tecnico/'; 
+  
   overviewStats = {
-    totalServices: 1250,
-    openServices: 180,
-    closedServices: 1070,
-    averageResolutionTime: '2.5 días',
-    topTechnician: 'Carlos Ruiz',
-    newClientsLastMonth: 15,
-    totalClientsRegistered: 250
+    en_proceso: 0,
+    pendiente: 0,
+    cerrado: 0,
   };
 
-  // Datos para Resumen de Clientes
-  clientsOverviewStats = {
-    totalClients: 250,
-    activeClients: 180,
-    vipClients: 25,
-    averageServicesPerClient: '4.2',
-    mainIndustries: [
-      { name: 'Manufactura', count: 80 },
-      { name: 'Logística', count: 60 },
-      { name: 'Retail', count: 50 },
-      { name: 'Construcción', count: 30 },
-      { name: 'Servicios', count: 30 }
-    ]
-  };
+  ticketsPorTecnicoData: TicketsPorTecnicoCantidadResponse | null = null;
+  
+  @ViewChild('overviewChart') overviewChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('ticketsByTechnicianChart') ticketsByTechnicianChartRef!: ElementRef<HTMLCanvasElement>;
 
-  // Referencias a los elementos canvas en el HTML
-  @ViewChild('servicesStatusChart') servicesStatusChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('technicianPerformanceChart') technicianPerformanceChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('totalServicesChart') totalServicesChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('openServicesChart') openServicesChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('closedServicesChart') closedServicesChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('newClientsChart') newClientsChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('activeClientsChart') activeClientsChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('vipClientsChart') vipClientsChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('industriesChart') industriesChartRef!: ElementRef<HTMLCanvasElement>;
+  overviewChart: Chart | null = null;
+  ticketsByTechnicianChart: Chart | null = null;
 
-  // Instancias de Chart.js
-  servicesStatusChart: Chart | null = null;
-  technicianPerformanceChart: Chart | null = null;
-  totalServicesChart: Chart | null = null;
-  openServicesChart: Chart | null = null;
-  closedServicesChart: Chart | null = null;
-  newClientsChart: Chart | null = null;
-  activeClientsChart: Chart | null = null;
-  vipClientsChart: Chart | null = null;
-  industriesChart: Chart | null = null;
+  constructor(public router: Router, private http: HttpClient) { }
 
-  // Inyecta el servicio Router en el constructor
-  constructor(public router: Router) { }
-
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.fetchDataForReport();
+  }
 
   ngAfterViewInit(): void {
     this.renderCharts();
   }
 
-  // Método para (re)renderizar los gráficos cuando cambia el tipo de reporte
-  renderCharts(): void {
-    // Destruir todos los gráficos existentes para evitar duplicados y problemas de memoria
+  fetchDataForReport(): void {
     this.destroyCharts();
-
-    // Renderizar gráficos según el tipo de reporte seleccionado
-    if (this.selectedReportType === 'overview') {
-      this.createTotalServicesChart();
-      this.createOpenServicesChart();
-      this.createClosedServicesChart();
-      this.createNewClientsChart();
-    } else if (this.selectedReportType === 'servicesByStatus') {
-      this.createServicesStatusChart();
-    } else if (this.selectedReportType === 'servicesByTechnician') {
-      this.createTechnicianPerformanceChart();
-    } else if (this.selectedReportType === 'clientsOverview') {
-      this.createActiveClientsChart();
-      this.createVipClientsChart();
-      this.createIndustriesChart();
+    switch (this.selectedReportType) {
+      case 'overview':
+        this.fetchOverviewData();
+        break;
+      case 'ticketsByTechnician':
+        this.fetchTicketsByTechnicianData();
+        break;
     }
   }
 
-  // Destruye todas las instancias de Chart.js
+  fetchOverviewData(): void {
+    this.http.get<ContarEstadosTotalesResponse>(this.contarEstadosTotalesApiUrl).pipe(
+      catchError(error => {
+        console.error('Error al obtener datos de estados totales:', error);
+        return of({ en_proceso: 0, pendiente: 0, cerrado: 0 });
+      })
+    ).subscribe(data => {
+      this.overviewStats = data;
+      this.renderCharts();
+    });
+  }
+
+  fetchTicketsByTechnicianData(): void {
+    // Se utiliza el endpoint correcto que devuelve el conteo total de tickets por técnico
+    this.http.get<TicketsPorTecnicoCantidadResponse>(this.ticketsPorTecnicoApiUrl).pipe(
+      catchError(error => {
+        console.error('Error al obtener datos de tickets por técnico:', error);
+        return of({});
+      })
+    ).subscribe(data => {
+      this.ticketsPorTecnicoData = data;
+      this.renderCharts();
+    });
+  }
+
+  onReportTypeChange(): void {
+    this.fetchDataForReport();
+  }
+
+  renderCharts(): void {
+    this.destroyCharts();
+    switch (this.selectedReportType) {
+      case 'overview':
+        this.createOverviewChart();
+        break;
+      case 'ticketsByTechnician':
+        this.createTicketsByTechnicianChart();
+        break;
+    }
+  }
+
   destroyCharts(): void {
-    if (this.servicesStatusChart) { this.servicesStatusChart.destroy(); this.servicesStatusChart = null; }
-    if (this.technicianPerformanceChart) { this.technicianPerformanceChart.destroy(); this.technicianPerformanceChart = null; }
-    if (this.totalServicesChart) { this.totalServicesChart.destroy(); this.totalServicesChart = null; }
-    if (this.openServicesChart) { this.openServicesChart.destroy(); this.openServicesChart = null; }
-    if (this.closedServicesChart) { this.closedServicesChart.destroy(); this.closedServicesChart = null; }
-    if (this.newClientsChart) { this.newClientsChart.destroy(); this.newClientsChart = null; }
-    if (this.activeClientsChart) { this.activeClientsChart.destroy(); this.activeClientsChart = null; }
-    if (this.vipClientsChart) { this.vipClientsChart.destroy(); this.vipClientsChart = null; }
-    if (this.industriesChart) { this.industriesChart.destroy(); this.industriesChart = null; }
+    if (this.overviewChart) this.overviewChart.destroy();
+    if (this.ticketsByTechnicianChart) this.ticketsByTechnicianChart.destroy();
   }
 
-
-  // --- Gráficas para Visión General (Overview) ---
-
-  createTotalServicesChart(): void {
-    if (!this.totalServicesChartRef) return;
-    const ctx = this.totalServicesChartRef.nativeElement.getContext('2d');
+  createOverviewChart(): void {
+    if (!this.overviewChartRef) return;
+    const ctx = this.overviewChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
-    this.totalServicesChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Total'],
-        datasets: [{
-          label: 'Servicios',
-          data: [this.overviewStats.totalServices],
-          backgroundColor: COLORS.darkBlue,
-          borderColor: COLORS.darkBlue,
-          borderWidth: 1,
-          borderRadius: 5, // Bordes redondeados para la barra
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        indexAxis: 'y', // Barra horizontal
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.parsed.x} Servicios`
-            }
-          }
-        },
-        scales: {
-          x: { display: false, beginAtZero: true, grid: { display: false } },
-          y: { display: false, grid: { display: false } }
-        }
-      }
-    });
-  }
 
-  createOpenServicesChart(): void {
-    if (!this.openServicesChartRef) return;
-    const ctx = this.openServicesChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
-    this.openServicesChart = new Chart(ctx, {
-      type: 'doughnut',
+    const dataLabels = ['Pendiente', 'En Proceso', 'Cerrado'];
+    const dataValues = [
+      this.overviewStats.pendiente,
+      this.overviewStats.en_proceso,
+      this.overviewStats.cerrado
+    ];
+    
+    this.overviewChart = new Chart(ctx, {
+      type: 'pie',
       data: {
-        labels: ['Abiertos', 'Cerrados'],
+        labels: dataLabels,
         datasets: [{
-          data: [this.overviewStats.openServices, this.overviewStats.closedServices],
-          backgroundColor: [COLORS.yellowOrange, COLORS.lightGray],
-          borderColor: [COLORS.yellowOrange, COLORS.lightGray],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '70%',
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.label}: ${context.parsed}%`
-            }
-          }
-        }
-      }
-    });
-  }
-
-  createClosedServicesChart(): void {
-    if (!this.closedServicesChartRef) return;
-    const ctx = this.closedServicesChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
-    this.closedServicesChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Cerrados', 'Abiertos'],
-        datasets: [{
-          data: [this.overviewStats.closedServices, this.overviewStats.openServices],
-          backgroundColor: [COLORS.successGreen, COLORS.lightGray],
-          borderColor: [COLORS.successGreen, COLORS.lightGray],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '70%',
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.label}: ${context.parsed}%`
-            }
-          }
-        }
-      }
-    });
-  }
-
-  createNewClientsChart(): void {
-    if (!this.newClientsChartRef) return;
-    const ctx = this.newClientsChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
-    this.newClientsChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Nuevos Clientes'],
-        datasets: [{
-          label: 'Clientes',
-          data: [this.overviewStats.newClientsLastMonth],
-          backgroundColor: COLORS.teal,
-          borderColor: COLORS.teal,
-          borderWidth: 1,
-          borderRadius: 5,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        indexAxis: 'y',
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.parsed.x} Clientes`
-            }
-          }
-        },
-        scales: {
-          x: { display: false, beginAtZero: true, grid: { display: false } },
-          y: { display: false, grid: { display: false } }
-        }
-      }
-    });
-  }
-
-  // --- Gráficas para Servicios por Estado (ya existente) ---
-  createServicesStatusChart(): void {
-    if (!this.servicesStatusChartRef) return;
-    const ctx = this.servicesStatusChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
-    this.servicesStatusChart = new Chart(this.servicesStatusChartRef.nativeElement, {
-      type: 'doughnut',
-      data: {
-        labels: ['Pendiente', 'Asignado', 'En Proceso', 'Concluido', 'Cerrado', 'Cancelado'],
-        datasets: [{
-          data: [50, 30, 40, 80, 70, 10], // Valores simulados
+          label: 'Tickets',
+          data: dataValues,
           backgroundColor: [
-            COLORS.orangeChart, // Pendiente (Amarillo)
-            COLORS.greenChart, // Asignado (Verde)
-            COLORS.blueChart, // En Proceso (Azul)
-            COLORS.mediumGray, // Concluido (Gris - para distinguirlo de Cerrado que es éxito final)
-            COLORS.successGreen, // Cerrado (Verde agua - éxito final)
-            COLORS.softRed // Cancelado (Rojo)
+            COLORS.yellowOrange,
+            COLORS.blueChart,
+            COLORS.successGreen
           ],
           hoverOffset: 4
         }]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'top',
+            position: 'right',
+            align: 'center',
+            labels: {
+              usePointStyle: true
+            }
           },
           title: {
             display: true,
-            text: 'Servicios por Estado'
+            text: 'Resumen General de Tickets por Estado'
           }
         }
       }
     });
   }
 
-  // --- Gráficas para Rendimiento de Técnicos (ya existente) ---
-  createTechnicianPerformanceChart(): void {
-    if (!this.technicianPerformanceChartRef) return;
-    const ctx = this.technicianPerformanceChartRef.nativeElement.getContext('2d');
+  createTicketsByTechnicianChart(): void {
+    if (!this.ticketsByTechnicianChartRef || !this.ticketsPorTecnicoData) return;
+    const ctx = this.ticketsByTechnicianChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
-    this.technicianPerformanceChart = new Chart(this.technicianPerformanceChartRef.nativeElement, {
+
+    // Obtener los IDs de los técnicos y sus conteos de tickets
+    const technicianIds = Object.keys(this.ticketsPorTecnicoData);
+    const ticketCounts = Object.values(this.ticketsPorTecnicoData);
+    
+    this.ticketsByTechnicianChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Carlos Ruiz', 'Ana García', 'Miguel Soto', 'Juan Pérez', 'Laura G.'],
-        datasets: [{
-          label: 'Servicios Completados',
-          data: [45, 30, 20, 18, 12], // Valores simulados
-          backgroundColor: COLORS.blueChart, // Azul
-          borderColor: COLORS.blueChart,
-          borderWidth: 1
-        }]
+        labels: technicianIds.map(id => `Técnico ${id}`),
+        datasets: [
+          {
+            label: 'Cantidad Total de Tickets',
+            data: ticketCounts,
+            backgroundColor: COLORS.blueChart,
+            borderColor: COLORS.darkBlue,
+            borderWidth: 1
+          }
+        ]
       },
       options: {
         responsive: true,
-        plugins: {
-          legend: {
-            display: false,
+        maintainAspectRatio: false,
+        scales: {
+          y: { 
+            beginAtZero: true,
+            title: { display: true, text: 'Cantidad de Tickets' }
           },
-          title: {
-            display: true,
-            text: 'Servicios Completados por Técnico'
+          x: { 
+            title: { display: true, text: 'Técnico' }
           }
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Cantidad de Servicios'
-            }
-          },
-          x: {
-            title: {
-              display: true,
-              text: 'Técnico'
-            }
-          }
-        }
-      }
-    });
-  }
-
-  // --- Gráficas para Resumen de Clientes (Clients Overview) ---
-
-  createActiveClientsChart(): void {
-    if (!this.activeClientsChartRef) return;
-    const ctx = this.activeClientsChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
-    this.activeClientsChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Activos', 'Inactivos'],
-        datasets: [{
-          data: [this.clientsOverviewStats.activeClients, this.clientsOverviewStats.totalClients - this.clientsOverviewStats.activeClients],
-          backgroundColor: [COLORS.successGreen, COLORS.lightGray],
-          borderColor: [COLORS.successGreen, COLORS.lightGray],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '70%',
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.label}: ${context.parsed}%`
-            }
-          }
-        }
-      }
-    });
-  }
-
-  createVipClientsChart(): void {
-    if (!this.vipClientsChartRef) return;
-    const ctx = this.vipClientsChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
-    this.vipClientsChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['VIP', 'No VIP'],
-        datasets: [{
-          data: [this.clientsOverviewStats.vipClients, this.clientsOverviewStats.totalClients - this.clientsOverviewStats.vipClients],
-          backgroundColor: [COLORS.yellowOrange, COLORS.lightGray],
-          borderColor: [COLORS.yellowOrange, COLORS.lightGray],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '70%',
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.label}: ${context.parsed}%`
-            }
-          }
-        }
-      }
-    });
-  }
-
-  createIndustriesChart(): void {
-    if (!this.industriesChartRef) return;
-    const ctx = this.industriesChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
-    this.industriesChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: this.clientsOverviewStats.mainIndustries.map(i => i.name),
-        datasets: [{
-          label: 'Número de Clientes',
-          data: this.clientsOverviewStats.mainIndustries.map(i => i.count),
-          backgroundColor: [
-            COLORS.teal,
-            COLORS.blueChart,
-            COLORS.orangeChart,
-            COLORS.successGreen,
-            COLORS.softRed
-          ],
-          borderColor: [
-            COLORS.teal,
-            COLORS.blueChart,
-            COLORS.orangeChart,
-            COLORS.successGreen,
-            COLORS.softRed
-          ],
-          borderWidth: 1,
-          borderRadius: 5,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           title: {
             display: true,
-            text: 'Clientes por Industria Principal'
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Cantidad de Clientes'
-            }
-          },
-          x: {
-            title: {
-              display: true,
-              text: 'Industria'
-            }
+            text: 'Cantidad de Tickets por Técnico'
           }
         }
       }
     });
   }
 
-  // Método para manejar el cambio de tipo de reporte
-  onReportTypeChange(): void {
-    this.renderCharts(); // Vuelve a renderizar los gráficos al cambiar la selección
-  }
-
-  // Simulación de descarga de reporte
   downloadReport(): void {
-    // Reemplaza alert con un mensaje en la UI o un modal
-    console.log(`Descargando reporte de tipo: ${this.selectedReportType} (simulado).`);
-    // En un caso real, aquí harías una llamada a una API para generar y descargar un PDF/CSV.
+    console.log(`Descargando reporte de tipo: ${this.selectedReportType}`);
   }
 }

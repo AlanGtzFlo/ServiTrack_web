@@ -1,112 +1,52 @@
-<div class="reports-container">
-  <div class="section-header">
-    <h1 class="section-title">Panel de Reportes</h1>
-    <div class="header-actions">
-      <ng-container *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
-        <button class="btn btn-secondary" routerLink="new">
-          <i class="material-icons">add</i> Nuevo reporte
-        </button>
-      </ng-container>
+<div class="reports-container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 class="section-title" style="font-size: 24px; color: #333;">Panel de Reportes</h1>
+        <div class="header-actions" style="display: flex; gap: 10px;">
+            <ng-container *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
+                <button class="btn btn-secondary" routerLink="new" style="background-color: #6c757d; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                    <i class="material-icons" style="vertical-align: middle;">add</i> Nuevo reporte
+                </button>
+            </ng-container>
 
-      <ng-container *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
-        <button class="btn btn-secondary" routerLink="message-report-form">
-          <i class="material-icons">add_comment</i> Nuevo Mensaje de Reporte
-        </button>
-      </ng-container>
+            <ng-container *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
+                <button class="btn btn-secondary" routerLink="message-report-form" style="background-color: #6c757d; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                    <i class="material-icons" style="vertical-align: middle;">add_comment</i> Nuevo Mensaje de Reporte
+                </button>
+            </ng-container>
 
-      <ng-container *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
-        <select [(ngModel)]="selectedReportType" (change)="onReportTypeChange()" class="filter-dropdown">
-          <option value="overview">Visión General</option>
-          <option value="servicesByStatus">Servicios por Estado</option>
-          <option value="servicesByTechnician">Rendimiento de Técnicos</option>
-          <option value="clientsOverview">Resumen de Clientes</option>
-        </select>
-        <button class="btn btn-primary" (click)="downloadReport()">
-          <i class="material-icons">download</i> Descargar Reporte
-        </button>
-      </ng-container>
-    </div>
-  </div>
-
-  <router-outlet *ngIf="router.url.includes('/reports/new') || router.url.includes('/reports/message-report-form')"></router-outlet>
-
-  <div class="report-content-area card" *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
-    <div *ngIf="selectedReportType === 'overview'" class="overview-report">
-      <h2 class="report-subtitle">Resumen Ejecutivo de Servicios</h2>
-      <div class="overview-stats-grid">
-        <div class="stat-card">
-          <i class="material-icons stat-icon">assignment</i>
-          <h3 class="stat-label">Total de Servicios</h3>
-          <canvas #totalServicesChart></canvas>
+            <ng-container *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')">
+                <select [(ngModel)]="selectedReportType" (change)="onReportTypeChange()" class="filter-dropdown" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;">
+                    <option value="overview">Visión General</option>
+                    <option value="ticketsByTechnician">Tickets por Técnico</option>
+                </select>
+                <button class="btn btn-primary" (click)="downloadReport()" style="background-color: #007bff; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                    <i class="material-icons" style="vertical-align: middle;">download</i> Descargar Reporte
+                </button>
+            </ng-container>
         </div>
-        <div class="stat-card open">
-          <i class="material-icons stat-icon">assignment_late</i>
-          <h3 class="stat-label">Servicios Abiertos</h3>
-          <canvas #openServicesChart></canvas>
-        </div>
-        <div class="stat-card closed">
-          <i class="material-icons stat-icon">assignment_turned_in</i>
-          <h3 class="stat-label">Servicios Cerrados</h3>
-          <canvas #closedServicesChart></canvas>
-        </div>
-        <div class="stat-card">
-          <i class="material-icons stat-icon">timer</i>
-          <h3 class="stat-label">Tiempo Prom. Resolución</h3>
-          <p class="stat-value">{{ overviewStats?.averageResolutionTime }}</p>
-        </div>
-        <div class="stat-card">
-          <i class="material-icons stat-icon">person_pin</i>
-          <h3 class="stat-label">Mejor Técnico (Mes)</h3>
-          <p class="stat-value">{{ overviewStats?.topTechnician }}</p>
-        </div>
-        <div class="stat-card">
-          <i class="material-icons stat-icon">group_add</i>
-          <h3 class="stat-label">Nuevos Clientes (Último Mes)</h3>
-          <canvas #newClientsChart></canvas>
-        </div>
-      </div>
-      <p class="report-description">Este resumen proporciona una vista rápida del estado general de la operación de servicios.</p>
     </div>
 
-    <div *ngIf="selectedReportType === 'servicesByStatus'" class="chart-report">
-      <h2 class="report-subtitle">Distribución de Servicios por Estado</h2>
-      <div class="chart-container">
-        <canvas #servicesStatusChart></canvas>
-      </div>
-      <p class="report-description">Visualiza la proporción de servicios en cada estado (Pendiente, Asignado, En Proceso, Concluido, Cerrado, Cancelado).</p>
-    </div>
+    <router-outlet *ngIf="router.url.includes('/reports/new') || router.url.includes('/reports/message-report-form')"></router-outlet>
 
-    <div *ngIf="selectedReportType === 'servicesByTechnician'" class="chart-report">
-      <h2 class="report-subtitle">Servicios Completados por Técnico</h2>
-      <div class="chart-container">
-        <canvas #technicianPerformanceChart></canvas>
-      </div>
-      <p class="report-description">Compara el número de servicios completados por cada técnico en un período determinado.</p>
-    </div>
-
-    <div *ngIf="selectedReportType === 'clientsOverview'" class="clients-report">
-      <h2 class="report-subtitle">Resumen Demográfico y de Actividad de Clientes</h2>
-      <div class="clients-stats-list">
-        <p><strong>Total de Clientes Registrados:</strong> {{ clientsOverviewStats?.totalClients }}</p>
-        <div class="stat-card-inline">
-          <h3 class="stat-label">Clientes Activos</h3>
-          <canvas #activeClientsChart></canvas>
+    <div class="report-content-area card" *ngIf="!router.url.includes('/reports/new') && !router.url.includes('/reports/message-report-form')" style="background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px; padding: 20px; margin-bottom: 20px;">
+        <div *ngIf="selectedReportType === 'overview'" class="overview-report">
+            <h2 class="report-subtitle" style="font-size: 20px; color: #555; margin-bottom: 15px;">Resumen Ejecutivo de Servicios</h2>
+            <div class="chart-container" style="position: relative; height: 300px;">
+                <canvas #overviewChart></canvas>
+            </div>
+            <p class="report-description" style="color: #777; margin-top: 10px;">Este gráfico muestra la distribución de todos los tickets por su estado actual (Pendiente, En Proceso, Cerrado).</p>
         </div>
-        <div class="stat-card-inline">
-          <h3 class="stat-label">Clientes VIP</h3>
-          <canvas #vipClientsChart></canvas>
-        </div>
-        <p><strong>Promedio de Servicios por Cliente:</strong> {{ clientsOverviewStats?.averageServicesPerClient }}</p>
-      </div>
-      <div class="chart-container">
-        <h3 class="report-subtitle">Clientes por Industria Principal</h3>
-        <canvas #industriesChart></canvas>
-      </div>
-      <p class="report-description">Este reporte ofrece una vista general de la base de clientes y su interacción con FixFlow.</p>
-    </div>
 
-    <div *ngIf="!selectedReportType" class="no-report-selected">
-      <p>Selecciona un tipo de reporte para visualizarlo.</p>
+        <div *ngIf="selectedReportType === 'ticketsByTechnician'" class="chart-report">
+            <h2 class="report-subtitle" style="font-size: 20px; color: #555; margin-bottom: 15px;">Estados de Tickets por Técnico</h2>
+            <div class="chart-container-doughnut" style="position: relative; height: 400px;">
+                <canvas #ticketsByTechnicianChart></canvas>
+            </div>
+            <p class="report-description" style="color: #777; margin-top: 10px;">Este gráfico compara el número de tickets asignados a cada técnico, agrupados por su estado (Pendiente, En Proceso, Cerrado).</p>
+        </div>
+
+        <div *ngIf="!selectedReportType" class="no-report-selected" style="color: #999;">
+            <p>Selecciona un tipo de reporte para visualizarlo.</p>
+        </div>
     </div>
-  </div>
 </div>

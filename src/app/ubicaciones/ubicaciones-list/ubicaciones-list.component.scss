@@ -1,0 +1,166 @@
+/* src/app/ubicaciones/ubicaciones-list/ubicaciones-list.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+@use "sass:color";
+
+.ubicaciones-container {
+  padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .section-title {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 32px;
+    color: global.$white;
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        color: color.adjust(global.$white, $lightness: 30%);
+        font-size: 20px;
+      }
+      .search-input {
+        min-width: 250px;
+        padding-left: 40px;
+        border: 1px solid color.adjust(global.$white, $lightness: 60%);
+        border-radius: 6px;
+        font-size: 16px;
+        color: global.$white;
+        background-color: transparent; // Ajuste para que se vea bien en fondo oscuro
+        &::placeholder {
+          color: color.adjust(global.$white, $lightness: 40%);
+        }
+        &:focus {
+          outline: none;
+          border-color: global.$yellow-orange;
+          box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+        }
+      }
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      .material-icons {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+.ubicaciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 25px;
+
+  .ubicacion-card {
+    background-color: global.$white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08);
+    padding: 30px;
+    position: relative;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(global.$dark-blue, 0.15);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+
+      .ubicacion-title {
+        font-family: global.$font-headings;
+        font-weight: 700;
+        font-size: 24px;
+        color: global.$dark-blue;
+        margin: 0;
+        line-height: 1.3;
+        flex-grow: 1;
+        padding-right: 15px;
+      }
+      .ubicacion-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        flex-shrink: 0;
+        
+        &.status-active {
+          background-color: global.$success-green;
+          color: global.$white;
+        }
+        &.status-inactive {
+          background-color: global.$soft-red;
+          color: global.$white;
+        }
+      }
+    }
+
+    .card-body {
+      margin-bottom: 20px;
+
+      .ubicacion-meta {
+        font-family: global.$font-body;
+        font-size: 15px;
+        color: color.adjust(global.$dark-blue, $lightness: 20%);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        .small-icon {
+          font-size: 18px;
+          color: global.$teal;
+          margin-right: 8px;
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    .card-footer {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid global.$light-gray;
+      text-align: right;
+    }
+    .btn-text {
+      font-family: global.$font-body;
+      font-weight: 500;
+      font-size: 15px;
+      color: global.$teal;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+        color: color.adjust(global.$teal, $lightness: -10%);
+      }
+    }
+  }
+}

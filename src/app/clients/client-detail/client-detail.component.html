@@ -43,8 +43,10 @@
     </div>
 
     <div class="card-actions">
-      <button class="btn btn-secondary" (click)="editClient()">Editar Cliente</button>
-      <button class="btn btn-danger" (click)="deleteClient()">Eliminar Cliente</button>
+      <!-- Botón de Editar: se muestra solo si el usuario es un administrador -->
+      <button *ngIf="isAdmin" (click)="editClient()">Editar Usuario</button>
+      <!-- Botón de Eliminar: se muestra solo si el usuario es un administrador -->
+      <button *ngIf="isAdmin" class="btn btn-danger" (click)="deleteClient()">Eliminar Cliente</button>
     </div>
   </div>
 

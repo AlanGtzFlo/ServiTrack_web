@@ -1,45 +1,74 @@
 <div class="clients-container">
+  <!-- Sección de Cabecera -->
   <div class="section-header">
-    <h1 class="section-title">Clientes y Ubicaciones</h1>
+    <h1 class="section-title">Gestión de Clientes</h1>
+    
     <div class="header-actions">
+      <!-- Barra de búsqueda -->
       <div class="search-box">
         <i class="material-icons search-icon">search</i>
-        <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar cliente..." class="search-input" />
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar cliente..." class="search-input">
       </div>
-      <button class="btn btn-primary" routerLink="/clients/new">
+
+      <!-- Selector de estado -->
+      <select [(ngModel)]="filterStatus" class="search-input">
+        <option [ngValue]="'all'">Todos los Estados</option>
+        <option [ngValue]="true">Activo</option>
+        <option [ngValue]="false">Inactivo</option>
+      </select>
+
+      <!-- Botón para exportar a PDF -->
+  <button class="btn btn-secondary btn-with-icon" (click)="exportPdf()">
+  <i class="material-icons">picture_as_pdf</i>
+  <span>Exportar PDF</span>
+</button>
+
+    
+      <!-- Botón para añadir cliente -->
+      <button class="btn btn-primary" (click)="addNewClient()">
         <i class="material-icons">add</i> Nuevo Cliente
       </button>
     </div>
   </div>
 
+  <!-- Contenedor de la cuadrícula de clientes -->
   <div class="clients-grid">
-    <div class="client-card card" *ngFor="let client of filteredClients" [routerLink]="['/clients', client.id]">
+    <div *ngIf="isLoading" class="loading-message card">
+      <p>Cargando clientes...</p>
+    </div>
+
+    <!-- El contenedor `clients-grid` ahora envuelve directamente las tarjetas -->
+    <div *ngFor="let client of filteredClients" class="client-card" [routerLink]="['/clients', client.id]">
       <div class="card-header">
-        <i class="material-icons card-header-icon">location_on</i>
-        <span
-          class="client-status"
-          [ngClass]="{
-            'status-success': client.status === 'Activo',
-            'status-error': client.status === 'Inactivo',
-            'status-warning': client.status === 'Potencial'
-          }"
-        >
-          {{ client.status }}
+        <h3 class="client-name">{{ client.nombre }}</h3>
+        <span class="client-status" [ngClass]="getStatusClass(client.estatus)">
+          {{ getStatusText(client.estatus) }}
         </span>
       </div>
-      <h3 class="client-name">{{ client.nombre }}</h3>
-      <p class="client-address"><i class="material-icons small-icon">location_on</i> {{ client.direccion }}</p>
-      <p class="client-contact"><i class="material-icons small-icon">phone</i> {{ client.telefono }}</p>
-      <p class="client-registration-date"><small>Registrado: {{ client.fecha_registro | date:'mediumDate' }}</small></p>
+      
+      <div class="client-data">
+        <i class="material-icons small-icon">badge</i>
+        RFC: {{ client.rfc }}
+      </div>
+      
+      <div class="client-data">
+        <i class="material-icons small-icon">place</i>
+        Dirección: {{ client.direccion }}
+      </div>
 
+      <div class="client-data">
+        <i class="material-icons small-icon">phone</i>
+        Teléfono: {{ client.telefono || 'N/A' }}
+      </div>
+      
       <div class="card-footer">
-        <a [routerLink]="['/clients', client.id]" class="btn-text">Ver Detalles</a>
+        <a class="btn-text" [routerLink]="['/clients', client.id]">Ver Detalles</a>
       </div>
     </div>
 
-    <div *ngIf="filteredClients.length === 0" class="no-results-message card">
+    <div *ngIf="!isLoading && filteredClients.length === 0" class="no-results-message">
       <p>No se encontraron clientes que coincidan con la búsqueda.</p>
-      <button *ngIf="searchTerm" class="btn-secondary" (click)="searchTerm = ''">Mostrar todos los clientes</button>
+      <button *ngIf="searchTerm || filterStatus !== 'all'" class="btn btn-secondary" (click)="searchTerm = ''; filterStatus = 'all'">Limpiar Filtros</button>
     </div>
   </div>
 </div>

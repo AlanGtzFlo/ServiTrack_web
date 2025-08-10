@@ -1,12 +1,22 @@
-<!-- src/app/refacciones/refacciones-list/refacciones-list.component.html -->
-<div class="refacciones-container">
+<div class="refacciones-container" style="border-radius: 10px;">
   <div class="section-header">
     <h1 class="section-title">Lista de Refacciones</h1>
     <div class="header-actions">
       <div class="search-box">
         <i class="material-icons search-icon">search</i>
-        <input type="text" placeholder="Buscar refacción..." class="search-input">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar refacción por nombre..."
+          class="search-input"
+        />
       </div>
+
+    <button class="btn-export-pdf" (click)="exportRefaccionesPdf()">
+      <i class="material-icons">picture_as_pdf</i>
+      Exportar PDF
+    </button>
+
       <button class="btn btn-primary" routerLink="/refacciones/nueva">
         <i class="material-icons">add</i> Nueva Refacción
       </button>
@@ -14,51 +24,61 @@
   </div>
 
   <div class="refacciones-grid">
-    <div class="refaccion-card card">
-      <div class="card-header">
-        <h3 class="refaccion-name">Engranaje de Alimentación</h3>
-        <span class="refaccion-status status-success">Disponible</span>
-      </div>
-      <div class="card-body">
-        <p class="refaccion-part-number">
-          <i class="material-icons small-icon">vpn_key</i> Número de Parte: ABC-12345
-        </p>
-        <p class="refaccion-machine-model">
-          <i class="material-icons small-icon">print</i> Modelo Máquina: TicketMaster X200
-        </p>
-        <p class="refaccion-stock">
-          <i class="material-icons small-icon">inventory</i> Stock: 50 unidades
-        </p>
-      </div>
-      <div class="card-footer">
-        <a [routerLink]="['/refacciones', 'ABC-12345']" class="btn-text">Ver Detalles</a>
-      </div>
+    <div *ngIf="isLoading" class="loading-message card">
+      <p>Cargando refacciones...</p>
     </div>
 
-    <div class="refaccion-card card">
-      <div class="card-header">
-        <h3 class="refaccion-name">Sensor Óptico</h3>
-        <span class="refaccion-status status-error">Agotado</span>
-      </div>
-      <div class="card-body">
-        <p class="refaccion-part-number">
-          <i class="material-icons small-icon">vpn_key</i> Número de Parte: XYZ-67890
-        </p>
-        <p class="refaccion-machine-model">
-          <i class="material-icons small-icon">print</i> Modelo Máquina: FastTicket 5000
-        </p>
-        <p class="refaccion-stock">
-          <i class="material-icons small-icon">inventory</i> Stock: 0 unidades
-        </p>
-      </div>
-      <div class="card-footer">
-        <a [routerLink]="['/refacciones', 'XYZ-67890']" class="btn-text">Ver Detalles</a>
-      </div>
+    <div *ngIf="error" class="error-message card">
+      <p>{{ error }}</p>
     </div>
 
-    <div *ngIf="false" class="no-results-message card">
-      <p>No se encontraron refacciones que coincidan con la búsqueda o filtros aplicados.</p>
-      <button class="btn-secondary">Limpiar Filtros</button>
+    <ng-container *ngIf="!isLoading && filteredRefacciones.length > 0">
+      <div
+        *ngFor="let refaccion of filteredRefacciones; trackBy: trackById"
+        class="refaccion-card card"
+      >
+        <div class="card-image-container">
+          <img
+            [src]="getRefaccionImageUrl(refaccion.imagen)"
+            alt="Imagen de {{ refaccion.nombre }}"
+            class="refaccion-image"
+          />
+        </div>
+
+        <div class="card-content">
+          <div class="card-header-compact">
+            <h3 class="refaccion-name-compact">{{ refaccion.nombre }}</h3>
+            <span
+              class="refaccion-status"
+              [ngClass]="getStatusClass(refaccion.estatus)"
+            >
+              {{ getStatusText(refaccion.estatus) }}
+            </span>
+          </div>
+
+          <div class="card-body-compact">
+            <p class="refaccion-part-number">
+              <i class="material-icons small-icon">vpn_key</i> Código:
+              {{ refaccion.codigo }}
+            </p>
+            <p class="refaccion-machine-model">
+              <i class="material-icons small-icon">print</i> Fabricante:
+              {{ refaccion.fabricante }}
+            </p>
+          </div>
+          <div class="card-footer">
+            <a
+              [routerLink]="['/refacciones', refaccion.id]"
+              class="btn-text"
+              >Ver Detalles</a
+            >
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div *ngIf="!isLoading && filteredRefacciones.length === 0" class="no-results-message card">
+        <p>No se encontraron refacciones que coincidan con la búsqueda.</p>
     </div>
   </div>
 </div>

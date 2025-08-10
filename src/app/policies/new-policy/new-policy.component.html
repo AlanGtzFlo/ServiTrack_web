@@ -5,39 +5,71 @@
       <button class="btn btn-secondary" (click)="cancel()">
         <i class="material-icons">cancel</i> Cancelar
       </button>
-      <button class="btn btn-primary" (click)="saveNewPolicy()">
-        <i class="material-icons">save</i> Guardar Póliza
-      </button>
     </div>
   </div>
 
   <div class="policy-form-card card">
-    <form (ngSubmit)="saveNewPolicy()">
+    <form #policyForm="ngForm" (ngSubmit)="saveNewPolicy()">
       <div class="form-grid">
+
         <div class="form-group">
-          <label for="policyNumber">Número de Póliza</label>
-          <input type="text" id="policyNumber" [(ngModel)]="newPolicy.policyNumber" name="policyNumber" placeholder="Se generará automáticamente" readonly>
+          <label for="nombre">Nombre <span class="required">*</span></label>
+          <input
+            type="text"
+            id="nombre"
+            [(ngModel)]="newPolicy.nombre"
+            name="nombre"
+            required
+            placeholder="Nombre de la empresa o póliza"
+          >
+          <div *ngIf="policyForm.submitted && !policyForm.controls['nombre']?.valid" class="validation-error">
+            El nombre es obligatorio.
+          </div>
         </div>
+
         <div class="form-group">
-          <label for="policyType">Tipo de Póliza <span class="required">*</span></label>
-          <select id="policyType" [(ngModel)]="newPolicy.policyType" name="policyType" required>
-            <option *ngFor="let type of policyTypes" [value]="type">{{ type }}</option>
+          <label for="tipo_poliza">Tipo de Póliza <span class="required">*</span></label>
+          <select id="tipo_poliza" [(ngModel)]="newPolicy.tipo_poliza" name="tipo_poliza" required>
+            <option *ngFor="let tipo of tiposPoliza" [value]="tipo">{{ tipo }}</option>
           </select>
+          <div *ngIf="policyForm.submitted && !policyForm.controls['tipo_poliza']?.valid" class="validation-error">
+            El tipo de póliza es obligatorio.
+          </div>
         </div>
+
         <div class="form-group">
-          <label for="startDate">Fecha de Inicio <span class="required">*</span></label>
-          <input type="date" id="startDate" [(ngModel)]="newPolicy.startDate" name="startDate" required>
+          <label for="fecha_inicio_poliza">Fecha de Inicio <span class="required">*</span></label>
+          <input type="date" id="fecha_inicio_poliza" [(ngModel)]="newPolicy.fecha_inicio_poliza" name="fecha_inicio_poliza" required>
+          <div *ngIf="policyForm.submitted && !policyForm.controls['fecha_inicio_poliza']?.valid" class="validation-error">
+            La fecha de inicio es obligatoria.
+          </div>
         </div>
+
         <div class="form-group">
-          <label for="endDate">Fecha de Fin <span class="required">*</span></label>
-          <input type="date" id="endDate" [(ngModel)]="newPolicy.endDate" name="endDate" required>
+          <label for="fecha_fin_poliza">Fecha de Fin <span class="required">*</span></label>
+          <input type="date" id="fecha_fin_poliza" [(ngModel)]="newPolicy.fecha_fin_poliza" name="fecha_fin_poliza" required>
+          <div *ngIf="policyForm.submitted && !policyForm.controls['fecha_fin_poliza']?.valid" class="validation-error">
+            La fecha de fin es obligatoria.
+          </div>
         </div>
+
         <div class="form-group">
-          <label for="status">Estado <span class="required">*</span></label>
-          <select id="status" [(ngModel)]="newPolicy.status" name="status" required>
-            <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+          <label for="estatus">Estado <span class="required">*</span></label>
+          <select id="estatus" [(ngModel)]="newPolicy.estatus" name="estatus" required>
+            <option [ngValue]="true">Vigente</option>
+            <option [ngValue]="false">No Vigente</option>
           </select>
+          <div *ngIf="policyForm.submitted && !policyForm.controls['estatus']?.valid" class="validation-error">
+            El estado es obligatorio.
+          </div>
         </div>
+
+      </div>
+
+      <div class="form-actions" style="margin-top: 1rem;">
+        <button type="submit" class="btn btn-primary" [disabled]="!policyForm.valid">
+          <i class="material-icons">save</i> Guardar Póliza
+        </button>
       </div>
     </form>
   </div>

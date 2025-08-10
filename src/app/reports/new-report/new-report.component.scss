@@ -114,3 +114,18 @@
     }
   }
 }
+
+/* Corrección para que las opciones de select se vean negras */
+.black-text-select {
+  color: black;
+}
+
+.black-text-select option {
+  color: black;
+}
+/* Asegura que las opciones del select siempre tengan color negro
+   y un fondo blanco para que sean visibles. */
+.black-text-select option {
+  color: #000 !important;
+  background-color: #fff !important;
+}

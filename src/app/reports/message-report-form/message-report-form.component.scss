@@ -1,122 +1,180 @@
-.message-report-form-container {
-  padding: 20px;
-  max-width: 600px;
-  margin: 20px auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+@use "../../../styles.scss" as global;
+@use "sass:color";
 
-  .form-title {
-    text-align: center;
-    color: #3f51b5; /* Example primary color */
-    margin-bottom: 25px;
+/* Estilos para el contenedor principal del formulario */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: global.$light-gray; /* Usamos el gris claro del estilo global */
+  padding: 1.5rem;
+  font-family: global.$font-body;
+}
+
+/* Estilos de la tarjeta/card del formulario */
+.form-card {
+  width: 100%;
+  max-width: 640px;
+  background-color: global.$white; /* Usamos el color blanco definido en tu styles.scss */
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 2.5rem;
+}
+
+/* Estilos del encabezado */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem; /* Menos espacio para unir los elementos */
+}
+
+.form-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: global.$dark-blue;
+  line-height: 2.25rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: global.$dark-blue;
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: color.adjust(global.$dark-blue, $lightness: 20%);
   }
 
-  .form-group {
-    margin-bottom: 20px;
+  &__icon {
+    height: 1.25rem;
+    width: 1.25rem;
+  }
+}
 
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-      color: #333;
-    }
+/* Estilos para el estado de carga y error */
+.status-message {
+  padding: 1rem;
+  margin-bottom: 1rem; /* Menos espacio */
+  border-radius: 0.75rem;
+  text-align: center;
+}
 
-    input[type="text"],
-    textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-sizing: border-box; /* Include padding and border in the element's total width and height */
-      font-size: 1rem;
-      resize: vertical; /* Allow vertical resizing for textarea */
-    }
+.loading-message {
+  background-color: color.adjust(global.$teal, $alpha: -0.7);
+  color: global.$teal;
+}
 
-    textarea {
-      min-height: 100px;
-    }
+.error-message {
+  background-color: color.adjust(global.$soft-red, $alpha: -0.7);
+  color: global.$soft-red;
+}
 
-    .form-text {
-      font-size: 0.85rem;
-      color: #666;
-      margin-top: 5px;
-      display: block;
-    }
+/* Estilos de los campos del formulario */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem; /* Reducción de espacio entre campos */
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: global.$dark-blue;
+  margin-bottom: 0.25rem;
+}
+
+.form-input, .form-select, .form-textarea {
+  padding: 0.75rem;
+  border: 1px solid global.$light-gray;
+  border-radius: 0.5rem;
+  color: global.$dark-blue;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: global.$yellow-orange;
+    box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.5);
+  }
+}
+
+.form-textarea {
+  resize: vertical;
+}
+
+.validation-error {
+  color: global.$soft-red;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+/* Estilos para el input de tipo file personalizado */
+.file-upload {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-input-label {
+  cursor: pointer;
+  background-color: global.$yellow-orange;
+  color: global.$white;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: color.adjust(global.$yellow-orange, $lightness: -10%);
+  }
+}
+
+.file-input {
+  display: none;
+}
+
+.file-name {
+  color: global.$medium-gray;
+  font-size: 0.875rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Estilos de los botones del formulario */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem; /* Menos espacio */
+}
+
+.submit-button {
+  padding: 0.75rem 1.5rem;
+  background-color: global.$teal;
+  color: global.$white;
+  font-weight: 600;
+  border-radius: 9999px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:hover {
+    background-color: color.adjust(global.$teal, $lightness: -10%);
   }
 
-  .file-upload {
-    .file-input-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      input[type="file"] {
-        display: none; /* Hide the default file input */
-      }
-
-      .upload-button {
-        padding: 8px 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        background-color: #f0f0f0;
-        cursor: pointer;
-        font-size: 0.9rem;
-        color: #333;
-
-        &:hover {
-          background-color: #e0e0e0;
-        }
-      }
-
-      .file-name {
-        flex-grow: 1;
-        border: 1px solid #ddd;
-        padding: 8px 10px;
-        border-radius: 4px;
-        background-color: #f9f9f9;
-        color: #555;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
+  &:disabled {
+    background-color: global.$medium-gray;
+    cursor: not-allowed;
   }
+}
 
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 30px;
-
-    .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-
-      &.btn-primary {
-        background-color: #4CAF50; /* Green for submit */
-        color: white;
-
-        &:disabled {
-          background-color: #a5d6a7;
-          cursor: not-allowed;
-        }
-      }
-
-      &.btn-secondary {
-        background-color: #007bff; /* Blue for back/cancel */
-        color: white;
-
-        &:hover {
-          background-color: #0056b3;
-        }
-      }
-    }
-  }
+.button-icon {
+  height: 1.25rem;
+  width: 1.25rem;
 }

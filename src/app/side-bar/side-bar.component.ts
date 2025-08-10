@@ -1,6 +1,5 @@
-// src/app/side-bar/side-bar.component.ts
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,15 +10,22 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./side-bar.component.scss']
 })
 export class SideBarComponent {
+  constructor(private router: Router) {}
+
   navItems = [
     { label: 'Dashboard', icon: 'dashboard', link: '/dashboard' },
     { label: 'Clientes', icon: 'people', link: '/clients' },
     { label: 'Pólizas', icon: 'description', link: '/policies' },
-    { label: 'Servicios', icon: 'build', link: '/services' },
+    { label: 'Tickets', icon: 'assignment', link: '/services' },
     { label: 'Usuarios', icon: 'account_circle', link: '/users' },
-    // ¡NUEVO ELEMENTO PARA REFACCIONES!
-    { label: 'Refacciones', icon: 'precision_manufacturing', link: '/refacciones' }, // Usé 'precision_manufacturing' como icono, puedes cambiarlo
+    { label: 'Refacciones', icon: 'precision_manufacturing', link: '/refacciones' },
+    { label: 'Ubicaciones', icon: 'location_on', link: '/ubicaciones' },
     { label: 'Reportes', icon: 'bar_chart', link: '/reports' },
     { label: 'Satisfacción', icon: 'sentiment_satisfied_alt', link: '/satisfaction' }
   ];
+
+  logout() {
+    localStorage.removeItem('access_token'); // 1. Eliminar token
+    this.router.navigate(['/login']);        // 2. Redirigir a login
+  }
 }

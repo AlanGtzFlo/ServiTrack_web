@@ -1,0 +1,56 @@
+<div class="ubicaciones-container">
+  <div class="section-header">
+    <h1 class="section-title">Gestión de Ubicaciones</h1>
+    <div class="header-actions">
+      <div class="search-box">
+        <i class="material-icons search-icon">search</i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar por nombre, cliente, etc."
+          [(ngModel)]="searchTerm"
+        />
+      </div>
+      <button class="btn btn-secondary" (click)="exportUbicacionesToPdf()">
+        <i class="material-icons">picture_as_pdf</i> Exportar PDF
+      </button>
+      
+      <button class="btn btn-primary" (click)="goToNewLocation()">
+        <i class="material-icons">add</i> Nueva Ubicación
+      </button>
+    </div>
+  </div>
+
+  <div class="ubicaciones-grid">
+    <div *ngFor="let ubicacion of filteredUbicaciones" class="ubicacion-card">
+      <div class="card-header">
+        <h3 class="ubicacion-title">{{ ubicacion.nombre }}</h3>
+        <span
+          class="ubicacion-status"
+          [ngClass]="ubicacion.estatus ? 'status-active' : 'status-inactive'"
+        >
+          {{ ubicacion.estatus ? 'ACTIVO' : 'INACTIVO' }}
+        </span>
+      </div>
+      <div class="card-body">
+        <p class="ubicacion-meta">
+          <i class="material-icons small-icon">person</i> Cliente:
+          {{ ubicacion.cliente?.nombre }}
+        </p>
+        <p class="ubicacion-meta">
+          <i class="material-icons small-icon">location_on</i> Dirección:
+          {{ ubicacion.direccion }}
+        </p>
+        <p class="ubicacion-meta">
+          <i class="material-icons small-icon">contacts</i> Contacto:
+          {{ ubicacion.contacto }}
+        </p>
+      </div>
+      <div class="card-footer">
+        <a [routerLink]="['/ubicaciones', ubicacion.id]" class="btn-text"
+          >Ver Detalles</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
