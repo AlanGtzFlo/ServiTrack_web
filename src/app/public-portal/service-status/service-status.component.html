@@ -1,0 +1,41 @@
+<div class="service-status-page">
+  <h1 class="page-title">Consultar Estado de tu Servicio</h1>
+  <p class="page-description">Ingresa el código de seguimiento de tu servicio para ver su estado actual.</p>
+
+  <div class="search-form-card card">
+    <div class="form-group">
+      <label for="trackingCode">Código de Seguimiento:</label>
+      <input type="text" id="trackingCode" name="trackingCode" [(ngModel)]="trackingCode" placeholder="Ej. ST-00123" required>
+    </div>
+    <button class="btn btn-primary" (click)="checkStatus()">
+      <span class="material-icons">search</span> Consultar Estado
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="serviceResult" class="service-result-card card">
+    <h2>Detalles del Servicio: {{ serviceResult.trackingCode }}</h2>
+    <div class="status-badge" [ngClass]="getStatusClass(serviceResult.status)">
+      {{ serviceResult.status }}
+    </div>
+
+    <div class="detail-item">
+      <strong>Tipo de Servicio:</strong> {{ serviceResult.serviceType }}
+    </div>
+    <div class="detail-item" *ngIf="serviceResult.assignedTechnician">
+      <strong>Técnico Asignado:</strong> {{ serviceResult.assignedTechnician }}
+    </div>
+    <div class="detail-item">
+      <strong>Última Actualización:</strong> {{ serviceResult.lastUpdate }}
+    </div>
+    <div class="detail-item" *ngIf="serviceResult.estimatedCompletion">
+      <strong>Finalización Estimada:</strong> {{ serviceResult.estimatedCompletion }}
+    </div>
+    <div class="detail-item" *ngIf="serviceResult.notes">
+      <strong>Notas:</strong> {{ serviceResult.notes }}
+    </div>
+  </div>
+</div>

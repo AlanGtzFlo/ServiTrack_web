@@ -1,4 +1,273 @@
-@use "tailwindcss";
-@use "primeicons/primeicons.css";
-@plugin 'tailwindcss-primeui';
-@layer tailwind, primeng;
+/* src/styles.scss */
+
+// 1. Definición de Variables de Color
+// Colores Principales
+$yellow-orange: #F4A300; // Vibrante, cálido, para botones de acción o indicadores de estado.
+$teal: #006D77; 
+$light-gray: #F5F5F5;       // Gris muy claro (fondos de secciones, bordes suaves)
+$medium-gray: #757575;      // <-- ¡Asegúrate de que esta línea exista!
+$dark-gray: #424242;   
+$success-green: #4CAF50;    // Define el verde de éxito si no lo tienes
+$soft-red: #FF5252;        // Gris oscuro (texto general)         // Elegante, sobrio y perfecto como color base o para encabezados.
+
+// Colores Secundarios y Funcionales
+$white: #FFFFFF;         // Para fondo o texto
+$dark-blue: #003F4E;     // Para texto principal o títulos
+$light-gray: #F2F2F2;    // Para fondo de tarjetas
+$success-green: #3CB371; // Verde éxito (resuelto)
+$soft-red: #E74C3C;      // Rojo suave (cerrado o error)
+
+// 2. Importación de Fuentes (usando Google Fonts)
+// Añade esta línea al <head> de tu index.html también:
+// <link href="https://fonts.googleapis.com/css2?family=Material+Icons&family=Montserrat:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500&display=swap');
+@import "tailwindcss";
+@tailwind base;       /* Esto inicializa los estilos base de Tailwind (reset, etc.) */
+@tailwind components; /* Esto incluye los estilos de componentes predefinidos de Tailwind */
+@tailwind utilities;  /* Esto genera las clases de utilidad de Tailwind (flex, text-red-500, etc.) */
+
+/* --- Coloca la importación de tailwindcss-primeui aquí --- */
+
+
+// 3. Variables de Fuentes
+$font-headings: 'Montserrat', sans-serif;
+$font-body: 'Inter', sans-serif;
+
+// 4. Reglas CSS Globales (reseteo básico y aplicación de fuentes)
+* {
+  box-sizing: border-box; // Asegura que padding y border se incluyan en el ancho/alto
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%; // Importante para layouts de altura completa
+  overflow-x: hidden; // Previene scroll horizontal indeseado
+}
+
+body {
+  font-family: $font-body;
+  color: $dark-blue; // Color de texto base
+  background-color: $light-gray; // Fondo general de la aplicación
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-headings;
+  color: $dark-blue;
+  margin-top: 0; // Resetear márgenes por defecto
+  margin-bottom: 0.5em;
+}
+
+// Estilos de botones base (clases reutilizables)
+.btn {
+  font-family: $font-headings; // Usa la fuente de titulares para botones
+  font-weight: 700; // Peso negrita para botones
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  text-decoration: none; // Para que funcionen como enlaces también
+
+  &.btn-primary {
+    background-color: $dark-blue;
+    color: $white;
+    border: none;
+    &:hover {
+      background-color: darken($dark-blue, 10%); // Volvemos a darken() - Espera advertencia
+    }
+  }
+
+  &.btn-secondary {
+    background-color: transparent;
+    color: $dark-blue;
+    border: 1px solid $dark-blue;
+    &:hover {
+      background-color: lighten($dark-blue, 60%); // Volvemos a lighten() - Espera advertencia
+    }
+  }
+
+  &.btn-accent {
+    background-color: $yellow-orange;
+    color: $white;
+    border: none;
+    &:hover {
+      background-color: darken($yellow-orange, 10%); 
+    }
+  }
+
+  &.btn-text {
+    background-color: transparent;
+    border: none;
+    color: $teal;
+    padding: 0;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+
+// Estilos de campos de entrada base
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
+  font-family: $font-body;
+  border: 1px solid lighten($dark-blue, 60%); // Volvemos a lighten() - Espera advertencia
+  border-radius: 4px;
+  padding: 10px;
+  color: $dark-blue;
+  width: 100%; // Ocupa todo el ancho disponible por defecto
+  box-sizing: border-box; // Incluir padding en el ancho
+  font-size: 16px; 
+  &:focus {
+    outline: none;
+    border-color: $yellow-orange;
+    box-shadow: 0 0 0 2px rgba($yellow-orange, 0.2);
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+  label {
+    display: block;
+    font-family: $font-body;
+    font-weight: 500;
+    font-size: 14px;
+    color: $dark-blue;
+    margin-bottom: 8px;
+  }
+}
+
+// Clase genérica para tarjetas/paneles
+.card {
+  background-color: $white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba($dark-blue, 0.08); // Sombra sutil y consistente
+  padding: 25px;
+  margin-bottom: 20px; // Espacio entre tarjetas
+}
+
+// Clases de estado (para badges, etiquetas)
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-family: $font-body;
+  font-weight: 500;
+  font-size: 13px;
+  &.status-success {
+    background-color: $success-green;
+    color: $white;
+  }
+  &.status-danger {
+    background-color: $soft-red;
+    color: $white;
+  }
+  &.status-warning {
+    background-color: $yellow-orange;
+    color: $white;
+  }
+  &.status-info {
+    background-color: $teal;
+    color: $white;
+  }
+}
+
+// Para usar Material Icons (asegúrate de que estén en index.html también)
+.material-icons {
+  vertical-align: middle; // Alineación con el texto
+  margin-right: 5px; // Pequeño espacio a la derecha del icono
+}
+
+// Variables CSS para uso directo en componentes (opcional, pero útil)
+:root {
+  --yellow-orange: #{$yellow-orange};
+  --teal: #{$teal};
+  --white: #{$white};
+  --dark-blue: #{$dark-blue};
+  --light-gray: #{$light-gray};
+  --success-green: #{$success-green};
+  --soft-red: #{$soft-red};
+  --font-headings: #{$font-headings};
+  --font-body: #{$font-body};
+}
+
+/* Sección de formularios que tenías en styles.scss o un archivo aparte */
+.form-section {
+  h3 {
+    font-family: $font-headings;
+    font-size: 24px;
+    color: $dark-blue;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid $light-gray;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      font-family: $font-body;
+      font-weight: 500;
+      color: $dark-blue;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid lighten($dark-blue, 60%); // Volvemos a lighten() - Espera advertencia
+      border-radius: 8px;
+      font-family: $font-body;
+      font-size: 16px;
+      color: $dark-blue;
+      box-sizing: border-box; // Importante para que el padding no aumente el ancho total
+
+      &:focus {
+        outline: none;
+        border-color: $yellow-orange;
+        box-shadow: 0 0 0 3px rgba($yellow-orange, 0.2);
+      }
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-top: 5px;
+      input[type="checkbox"] {
+        margin-right: 10px;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+      label {
+        margin: 0;
+        font-weight: normal;
+        color: lighten($dark-blue, 20%); // Volvemos a lighten() - Espera advertencia
+        cursor: pointer;
+      }
+    }
+  }
+
+  .form-actions {
+    margin-top: 30px;
+    text-align: right;
+  }
+}

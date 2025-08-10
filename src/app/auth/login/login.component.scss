@@ -1,0 +1,170 @@
+/* src/app/auth/login/login.component.scss */
+@use "../../../styles.scss" as global; // Importa tus variables globales
+
+.login-page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: $white; // Fondo principal de la página de login
+}
+
+// Estilos para el header de marketing/landing
+.marketing-header {
+  background-color: $teal; // Color de encabezado
+  padding: 15px 50px; // Más padding lateral para web
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba($dark-blue, 0.1);
+
+  .marketing-logo {
+    display: flex;
+    align-items: center;
+    .marketing-logo-icon {
+      width: 30px; // Más grande para web
+      height: 30px; // Más grande para web
+      background-color: $yellow-orange; // Color del icono
+      border-radius: 4px; // Bordes ligeramente redondeados
+      position: relative;
+      &::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: $yellow-orange;
+        border-radius: 4px;
+        transform: translateX(6px) translateY(-6px);
+      }
+    }
+  }
+
+  .marketing-nav {
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      li {
+        margin-left: 30px; // Espacio entre ítems
+        a {
+          text-decoration: none;
+          color: $white; // Texto blanco
+          font-family: $font-headings;
+          font-weight: 600;
+          font-size: 16px;
+          padding: 8px 0;
+          position: relative;
+          &:hover {
+            color: $yellow-orange; // Hover en naranja
+          }
+          &.active {
+            color: $yellow-orange; // Activo en naranja
+            &::after {
+              content: '';
+              position: absolute;
+              left: 0;
+              bottom: -5px;
+              width: 100%;
+              height: 2px;
+              background-color: $yellow-orange;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Contenedor principal del formulario de login
+.login-content-wrapper {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $white; // Fondo principal del login
+  padding: 30px; // Espacio alrededor de la tarjeta
+}
+
+.login-card {
+  background-color: $white;
+  padding: 50px 60px; // Más padding para la versión web
+  border-radius: 10px; // Bordes más suaves para la tarjeta
+  box-shadow: 0 8px 25px rgba($dark-blue, 0.15); // Sombra más prominente para la tarjeta principal
+  text-align: center;
+  width: 450px; // Ancho fijo para la tarjeta de login
+  max-width: 90%; // Asegura que no se desborde en pantallas pequeñas
+  box-sizing: border-box; // Incluye padding en el ancho
+}
+
+.user-icon-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px; 
+
+  .user-icon-circle {
+    background-color: $white; 
+    border: 4px solid $yellow-orange; 
+    border-radius: 50%;
+    width: 140px; 
+    height: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .material-icons {
+      font-size: 100px; 
+      color: $yellow-orange; 
+    }
+  }
+}
+
+.welcome-heading {
+  font-family: $font-headings;
+  font-weight: 700; 
+  font-size: 36px; 
+  color: $teal;
+  margin-bottom: 50px; 
+  line-height: 1.2; 
+}
+
+.form-group {
+  margin-bottom: 30px; 
+  text-align: left;
+
+  label {
+    display: block;
+    font-family: $font-body;
+    font-weight: 500;
+    font-size: 15px; 
+    color: $dark-blue;
+    margin-bottom: 10px;
+  }
+
+  input {
+    width: 100%;
+    font-size: 17px; // Tamaño de fuente para inputs
+  }
+}
+
+.form-actions-web {
+  display: flex;
+  justify-content: space-between; // Separa el botón y el enlace
+  align-items: center;
+  margin-top: 40px; // Más espacio arriba de las acciones
+}
+
+.btn-primary {
+  padding: 14px 40px; // Padding más generoso
+  font-size: 17px; // Tamaño de fuente más grande para el botón principal
+}
+
+.forgot-password-link {
+  font-family: $font-body;
+  font-size: 15px; // Tamaño de fuente para el enlace
+  color: $teal; // Enlace en Teal
+  text-decoration: none; // Sin subrayado por defecto
+  &:hover {
+    text-decoration: underline; // Subrayado al pasar el cursor
+  }
+}

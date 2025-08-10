@@ -1,0 +1,58 @@
+<div class="services-container">
+  <div class="section-header">
+    <h1 class="section-title">Gestión de Servicios y Tickets</h1>
+    <div class="header-actions">
+      <div class="search-box">
+        <i class="material-icons search-icon">search</i>
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar por título, cliente, técnico..." class="search-input">
+      </div>
+      <select [(ngModel)]="filterStatus" class="filter-dropdown">
+        <option value="all">Todos los Estados</option>
+        <option value="Pendiente">Pendiente</option>
+        <option value="Asignado">Asignado</option>
+        <option value="En Proceso">En Proceso</option>
+        <option value="Concluido">Concluido</option>
+        <option value="Cerrado">Cerrado</option>
+        <option value="Cancelado">Cancelado</option>
+      </select>
+      <select [(ngModel)]="filterPriority" class="filter-dropdown">
+        <option value="all">Todas las Prioridades</option>
+        <option value="Urgente">Urgente</option>
+        <option value="Alta">Alta</option>
+        <option value="Media">Media</option>
+        <option value="Baja">Baja</option>
+      </select>
+      <button class="btn btn-primary" routerLink="/services/new">
+        <i class="material-icons">add</i> Nuevo Servicio
+      </button>
+    </div>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card card" *ngFor="let service of filteredServices" [routerLink]="['/services', service.id]">
+      <div class="card-header">
+        <h3 class="service-title">{{ service.title }}</h3>
+        <span class="service-status" [ngClass]="getStatusClass(service.status)">
+          {{ service.status }}
+        </span>
+      </div>
+      <div class="card-body">
+        <p class="client-info"><i class="material-icons small-icon">business</i> Cliente: {{ service.clientName }}</p>
+        <p class="service-meta"><i class="material-icons small-icon">category</i> Tipo: {{ service.type }}</p>
+        <p class="service-meta"><i class="material-icons small-icon">label_important</i> Prioridad: <span [ngClass]="getPriorityClass(service.priority)">{{ service.priority }}</span></p>
+        <p class="service-meta"><i class="material-icons small-icon">event</i> Reportado: {{ service.reportedDate }}</p>
+        <p class="service-meta" *ngIf="service.assignedTechnician"><i class="material-icons small-icon">build</i> Técnico: {{ service.assignedTechnician }}</p>
+        <p class="service-meta" *ngIf="service.dueDate"><i class="material-icons small-icon">schedule</i> Límite: {{ service.dueDate }}</p>
+      </div>
+      
+      <div class="card-footer">
+        <a [routerLink]="['/services', service.id]" class="btn-text">Ver Detalles</a>
+      </div>
+    </div>
+
+    <div *ngIf="filteredServices.length === 0" class="no-results-message card">
+      <p>No se encontraron servicios que coincidan con la búsqueda o filtros aplicados.</p>
+      <button *ngIf="searchTerm || filterStatus !== 'all' || filterPriority !== 'all'" class="btn-secondary" (click)="searchTerm = ''; filterStatus = 'all'; filterPriority = 'all'">Limpiar Filtros</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,201 @@
+/* src/app/refacciones/nueva-refaccion/nueva-refaccion.component.scss */
+
+// Importaciones necesarias para SASS y acceso a variables globales
+@use "../../../styles.scss" as global;
+@use "sass:color";
+
+.new-refaccion-container {
+  padding: 30px;
+  max-width: 900px; /* Ajustado a 900px para consistencia con otros formularios */
+  margin: 0 auto;
+}
+
+.form-card {
+  background-color: global.$white;
+  border-radius: 10px; /* Usando un valor fijo para consistencia, o puedes usar global.$card-border-radius si está definido y es 10px */
+  box-shadow: 0 6px 16px rgba(global.$dark-blue, 0.1); /* Sombra más pronunciada para consistencia */
+  padding: 30px;
+}
+
+.form-header { /* Renombrado de .form-header a .section-header para consistencia */
+  display: flex;
+  justify-content: space-between; /* Empuja el título/botón de volver a la izquierda y las acciones a la derecha */
+  align-items: center; /* Alinea verticalmente todos los elementos */
+  margin-bottom: 20px; /* Margen inferior consistente */
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+  gap: 20px; /* Espacio entre los elementos principales del header */
+
+  .back-link { /* Estilos para el botón "Volver a Refacciones" */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1rem;
+    background-color: transparent;
+    border: none;
+    color: global.$teal;
+    text-decoration: none;
+    font-family: global.$font-body;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(global.$teal, 0.1);
+      color: color.adjust(global.$teal, $lightness: -10%);
+    }
+
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+
+  h2 { /* El título del formulario, renombrado a .section-title para consistencia */
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 48px; /* Título grande, consistente con otros formularios */
+    color: global.$white; /* Color blanco para el título */
+    margin: 0;
+    flex-grow: 1; /* Permite que el título ocupe el espacio restante y empuje los botones */
+    text-align: left; /* Alinea el título a la izquierda */
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Centra el contenido dentro del botón */
+      gap: 8px;
+      font-size: 15px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      min-width: 120px; /* Establece un ancho mínimo para que los botones tengan el mismo tamaño */
+      text-align: center; /* Asegura que el texto esté centrado si el ancho es fijo */
+
+      /* Colores de los botones, según tu SCSS original */
+      color: global.$white;
+      background-color: global.$dark-blue;
+
+      &:hover {
+        background-color: darken(global.$dark-blue, 10%); /* Oscurece al pasar el ratón */
+      }
+
+      .material-icons {
+        font-size: 20px;
+      }
+    }
+
+    /* Las reglas .btn-secondary y .btn-primary específicas de color no son necesarias aquí
+       si .btn ya define el color y fondo para ambos, y el hover se aplica a .btn.
+       Si necesitas diferenciarlos, reintroduce las reglas específicas. */
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px 30px; /* Ajustado el gap horizontal para consistencia */
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px; /* Ajustado el margen inferior para consistencia */
+
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    font-family: global.$font-body;
+    font-weight: 500; /* Ajustado a 500 para consistencia */
+    color: global.$dark-blue;
+    margin-bottom: 8px;
+    font-size: 16px; /* Ajustado a 16px para consistencia */
+  }
+
+  .form-control { /* Renombrado de .form-control a los selectores de input/textarea/select */
+    padding: 12px 15px; /* Ajustado el padding para consistencia */
+    border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%); /* Usando color.adjust para consistencia */
+    border-radius: 8px; /* Ajustado a 8px para consistencia */
+    font-family: global.$font-body;
+    font-size: 16px;
+    color: global.$dark-blue;
+    background-color: global.$white;
+    box-sizing: border-box; /* Importante para que el padding no aumente el ancho total */
+
+    &:focus {
+      outline: none;
+      border-color: global.$yellow-orange;
+      box-shadow: 0 0 0 3px rgba(global.$yellow-orange, 0.2); /* Ajustado a 3px para consistencia */
+    }
+
+    /* Estilo para el select, similar a tu dropdown de usuarios */
+    &.select-control {
+      appearance: none;
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 12px;
+      padding-right: 35px;
+    }
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-text-muted {
+    font-size: 13px;
+    color: global.$medium-gray;
+    margin-top: 5px;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+
+  .btn {
+    padding: 10px 18px; /* Ajustado para que coincida con .header-actions .btn */
+    font-size: 15px; /* Ajustado para que coincida con .header-actions .btn */
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    min-width: 120px; /* Asegura el mismo tamaño que los botones del encabezado */
+    justify-content: center; /* Centra el contenido */
+    text-align: center; /* Centra el texto */
+  }
+
+  .btn-primary {
+    background-color: global.$teal;
+    color: global.$white;
+    border: none;
+
+    &:hover {
+      background-color: color.adjust(global.$teal, $lightness: -10%);
+      box-shadow: 0 4px 10px rgba(global.$teal, 0.3);
+    }
+  }
+
+  .btn-secondary {
+    background-color: global.$dark-blue; /* Cambiado a dark-blue para consistencia */
+    color: global.$white; /* Cambiado a blanco para consistencia */
+    border: 1px solid global.$dark-blue; /* Cambiado a dark-blue para consistencia */
+
+    &:hover {
+      background-color: darken(global.$dark-blue, 10%); /* Oscurece al pasar el ratón */
+      color: global.$white;
+      box-shadow: 0 4px 10px rgba(global.$dark-blue, 0.1); /* Sombra consistente */
+    }
+  }
+}

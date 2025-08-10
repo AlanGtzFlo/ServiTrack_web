@@ -1,0 +1,116 @@
+/* src/app/settings/master-data/master-data.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.master-data-section {
+  h3 {
+    // Si h3 tiene un estilo global en styles.scss (ej. @include heading-h3), podrías extenderlo aquí.
+    // Si no, estos estilos son directos.
+    font-family: global.$font-headings; // Asumiendo que h3 usa el font de encabezados
+    color: global.$dark-blue; // Asumiendo que h3 tiene un color primario
+    font-size: 28px; // Un tamaño base para h3
+    font-weight: 700; // Un peso de fuente base
+    margin-bottom: 25px;
+  }
+
+  .data-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+
+    .data-category-card {
+      // Estos son estilos para una "tarjeta" o panel que agrupa datos maestros.
+      // Podrías extender .card aquí si deseas que tenga el estilo global de tarjeta.
+      background-color: global.$white; // Corregido: usa global.$
+      border-radius: 8px; // Asumiendo un border-radius estándar para tarjetas
+      box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.08); // Asumiendo una sombra estándar
+      padding: 25px;
+
+      h4 {
+        font-family: global.$font-headings; // Corregido: usa global.$
+        font-size: 20px;
+        color: global.$teal; // Corregido: usa global.$
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        // Corregido: usa color.adjust() y global.$
+        border-bottom: 1px solid color.adjust(global.$light-gray, $lightness: 5%);
+      }
+
+      .data-list {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 20px;
+        max-height: 250px; // Limita la altura si hay muchos elementos
+        overflow-y: auto;
+        border: 1px solid global.$light-gray; // Corregido: usa global.$
+        border-radius: 8px;
+        // Corregido: usa color.adjust() y global.$
+        background-color: color.adjust(global.$light-gray, $lightness: 5%);
+
+        li {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 15px;
+          border-bottom: 1px solid global.$light-gray; // Corregido: usa global.$
+          font-family: global.$font-body; // Corregido: usa global.$
+          font-size: 16px;
+          color: global.$dark-blue; // Corregido: usa global.$
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .delete-icon {
+            background: none;
+            border: none;
+            color: global.$soft-red; // Corregido: usa global.$
+            cursor: pointer;
+            font-size: 20px; // Tamaño del icono
+            padding: 5px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            &:hover {
+              // Ya estaba correcto, rgba no necesita color.adjust
+              background-color: rgba(global.$soft-red, 0.1); // Corregido: usa global.$
+            }
+          }
+        }
+      }
+
+      .add-item-form {
+        display: flex;
+        gap: 10px;
+        input {
+          flex-grow: 1;
+          padding: 10px 12px;
+          font-size: 15px;
+          // Asumiendo estilos de input de styles.scss o añadir aquí si no existe.
+          border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%); // Consistencia con otros inputs
+          border-radius: 6px; // Consistencia
+          font-family: global.$font-body; // Consistencia
+          color: global.$dark-blue; // Consistencia
+          &:focus {
+            outline: none;
+            border-color: global.$yellow-orange;
+            box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+          }
+        }
+        .btn-secondary {
+          // Si tienes un btn-secondary global, @extend lo. Si no, añadir base aquí.
+          // @extend .btn-secondary; // Descomentar si existe y quieres extenderlo
+          padding: 10px 15px;
+          font-size: 15px;
+          flex-shrink: 0;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,128 @@
+/* src/app/settings/settings.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.settings-container {
+  padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-header {
+  margin-bottom: 30px;
+  .section-title {
+    font-family: global.$font-headings; // Corregido: usa global.$
+    font-weight: 700;
+    font-size: 32px;
+    color: global.$dark-blue; // Corregido: usa global.$
+    margin: 0;
+  }
+}
+
+.settings-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr; // Barra lateral de 280px y el resto para el contenido
+  gap: 30px;
+  align-items: flex-start; // Alinea los elementos al inicio de la grilla
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr; // Una sola columna en pantallas pequeñas
+  }
+}
+
+.settings-sidebar {
+  background-color: global.$white; // Añadido para consistencia con otras tarjetas
+  padding: 25px 0; // Padding solo vertical
+  border-radius: 10px;
+  // Corregido: usa global.$
+  box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08);
+
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-bottom: 5px; // Espacio entre ítems del menú
+
+      a {
+        display: flex;
+        align-items: center;
+        gap: 15px; // Espacio entre icono y texto
+        padding: 15px 25px; // Padding horizontal y vertical
+        text-decoration: none;
+        font-family: global.$font-body; // Corregido: usa global.$
+        font-size: 17px;
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$dark-blue, $lightness: 20%);
+        transition: background-color 0.2s ease, color 0.2s ease;
+        border-radius: 0 5px 5px 0; // Bordes redondeados solo a la derecha
+        border-left: 5px solid transparent; // Borde para el indicador activo
+
+        .material-icons {
+          font-size: 24px;
+          color: global.$teal; // Corregido: usa global.$
+        }
+
+        &:hover {
+          // Corregido: usa color.adjust() y global.$
+          background-color: color.adjust(global.$light-gray, $lightness: 2%);
+          color: global.$dark-blue; // Corregido: usa global.$
+          .material-icons {
+            // Corregido: usa color.adjust() y global.$
+            color: color.adjust(global.$teal, $lightness: -10%);
+          }
+        }
+
+        &.active-link {
+          background-color: global.$teal; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+          border-left: 5px solid global.$yellow-orange; // Corregido: usa global.$
+          font-weight: 600;
+          // Corregido: usa global.$
+          box-shadow: 2px 0 10px rgba(global.$teal, 0.2); // Sutil sombra para el activo
+          
+          .material-icons {
+            color: global.$white; // Corregido: usa global.$
+          }
+          &:hover { // Mantener estilos de activo al pasar el mouse
+            // Corregido: usa color.adjust() y global.$
+            background-color: color.adjust(global.$teal, $lightness: -5%);
+            color: global.$white; // Corregido: usa global.$
+          }
+        }
+      }
+    }
+  }
+}
+
+.settings-content {
+  background-color: global.$white; // Añadido para consistencia con otras tarjetas
+  padding: 30px;
+  border-radius: 10px;
+  // Corregido: usa global.$
+  box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08);
+  min-height: 500px; // Altura mínima para el contenido
+
+  .no-selection-message {
+    text-align: center;
+    // Corregido: usa color.adjust() y global.$
+    color: color.adjust(global.$dark-blue, $lightness: 30%);
+    padding: 80px 20px;
+
+    .large-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      // Corregido: usa color.adjust() y global.$
+      color: color.adjust(global.$teal, $lightness: 20%);
+    }
+    p {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-size: 20px;
+      margin: 0;
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<div class="new-refaccion-container">
+  <div class="card form-card">
+    <div class="form-header">
+      <a routerLink="/refacciones" class="back-link">
+        <i class="material-icons">arrow_back</i> Volver a Refacciones
+      </a>
+      <h2>Nueva Refacción</h2>
+    </div>
+
+    <form (ngSubmit)="crearRefaccion()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nombre">Nombre de la Refacción:</label>
+          <input type="text" id="nombre" name="nombre" [(ngModel)]="refaccion.nombre" required class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="codigo_pieza">Código de Pieza:</label>
+          <input type="text" id="codigo_pieza" name="codigo_pieza" [(ngModel)]="refaccion.codigo_pieza" required class="form-control">
+        </div>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" [(ngModel)]="refaccion.descripcion" rows="4" class="form-control"></textarea>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="fabricante">Fabricante:</label>
+        <input type="text" id="fabricante" name="fabricante" [(ngModel)]="refaccion.fabricante" class="form-control">
+      </div>
+
+      <div class="form-group full-width">
+        <label for="imagen">URL de la Imagen (opcional):</label>
+        <input type="url" id="imagen" name="imagen" [(ngModel)]="refaccion.imagen" class="form-control">
+        <small class="form-text-muted">Pega aquí la URL de una imagen de la refacción.</small>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" routerLink="/refacciones">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Crear Refacción</button>
+      </div>
+    </form>
+  </div>
+</div>

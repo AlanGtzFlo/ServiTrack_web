@@ -1,0 +1,202 @@
+/* src/app/clients/clients.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.clients-container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap; // Permite que los elementos se envuelvan en pantallas pequeñas
+  gap: 20px; // Espacio entre los elementos del header
+}
+
+.section-title {
+  font-family: global.$font-headings; // Corregido: usa global.$
+  font-weight: 700;
+  font-size: 32px;
+  color: global.$white; // Corregido: usa global.$
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px; // Espacio entre el campo de búsqueda y el botón
+
+  .search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      // Corregido: usa color.adjust() y global.$
+      color: color.adjust(global.$white, $lightness: 30%);
+      font-size: 20px;
+    }
+    .search-input {
+      min-width: 280px; // Ancho mínimo para el input
+      padding-left: 40px; // Espacio para el icono de búsqueda
+      // Corregido: usa color.adjust() y global.$
+      border: 1px solid color.adjust(global.$white, $lightness: 60%);
+      border-radius: 6px; // Bordes ligeramente más redondeados
+      font-size: 16px;
+      color: global.$white; // Corregido: usa global.$
+      &::placeholder {
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$white, $lightness: 40%);
+      }
+      &:focus {
+        outline: none;
+        border-color: global.$yellow-orange; // Corregido: usa global.$
+        // Corregido: usa global.$
+        box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+      }
+    }
+  }
+
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+}
+
+.clients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); // Responsive grid de 320px de min-width
+  gap: 25px; // Espacio entre las tarjetas
+
+  .client-card {
+    background-color: global.$white; // Corregido: usa global.$
+    border-radius: 10px; // Bordes más suaves
+    // Corregido: usa global.$
+    box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08); // Sombra sutil y elegante
+    padding: 30px; // Más padding interno
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-5px); // Efecto "lift" al pasar el cursor
+      // Corregido: usa global.$
+      box-shadow: 0 8px 20px rgba(global.$dark-blue, 0.15); // Sombra más intensa al hover
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      
+      .card-header-icon {
+        font-size: 40px; // Icono grande en la esquina superior
+        color: global.$yellow-orange; // Corregido: usa global.$
+        opacity: 0.7; // Ligeramente transparente para ser decorativo
+      }
+
+      .client-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        &.status-success {
+          background-color: global.$success-green; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+        }
+        &.status-error {
+          background-color: global.$soft-red; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+        }
+        &.status-warning { // NUEVA CLASE PARA 'Potencial'
+          background-color: global.$yellow-orange; // Corregido: usa global.$
+          color: global.$white; // Corregido: usa global.$
+        }
+      }
+    }
+
+    .client-name {
+      font-family: global.$font-headings; // Corregido: usa global.$
+      font-weight: 600;
+      font-size: 24px;
+      color: global.$dark-blue; // Corregido: usa global.$
+      margin-top: 0;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .client-address, .client-contact {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-size: 15px;
+      // Corregido: usa color.adjust() y global.$
+      color: color.adjust(global.$dark-blue, $lightness: 20%);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start; // Alinea el icono arriba
+      line-height: 1.4; // Mejora la legibilidad en líneas largas
+
+      .small-icon {
+        font-size: 18px;
+        color: global.$teal; // Corregido: usa global.$
+        margin-right: 8px;
+        flex-shrink: 0; // Evita que el icono se encoja
+      }
+    }
+
+    .card-footer {
+      margin-top: 20px;
+      text-align: right; // El botón "Ver Detalles" a la derecha
+    }
+    .btn-text {
+      font-family: global.$font-body; // Corregido: usa global.$
+      font-weight: 500;
+      font-size: 15px;
+      color: global.$teal; // Corregido: usa global.$
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+        background-color: transparent; /* Asegura que no tenga fondo por defecto de btn */
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$teal, $lightness: -10%);
+      }
+    }
+  }
+}
+
+.no-results-message {
+  grid-column: 1 / -1; // Ocupa todo el ancho de la cuadrícula
+  text-align: center;
+  font-family: global.$font-body; // Corregido: usa global.$
+  font-size: 18px;
+  // Corregido: usa color.adjust() y global.$
+  color: color.adjust(global.$dark-blue, $lightness: 20%);
+  padding: 40px;
+  // Ya tiene estilos de card, así que no necesitamos más background/shadow
+  .btn-secondary {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    border: 1px solid global.$yellow-orange; // Corregido: usa global.$
+    color: global.$yellow-orange; // Corregido: usa global.$
+    background-color: transparent;
+    &:hover {
+      background-color: global.$yellow-orange; // Corregido: usa global.$
+      color: global.$white; // Corregido: usa global.$
+    }
+  }
+}

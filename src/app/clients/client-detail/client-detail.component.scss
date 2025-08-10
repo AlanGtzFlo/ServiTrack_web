@@ -1,0 +1,187 @@
+/* src/app/clients/client-detail/client-detail.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.client-detail-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+  // Usamos global.$light-gray para el background, ya que no tienes $background-light definido en styles.scss.
+  // Si $background-light es una nueva variable que quieres añadir, defínela en styles.scss.
+  background-color: global.$light-gray;
+  // No tienes $border-radius-large ni $shadow-light definidos en styles.scss.
+  // Estoy usando valores fijos o los que definiste en .card globalmente.
+  border-radius: 8px; // Usando el valor de global.$card
+  box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.08); // Usando el valor de global.$card
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+
+  h1 {
+    font-family: global.$font-headings; // Corregido: usa global.$
+    font-size: 2.2em;
+    color: global.$dark-blue; // Corregido: usa global.$
+    margin-left: 20px;
+  }
+
+  .back-button {
+    background-color: transparent;
+    border: none;
+    // No tienes $primary-color definido en styles.scss. Usaré $teal o $dark-blue como alternativa.
+    // Si $primary-color es una nueva variable que quieres añadir, defínela en styles.scss.
+    color: global.$teal; // O global.$dark-blue si es el color principal de los enlaces
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 8px 12px;
+    // No tienes $border-radius-small definido en styles.scss. Usaré un valor fijo.
+    border-radius: 4px; // Usando el valor de global.$btn
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      // Usando el color que elegimos para el back-button, aquí $teal.
+      background-color: rgba(global.$teal, 0.1);
+    }
+  }
+}
+
+.client-card {
+  background-color: global.$white; // Corregido: usa global.$
+  padding: 30px;
+  // No tienes $border-radius-medium ni $shadow-medium definidos en styles.scss.
+  // Usaré los valores de global.$card.
+  border-radius: 8px; // Usando el valor de global.$card
+  box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.08); // Usando el valor de global.$card
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    // No tienes $border-color definido en styles.scss. Usaré lighten($dark-blue, 60%)
+    border-bottom: 1px solid color.adjust(global.$dark-blue, $lightness: 60%); // Corregido: usa color.adjust y global.$
+
+    h2 {
+      font-family: global.$font-headings; // Corregido: usa global.$
+      font-size: 1.8em;
+      color: global.$dark-blue; // Corregido: usa global.$
+      margin: 0;
+    }
+
+    .status {
+      padding: 6px 12px;
+      // No tienes $border-radius-small definido en styles.scss. Usaré un valor fijo.
+      border-radius: 4px; // O 15px si quieres que sea igual a .status-badge
+      font-weight: 600;
+      font-size: 0.9em;
+
+      &.active {
+        // No tienes $green-light ni $green-dark. Usaré global.$success-green
+        background-color: global.$success-green;
+        color: global.$white; // Asumo que el texto es blanco para el color de éxito
+      }
+
+      &.inactive {
+        // No tienes $soft-red-light. Usaré global.$soft-red
+        background-color: global.$soft-red;
+        color: global.$white; // Asumo que el texto es blanco para el color de error
+      }
+    }
+  }
+
+  .card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr; // Dos columnas para los detalles
+    gap: 20px 30px; // Espacio entre filas y columnas
+    margin-bottom: 30px;
+
+    .detail-group {
+      label {
+        display: block;
+        font-weight: 600;
+        color: global.$dark-blue; // Corregido: usa global.$
+        margin-bottom: 5px;
+        font-size: 0.95em;
+      }
+      span {
+        // No tienes $text-color. Usaré global.$dark-blue
+        color: global.$dark-blue; // O un color más suave como lighten(global.$dark-blue, 20%)
+        font-size: 1em;
+        word-wrap: break-word; // Para direcciones largas
+      }
+    }
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: flex-end; // Botones a la derecha
+    gap: 15px;
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 1em;
+      font-weight: 600;
+      // No tienes $border-radius-small. Usaré un valor fijo.
+      border-radius: 4px; // Usando el valor de global.$btn
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.btn-secondary {
+        // No tienes $gray-medium. Usaré un gris de tu paleta o un color secundario de styles.scss.
+        // Si global.$light-gray es demasiado claro, podrías definir un $medium-gray en styles.scss.
+        // Por ahora, usaré global.$dark-blue para btn-secondary como en tu styles.scss base,
+        // o puedes definir un $gray-medium en tu styles.scss si lo deseas.
+        background-color: transparent; // Manteniendo la definición de btn-secondary de styles.scss
+        color: global.$dark-blue; // Manteniendo la definición de btn-secondary de styles.scss
+        border: 1px solid global.$dark-blue; // Manteniendo la definición de btn-secondary de styles.scss
+
+        &:hover {
+          // Usando la función de color.adjust()
+          background-color: color.adjust(global.$dark-blue, $lightness: 60%); // Reemplazado lighten()
+        }
+      }
+
+      &.btn-danger {
+        background-color: global.$soft-red; // Corregido: usa global.$
+        color: global.$white; // Corregido: usa global.$
+        border: none;
+
+        &:hover {
+          background-color: color.adjust(global.$soft-red, $lightness: -10%); // Reemplazado darken()
+        }
+      }
+    }
+  }
+}
+
+.not-found-message {
+  text-align: center;
+  padding: 50px;
+  background-color: global.$white; // Corregido: usa global.$
+  // No tienes $border-radius-medium ni $shadow-medium. Usaré los valores de global.$card.
+  border-radius: 8px; // Usando el valor de global.$card
+  box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.08); // Usando el valor de global.$card
+  // No tienes $text-color. Usaré global.$dark-blue.
+  color: global.$dark-blue; // O un color más suave
+  font-size: 1.2em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .client-card .card-body {
+    grid-template-columns: 1fr; // Una columna en pantallas pequeñas
+  }
+  .card-actions {
+    flex-direction: column; // Botones apilados
+    gap: 10px;
+    .btn {
+      width: 100%;
+    }
+  }
+}

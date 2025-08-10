@@ -1,0 +1,133 @@
+/* src/app/public-portal/feedback-form/feedback-form.component.scss */
+
+@use "../../../styles.scss" as global;
+@use "sass:color";
+
+.feedback-form-page {
+  padding: 20px 0;
+}
+
+.page-title {
+  font-family: global.$font-headings;
+  font-size: 2.2rem;
+  color: global.$dark-blue;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.page-description {
+  font-family: global.$font-body;
+  font-size: 1.1rem;
+  color: color.adjust(global.$dark-blue, $lightness: 20%);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.feedback-form-card {
+  @extend .card; // Reutiliza la clase base de tarjeta
+  padding: 35px;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: global.$white;
+  box-shadow: 0 4px 15px rgba(global.$dark-blue, 0.08);
+
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      font-family: global.$font-body;
+      font-weight: 600;
+      font-size: 15px;
+      color: global.$dark-blue;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
+      border-radius: 6px;
+      font-family: global.$font-body;
+      font-size: 16px;
+      color: global.$dark-blue;
+      box-sizing: border-box;
+
+      &:focus {
+        outline: none;
+        border-color: global.$yellow-orange;
+        box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
+      }
+
+      &::placeholder {
+        color: color.adjust(global.$dark-blue, $lightness: 40%);
+      }
+    }
+
+    textarea {
+      resize: vertical; // Permite redimensionar verticalmente
+      min-height: 100px;
+    }
+  }
+
+  .rating-stars {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px; // Espacio entre las estrellas y el campo siguiente
+
+    .star {
+      font-size: 30px;
+      color: global.$light-gray; // Color por defecto de la estrella
+      cursor: pointer;
+      transition: color 0.2s ease;
+
+      &.filled {
+        color: global.$yellow-orange; // Color cuando está seleccionada
+      }
+      &:hover {
+        color: color.adjust(global.$yellow-orange, $lightness: -10%);
+      }
+    }
+  }
+
+  .form-actions {
+    text-align: center;
+    margin-top: 30px;
+
+    .btn-primary {
+      @extend .btn-primary; // Reutiliza estilo de botón
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      background-color: global.$teal; // Color diferente para el botón principal
+      border-color: global.$teal;
+
+      &:hover {
+        background-color: color.adjust(global.$teal, $lightness: -10%);
+        border-color: color.adjust(global.$teal, $lightness: -10%);
+      }
+    }
+  }
+}
+
+.alert {
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-family: global.$font-body;
+  font-size: 1rem;
+  text-align: center;
+  
+  &-error {
+    background-color: #ffe6e6; // Rojo claro
+    color: #cc0000; // Rojo oscuro
+    border: 1px solid #ffb3b3;
+  }
+
+  &-success {
+    background-color: #e6ffe6; // Verde claro
+    color: #008000; // Verde oscuro
+    border: 1px solid #b3ffb3;
+  }
+}

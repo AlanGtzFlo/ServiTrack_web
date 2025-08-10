@@ -1,0 +1,77 @@
+<!-- src/app/new-report/new-report.component.html -->
+<div class="new-report-container">
+  <button class="btn-back" (click)="goBack()">
+    <i class="material-icons">arrow_back</i> Regresar
+  </button>
+  <h2>Reporte</h2>
+
+  <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+
+    <label for="tecnico">Tecnico</label>
+    <select id="tecnico" formControlName="tecnico">
+      <option value="test@test.com">test.com</option>
+      <option value="tecnico1@ejemplo.com">ejemplo.com</option>
+      <option value="tecnico2@ejemplo.com">tecnico2ejemplo.com</option>
+    </select>
+    <div *ngIf="reportForm.get('tecnico')?.invalid && reportForm.get('tecnico')?.touched" class="error">
+      El técnico es obligatorio.
+    </div>
+
+    <label for="ubicacion">Ubicacion</label>
+    <select id="ubicacion" formControlName="ubicacion">
+      <option value="" disabled>Seleccione una ubicación</option>
+      <option value="ciudad1">Ciudad 1</option>
+      <option value="ciudad2">Ciudad 2</option>
+      <option value="ciudad3">Ciudad 3</option>
+    </select>
+    <div *ngIf="reportForm.get('ubicacion')?.invalid && reportForm.get('ubicacion')?.touched" class="error">
+      La ubicación es obligatoria.
+    </div>
+
+    <label for="empresa">Empresa</label>
+    <select id="empresa" formControlName="empresa">
+      <option value="" disabled>Seleccione una empresa</option>
+      <option value="empresaA">Empresa A</option>
+      <option value="empresaB">Empresa B</option>
+      <option value="empresaC">Empresa C</option>
+    </select>
+    <div *ngIf="reportForm.get('empresa')?.invalid && reportForm.get('empresa')?.touched" class="error">
+      La empresa es obligatoria.
+    </div>
+
+    <label for="descripcion">Descripcion</label>
+    <textarea id="descripcion" formControlName="descripcion" placeholder="Descripción general del problema"></textarea>
+    <div *ngIf="reportForm.get('descripcion')?.invalid && reportForm.get('descripcion')?.touched" class="error">
+      La descripción es obligatoria.
+    </div>
+
+    <div class="checkbox-group">
+      <input id="esPoliza" formControlName="esPoliza" type="checkbox" />
+      <label for="esPoliza">Es poliza</label>
+    </div>
+
+    <label for="tipoPoliza">Tipo poliza</label>
+    <input id="tipoPoliza" formControlName="tipoPoliza" type="text" />
+
+    <label for="categoria">Categoria</label>
+    <select id="categoria" formControlName="categoria">
+      <option value="En Asignacion">En Asignacion</option>
+      <option value="En Proceso">En Proceso</option>
+      <option value="Resuelto">Resuelto</option>
+    </select>
+
+    <label for="informacionReporte">Informacion reporte</label>
+    <textarea id="informacionReporte" formControlName="informacionReporte" placeholder="Observaciones adicionales"></textarea>
+
+    <label for="mediaType">Media type:</label>
+    <select id="mediaType" formControlName="mediaType">
+      <option value="multipart/form-data">multipart/form-data</option>
+      <option value="application/json">application/json</option>
+    </select>
+
+    <label for="content">Content:</label>
+    <textarea id="content" formControlName="content"></textarea>
+
+    <button type="submit" [disabled]="reportForm.invalid">POST</button>
+  </form>
+</div>

@@ -1,0 +1,129 @@
+/* src/app/clients/new-client/new-client.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.new-client-container { /* Asegúrate de que este sea el contenedor principal de tu componente */
+  padding: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex; /* Mantenemos flex para controlar el flujo */
+  flex-direction: column; /* ¡Ahora los elementos se apilan verticalmente! */
+  align-items: flex-start; /* Alinea los elementos (botón y h1) a la izquierda */
+  margin-bottom: 30px;
+  /* Eliminamos 'gap' de aquí ya que controlaremos el espacio con margin-bottom en el botón */
+
+  .back-button {
+    background-color: transparent;
+    border: none;
+    color: global.$white;
+    font-family: global.$font-body;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    margin-bottom: 10px; /* Espacio entre el botón y el título */
+
+    &:hover {
+      background-color: rgba(global.$teal, 0.1);
+      color: color.adjust(global.$teal, $lightness: -10%);
+    }
+  }
+
+  h1 {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 32px;
+    color: global.$white;
+    margin: 0; /* Asegura que no haya márgenes extra por defecto */
+    /* Eliminamos flex-grow: 1; ya que no es necesario en una columna para que ocupe espacio */
+  }
+}
+
+.client-form-card {
+  background-color: global.$white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(global.$dark-blue, 0.1);
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px 30px;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+
+      &.full-width {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        display: block;
+        font-family: global.$font-body;
+        font-weight: 500;
+        color: global.$dark-blue;
+        margin-bottom: 8px;
+        font-size: 16px;
+
+        .required {
+          color: global.$soft-red;
+          margin-left: 4px;
+        }
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="date"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
+        border-radius: 8px;
+        font-family: global.$font-body;
+        font-size: 16px;
+        color: global.$dark-blue;
+        box-sizing: border-box;
+
+        &::placeholder {
+          color: color.adjust(global.$dark-blue, $lightness: 40%);
+        }
+
+        &:focus {
+          outline: none;
+          color: global.$dark-blue;
+          border-color: global.$yellow-orange;
+          box-shadow: 0 0 0 3px rgba(global.$yellow-orange, 0.2);
+        }
+      }
+
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+    }
+  }
+
+  .form-actions {
+    margin-top: 30px;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 1rem;
+    }
+  }
+}

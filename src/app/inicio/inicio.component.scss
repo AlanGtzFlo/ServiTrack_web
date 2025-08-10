@@ -1,0 +1,188 @@
+/* src/app/inicio/inicio.component.scss */
+
+@use "../../styles.scss" as global; // Asegúrate de que esta ruta sea correcta para tus variables globales
+@use "sass:color";
+
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 1500px;
+  width: 1500px;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.dashboard-header {
+  margin-bottom: 30px;
+  text-align: center;
+
+  .section-title {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 38px;
+    color: global.$white;
+    margin: 0 0 10px 0;
+    text-shadow: 1px 1px 3px rgba(global.$dark-blue, 0.2);
+  }
+
+  .welcome-message {
+    font-family: global.$font-body;
+    font-size: 18px;
+    color: color.adjust(global.$white, $lightness: -15%);
+    margin: 0;
+  }
+}
+
+.dashboard-cards-grid {
+  display: grid;
+  // **CAMBIO CLAVE 1: Definir la cuadrícula para 2 columnas fijas**
+  grid-template-columns: repeat(2, 1fr); /* Crea 2 columnas de igual ancho */
+  gap: 25px;
+  margin-bottom: 40px;
+
+  // **Media Query para pantallas más pequeñas: 1 columna**
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+  }
+
+  .info-card {
+    @extend .card;
+    width: 400px;
+    display: flex;
+    flex-direction: column; /* Cambiado a columna para el contenido interno */
+    align-items: center; /* Centra el contenido verticalmente */
+    justify-content: center; /* Centra el contenido horizontalmente */
+    gap: 15px; /* Reducido un poco el gap para más compacto */
+    padding: 25px;
+    background-color: global.$white;
+    box-shadow: 0 6px 18px rgba(global.$dark-blue, 0.1);
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+
+    // **CAMBIO CLAVE 2: Hacer la tarjeta más "cuadrada"**
+    // Usamos padding-bottom para mantener una relación de aspecto con un padding-top de 0,
+    // o simplemente `aspect-ratio` si tu entorno lo soporta bien.
+    // Opción A: Usando padding-bottom (más compatible con navegadores antiguos)
+    padding-bottom: calc(100% - 50px); /* Ajusta este valor si tu padding horizontal es diferente a 25px+25px.
+                                           100% de ancho del padre menos el padding vertical (25+25) */
+    position: relative; /* Necesario para que el contenido se posicione correctamente si usamos padding-bottom */
+    
+    // Opción B: Usando aspect-ratio (la forma moderna y más limpia)
+    // Descomenta y usa esta opción si Angular y tus navegadores objetivo soportan bien `aspect-ratio`.
+    // aspect-ratio: 1 / 1; /* Esto hace que el elemento sea un cuadrado perfecto (ancho / alto) */
+    // padding-bottom: 0; /* Quita el padding-bottom si usas aspect-ratio */
+
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(global.$dark-blue, 0.2);
+    }
+
+    .card-icon-wrapper {
+      background-color: global.$teal;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+
+      .card-icon {
+        font-size: 36px;
+        color: global.$white;
+      }
+    }
+
+    .card-content {
+      // **CAMBIO CLAVE 3: Centrar el contenido de la tarjeta si se usa padding-bottom**
+      position: absolute; /* Para que el contenido no afecte el cálculo del padding-bottom */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* Centra el texto verticalmente */
+      align-items: center;     /* Centra el texto horizontalmente */
+      padding: 25px; /* Asegura el padding interno para el contenido real */
+      box-sizing: border-box; /* Incluye padding en el tamaño de card-content */
+      
+      .card-title {
+        font-family: global.$font-body;
+        font-weight: 600;
+        font-size: 30px;
+        color: global.$dark-blue;
+        margin: 0 0 5px 0;
+      }
+
+      .card-value {
+        font-family: global.$font-headings;
+        font-weight: 700;
+        font-size: 45px;
+        color: global.$yellow-orange;
+        margin: 0 0 10px 0;
+      }
+
+      .status-badge {
+        font-size: 20px;
+        padding: 4px 10px;
+      }
+    }
+  }
+}
+
+.recent-activity {
+  @extend .card;
+  padding: 30px;
+
+  .card-section-title {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 34px;
+    color: global.$dark-blue;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid global.$light-gray;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      font-family: global.$font-body;
+      font-size: 20px;
+      color: color.adjust(global.$dark-blue, $lightness: 10%);
+      margin-bottom: 12px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .icon-activity {
+        font-size: 25px;
+        color: global.$teal;
+        margin-right: 10px;
+      }
+
+      .activity-date {
+        margin-left: auto;
+        font-size: 17px;
+        color: color.adjust(global.$dark-blue, $lightness: 30%);
+      }
+    }
+  }
+}

@@ -1,0 +1,279 @@
+/* src/app/policies/policy-detail/policy-detail.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.policy-detail-container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .back-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    // Asumiendo que quieres el estilo de un botón de texto o enlace de styles.scss
+    // Aplica los estilos de .btn-text de styles.scss
+    color: global.$teal; // Color del enlace de vuelta
+    text-decoration: none;
+    font-family: global.$font-body;
+    font-weight: 500;
+    transition: text-decoration 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      text-decoration: underline;
+      color: color.adjust(global.$teal, $lightness: -10%);
+    }
+
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+
+  .section-title {
+    font-family: global.$font-headings; // Corregido: usa global.$
+    font-weight: 700;
+    font-size: 30px;
+    color: global.$dark-blue; // Corregido: usa global.$
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .btn-secondary {
+      // Extiende los estilos base de .btn-secondary de styles.scss
+      @extend .btn-secondary; /**/
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      padding: 8px 15px;
+      .material-icons {
+        font-size: 20px;
+      }
+    }
+    .btn-delete {
+      // Extiende los estilos base de .btn-primary de styles.scss (si lo necesitas)
+      // O puedes definirlo como un btn-danger directamente si existe en global.$
+      // Aquí lo estoy extendiendo y luego sobrescribiendo el color.
+      @extend .btn-primary; /**/ // O puedes usar .btn si quieres algo más genérico.
+      background-color: global.$soft-red; // Corregido: usa global.$
+      &:hover {
+        // Corregido: usa color.adjust() y global.$
+        background-color: color.adjust(global.$soft-red, $lightness: -10%);
+      }
+    }
+  }
+}
+
+.policy-detail-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; // Información general a la izquierda, otros paneles a la derecha
+  gap: 30px;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr; // Se apilan en pantallas pequeñas
+  }
+}
+
+.card {
+  // Ya tienes la definición de .card en styles.scss, que incluye background-color, border-radius y box-shadow.
+  // Si los valores aquí son los mismos, puedes eliminar estas líneas, de lo contrario, déjalas para sobrescribir.
+  background-color: global.$white; /**/ // Agregado explícitamente si este .card difiere del global
+  border-radius: 8px; /**/ // O el valor que desees si difiere del global
+  box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.08); /**/ // O el valor que desees si difiere del global
+  padding: 30px; // Esto es una sobrescritura o adición al padding global
+}
+
+.info-panel, .terms-coverage-panel, .documents-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-title {
+  font-family: global.$font-headings; // Corregido: usa global.$
+  font-weight: 600;
+  font-size: 24px;
+  color: global.$teal; // Corregido: usa global.$
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid global.$light-gray; // Corregido: usa global.$
+}
+
+.info-group {
+  display: flex;
+  margin-bottom: 15px;
+  align-items: baseline;
+
+  .label {
+    font-family: global.$font-body; // Corregido: usa global.$
+    font-weight: 500;
+    color: global.$dark-blue; // Corregido: usa global.$
+    width: 150px; // Ancho para las etiquetas
+    flex-shrink: 0;
+    margin-right: 15px;
+  }
+  .value {
+    font-family: global.$font-body; // Corregido: usa global.$
+    // Corregido: usa color.adjust() y global.$
+    color: color.adjust(global.$dark-blue, $lightness: 15%);
+    flex-grow: 1;
+  }
+
+  .client-link {
+    color: global.$teal; // Corregido: usa global.$
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    &:hover {
+      text-decoration: underline;
+    }
+    .tiny-icon {
+      font-size: 16px;
+    }
+  }
+
+  .status-badge {
+    // Ya tienes .status-success definido en styles.scss, así que esto está bien.
+    @extend .status-success;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &.description-group, &.terms-group, &.notes-group {
+    flex-direction: column;
+    .label {
+      width: auto;
+      margin-bottom: 8px;
+    }
+  }
+  .description-text, .terms-text, .notes-text {
+    white-space: pre-wrap;
+    line-height: 1.6;
+  }
+}
+
+.covered-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  li {
+    font-family: global.$font-body; // Corregido: usa global.$
+    // Corregido: usa color.adjust() y global.$
+    color: color.adjust(global.$dark-blue, $lightness: 15%);
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+    &::before {
+      content: '•'; // Punto para la lista
+      color: global.$yellow-orange; // Corregido: usa global.$
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-size: 1.2em;
+      line-height: 1;
+    }
+  }
+}
+
+.no-data-message {
+  font-family: global.$font-body; // Corregido: usa global.$
+  font-size: 16px;
+  // Corregido: usa color.adjust() y global.$
+  color: color.adjust(global.$dark-blue, $lightness: 30%);
+  text-align: center;
+  padding: 30px 0;
+  background-color: global.$light-gray; // Corregido: usa global.$
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+// Estilos para la lista de documentos
+.document-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  .document-item {
+    display: flex;
+    align-items: center;
+    background-color: global.$light-gray; // Corregido: usa global.$
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    &:hover {
+      // Corregido: usa color.adjust() y global.$
+      background-color: color.adjust(global.$light-gray, $lightness: 2%);
+      // Corregido: usa global.$
+      box-shadow: 0 2px 8px rgba(global.$dark-blue, 0.05);
+    }
+    .document-icon {
+      font-size: 32px;
+      color: global.$teal; // Corregido: usa global.$
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    .document-info {
+      flex-grow: 1;
+      text-align: left;
+      .document-name {
+        font-weight: 500;
+        font-size: 16px;
+        color: global.$dark-blue; // Corregido: usa global.$
+        margin: 0;
+      }
+      .document-type {
+        font-size: 13px;
+        // Corregido: usa color.adjust() y global.$
+        color: color.adjust(global.$dark-blue, $lightness: 30%);
+      }
+    }
+    .download-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: 1px solid global.$yellow-orange; // Corregido: usa global.$
+      color: global.$yellow-orange; // Corregido: usa global.$
+      background-color: transparent;
+      &:hover {
+        background-color: global.$yellow-orange; // Corregido: usa global.$
+        color: global.$white; // Corregido: usa global.$
+      }
+      .tiny-icon {
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+.loading-or-error {
+  text-align: center;
+  font-family: global.$font-body; // Corregido: usa global.$
+  font-size: 18px;
+  // Corregido: usa color.adjust() y global.$
+  color: color.adjust(global.$dark-blue, $lightness: 20%);
+  padding: 50px;
+}
