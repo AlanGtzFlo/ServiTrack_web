@@ -45,7 +45,7 @@
       </div>
 
       <div class="info-group">
-        <p class="label">Nombre Completo:</p>
+        <p class="label">Nombre de usuario:</p>
         <p class="value">{{ user.name }}</p>
       </div>
 
@@ -116,7 +116,7 @@
         <textarea [(ngModel)]="user.address" class="form-control" rows="3" placeholder="Calle, número, colonia..."></textarea>
       </div>
     </div>
-    
+
     <div class="photo-upload-section" *ngIf="isEditing && isAdmin">
       <div class="info-group full-width">
         <p class="label">Foto de Perfil:</p>
