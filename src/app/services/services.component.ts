@@ -22,11 +22,8 @@ interface Service {
   titulo: string;
   descripcion: string;
   prioridad: 'Baja' | 'Media' | 'Alta' | 'Urgente';
-<<<<<<< HEAD
-  estado: 'Pendiente' | 'Asignado' | 'En Proceso' | 'Completado' | 'Cerrado' | 'Cancelado';
-=======
+
   estado: 'Pendiente' | 'Asignado' | 'En Proceso' | 'Concluido' | 'Cerrado' | 'Cancelado';
->>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
   fecha_limite: string | null;
   ubicacion: string | null;
   usuario_creador: User;
@@ -46,8 +43,8 @@ export class ServicesComponent implements OnInit {
   filteredServices: Service[] = [];
 
   private _searchTerm: string = '';
-  private _filterStatus: string = 'all'; 
-  private _filterPriority: string = 'all'; 
+  private _filterStatus: string = 'all';
+  private _filterPriority: string = 'all';
 
   isLoading = true;
   apiBaseUrl = 'https://fixflow-backend.onrender.com/api/tickets/';
@@ -142,7 +139,7 @@ export class ServicesComponent implements OnInit {
         const matchesDescripcion = service.descripcion?.toLowerCase().includes(lowerTerm) || false;
         const matchesCreador = service.usuario_creador?.nombre?.toLowerCase().includes(lowerTerm) || false;
         const matchesTecnico = service.tecnico_asignado?.nombre?.toLowerCase().includes(lowerTerm) || false;
-        
+
         return matchesTitulo || matchesDescripcion || matchesCreador || matchesTecnico;
       });
 =======
@@ -155,7 +152,7 @@ export class ServicesComponent implements OnInit {
       );
 >>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
     }
-    
+
     if (this.filterStatus !== 'all') {
 <<<<<<< HEAD
       const normalizedFilterStatus = this.filterStatus.toLowerCase().replace(/\s/g, '_');
