@@ -30,7 +30,6 @@ export class LoginComponent implements OnInit {
 
     const loginUrl = 'https://fixflow-backend.onrender.com/api/login/' // Tu endpoint de login
 
-
     // La API de Django espera 'correo' y 'password'
     const payload = {
       correo: this.username, // ¡Asegúrate de que el 'username' del formulario sea el 'correo' aquí!
