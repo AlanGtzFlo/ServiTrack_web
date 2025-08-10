@@ -38,7 +38,11 @@ export class UserDetailComponent implements OnInit {
   roles = ['Administrador', 'Técnico', 'Atención a Cliente', 'Supervisor'];
   statuses = ['Activo', 'Inactivo'];
 
+<<<<<<< HEAD
   private apiUrl = 'https://fixflow-backend.onrender.com/api/usuarios/';
+=======
+  private apiUrl = 'https://54f8a907472b.ngrok-free.app/api/usuarios/';
+>>>>>>> 6cecdab48fee5f4832f7a7ad520fce6db685ea73
 
   constructor(
     private route: ActivatedRoute,
