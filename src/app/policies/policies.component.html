@@ -4,12 +4,16 @@
     <div class="header-actions">
       <div class="search-box">
         <i class="material-icons search-icon">search</i>
+<<<<<<< HEAD
         <input
           type="text"
           [(ngModel)]="searchTerm"
           placeholder="Buscar póliza o cliente..."
           class="search-input"
         />
+=======
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar póliza o cliente..." class="search-input" />
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
       </div>
       <select [(ngModel)]="filterStatus" class="status-filter">
         <option value="all">Todos los Estados</option>
@@ -29,6 +33,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
   <div class="policies-grid" id="policies-grid">
     <div class="policy-card card" *ngFor="let policy of filteredPolicies">
       <div class="card-header">
@@ -40,13 +45,27 @@
             'status-error': policy.estatus === false
           }"
         >
+=======
+  <div class="policies-grid">
+    <div class="policy-card card" *ngFor="let policy of filteredPolicies">
+      <div class="card-header">
+        <span class="policy-type">{{ policy.tipo_poliza || 'N/A' }}</span>
+        <span class="policy-status" [ngClass]="{
+          'status-success': policy.estatus === true,
+          'status-error': policy.estatus === false
+        }">
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
           {{ policy.estatus ? 'Activo' : 'Inactivo' }}
         </span>
       </div>
       <h3 class="policy-number">Empresa: {{ policy.nombre }}</h3>
       <p class="policy-description">
+<<<<<<< HEAD
         Fecha Inicio: {{ policy.fecha_inicio_poliza || 'N/A' }} | Fecha Fin:
         {{ policy.fecha_fin_poliza || 'N/A' }}
+=======
+        Fecha Inicio: {{ policy.fecha_inicio_poliza || 'N/A' }} | Fecha Fin: {{ policy.fecha_fin_poliza || 'N/A' }}
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
       </p>
       <div class="card-footer">
         <a [routerLink]="['/policies', policy.id]" class="btn-text"

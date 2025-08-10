@@ -4,8 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
+<<<<<<< HEAD
 import { of } from 'rxjs';
 
+=======
+import { of, throwError } from 'rxjs';
+
+// Interfaz para definir la estructura de un servicio/ticket, ahora basada en tu API
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
 interface User {
   id: number;
   nombre: string;
@@ -16,7 +22,11 @@ interface Service {
   titulo: string;
   descripcion: string;
   prioridad: 'Baja' | 'Media' | 'Alta' | 'Urgente';
+<<<<<<< HEAD
   estado: 'Pendiente' | 'Asignado' | 'En Proceso' | 'Completado' | 'Cerrado' | 'Cancelado';
+=======
+  estado: 'Pendiente' | 'Asignado' | 'En Proceso' | 'Concluido' | 'Cerrado' | 'Cancelado';
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
   fecha_limite: string | null;
   ubicacion: string | null;
   usuario_creador: User;
@@ -31,6 +41,7 @@ interface Service {
   styleUrls: ['./services.component.scss']
 })
 export class ServicesComponent implements OnInit {
+<<<<<<< HEAD
   allServices: Service[] = [];
   filteredServices: Service[] = [];
 
@@ -46,6 +57,37 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadServices();
+=======
+  // Ahora el arreglo de servicios se carga desde la API
+  services: Service[] = [];
+  searchTerm: string = '';
+  filterStatus: 'all' | Service['estado'] = 'all';
+  filterPriority: 'all' | Service['prioridad'] = 'all';
+  isLoading = true;
+  apiBaseUrl = 'https://fixflow-backend.onrender.com/api/tickets/';
+
+  constructor(private http: HttpClient) { }
+
+  ngOnInit(): void {
+    this.loadServices();
+  }
+
+  loadServices(): void {
+    this.isLoading = true;
+    this.http.get<Service[]>(this.apiBaseUrl)
+      .pipe(
+        catchError(error => {
+          console.error('Error al cargar los servicios:', error);
+          this.isLoading = false;
+          // Retornar un observable vacío para que la aplicación no se detenga
+          return of([]);
+        })
+      )
+      .subscribe(servicesData => {
+        this.services = servicesData;
+        this.isLoading = false;
+      });
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
   }
 
   get searchTerm(): string {
@@ -93,6 +135,7 @@ export class ServicesComponent implements OnInit {
     let result = this.allServices;
 
     if (this.searchTerm) {
+<<<<<<< HEAD
       const lowerTerm = this.searchTerm.toLowerCase();
       result = result.filter(service => {
         const matchesTitulo = service.titulo?.toLowerCase().includes(lowerTerm) || false;
@@ -102,20 +145,38 @@ export class ServicesComponent implements OnInit {
         
         return matchesTitulo || matchesDescripcion || matchesCreador || matchesTecnico;
       });
+=======
+      const lowerCaseSearchTerm = this.searchTerm.toLowerCase();
+      result = result.filter(service =>
+        service.titulo.toLowerCase().includes(lowerCaseSearchTerm) ||
+        service.descripcion.toLowerCase().includes(lowerCaseSearchTerm) ||
+        service.usuario_creador.nombre.toLowerCase().includes(lowerCaseSearchTerm) ||
+        (service.tecnico_asignado && service.tecnico_asignado.nombre.toLowerCase().includes(lowerCaseSearchTerm))
+      );
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
     }
     
     if (this.filterStatus !== 'all') {
+<<<<<<< HEAD
       const normalizedFilterStatus = this.filterStatus.toLowerCase().replace(/\s/g, '_');
       result = result.filter(s => s.estado?.toLowerCase().replace(/\s/g, '_') === normalizedFilterStatus);
+=======
+      result = result.filter(service => service.estado === this.filterStatus);
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
     }
 
     if (this.filterPriority !== 'all') {
+<<<<<<< HEAD
       result = result.filter(s => s.prioridad?.toLowerCase() === this.filterPriority.toLowerCase());
+=======
+      result = result.filter(service => service.prioridad === this.filterPriority);
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
     }
 
     this.filteredServices = result;
   }
 
+<<<<<<< HEAD
   // Función para exportar los tickets a PDF
   exportTicketsToPdf(): void {
     this.http.get(this.exportPdfUrl, { responseType: 'blob' }).subscribe({
@@ -143,6 +204,11 @@ export class ServicesComponent implements OnInit {
   getStatusClass(status: Service['estado']): string {
     switch (status) {
       case 'Completado':
+=======
+  getStatusClass(status: Service['estado']): string {
+    switch (status) {
+      case 'Concluido':
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
       case 'Cerrado':
         return 'status-success';
       case 'Pendiente':

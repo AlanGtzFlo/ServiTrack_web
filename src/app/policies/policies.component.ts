@@ -24,11 +24,18 @@ interface Policy {
 export class PoliciesComponent implements OnInit {
 
   policies: Policy[] = [];
+<<<<<<< HEAD
+=======
+
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
   searchTerm: string = '';
   filterStatus: 'all' | 'Activo' | 'Inactivo' = 'all';
 
   private apiUrl = 'https://fixflow-backend.onrender.com/api/empresas/';
+<<<<<<< HEAD
   private exportUrl = 'https://fixflow-backend.onrender.com/api/empresas/exportar_empresas/';
+=======
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
 
   constructor(private router: Router, private http: HttpClient) {}
 
@@ -88,6 +95,10 @@ export class PoliciesComponent implements OnInit {
   }
 
   addNewPolicy(): void {
+<<<<<<< HEAD
+=======
+    // Navegar o abrir modal para crear nueva póliza
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
     console.log('Abrir formulario para nueva póliza');
     this.router.navigate(['/policies/new']);
   }

@@ -45,11 +45,37 @@
           </span>
         </p>
       </div>
+<<<<<<< HEAD
     </div>
   </div>
 </div>
 <!-- El formulario de edición solo se muestra si el usuario es un administrador y está editando -->
 <div class="policy-edit-container" *ngIf="policyToEdit && isEditing && isAdmin">
+=======
+      <div class="info-group description-group">
+        <p class="label">Descripción:</p>
+        <p class="value description-text">{{ policy.description || 'No hay descripción disponible.' }}</p>
+      </div>
+      <div class="info-group notes-group">
+        <p class="label">Notas Internas:</p>
+        <p class="value notes-text">{{ policy.notes || 'No hay notas adicionales para esta póliza.' }}</p>
+      </div>
+    </div>
+    <div class="terms-coverage-panel card">
+      <h2 class="panel-title">Términos y Cobertura</h2>
+      <div class="info-group terms-group">
+        <p class="label">Términos Clave:</p>
+        <p class="value terms-text">{{ policy.terms || 'No hay términos detallados disponibles.' }}</p>
+      </div>
+      <div class="info-group covered-items-group">
+        <p class="label">Elementos Cubiertos:</p>
+        <p class="value">{{ policy.coveredItems || 'No hay elementos cubiertos especificados.' }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="policy-edit-container" *ngIf="policyToEdit && isEditing">
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
   <div class="section-header">
     <h1 class="section-title">Editando Póliza: #{{ policyToEdit.nombre }}</h1>
   </div>
@@ -82,6 +108,17 @@
             <option [ngValue]="false">Vencida</option>
           </select>
         </div>
+<<<<<<< HEAD
+=======
+        <div class="form-group">
+          <label for="description">Descripción</label>
+          <textarea id="description" [(ngModel)]="policyToEdit.description" name="description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="notes">Notas Internas</label>
+          <textarea id="notes" [(ngModel)]="policyToEdit.notes" name="notes"></textarea>
+        </div>
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
       </div>
       <div class="form-actions" style="margin-top: 1rem;">
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>

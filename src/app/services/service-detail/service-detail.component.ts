@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { catchError, finalize } from 'rxjs/operators';
+<<<<<<< HEAD
 import { of, throwError } from 'rxjs';
 
 // URL base para todas las llamadas a la API
@@ -15,6 +16,14 @@ interface User {
   id: number;
   nombre: string;
   rol: string; // Asumimos un campo 'rol' para identificar técnicos
+=======
+import { forkJoin, of, throwError } from 'rxjs';
+
+// Interfaces para reflejar la estructura de la API
+interface User {
+  id: number;
+  nombre: string;
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
 }
 
 interface Ubicacion {
@@ -27,12 +36,21 @@ interface Service {
   titulo: string;
   descripcion: string;
   prioridad: 'baja' | 'media' | 'alta';
+<<<<<<< HEAD
   estado: 'pendiente' | 'en_proceso' | 'completado' | 'cerrado'; // Corregido 'en_proceso'
   fecha_creacion: string;
   fecha_limite: string | null;
   ubicacion: number | null; // Es un ID numérico
   usuario_creador: number; // Es un ID numérico
   tecnico_asignado: number | null; // Es un ID numérico
+=======
+  estado: 'pendiente' | 'en_proceso' | 'completado' | 'cerrado'; 
+  fecha_creacion: string;
+  fecha_limite: string | null;
+  ubicacion: number | null; // Ahora es solo el ID de la ubicación
+  usuario_creador: number; 
+  tecnico_asignado: number | null;
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
 }
 
 @Component({
@@ -46,6 +64,7 @@ export class ServiceDetailComponent implements OnInit {
   serviceId: number | null = null;
   service: Service | undefined;
   isLoading = true;
+<<<<<<< HEAD
 
   // Listas para los dropdowns
   allUsers: User[] = [];
@@ -67,6 +86,26 @@ export class ServiceDetailComponent implements OnInit {
   editedStatus: Service['estado'] = 'pendiente';
   editedTechnicianId: number | null = null;
 
+=======
+  apiBaseUrl = 'https://fixflow-backend.onrender.com/api/tickets/';
+  usersApiUrl = 'https://fixflow-backend.onrender.com/api/usuarios/';
+  locationsApiUrl = 'https://fixflow-backend.onrender.com/api/ubicaciones/';
+  
+  users: User[] = [];
+  ubicaciones: Ubicacion[] = [];
+  creatorName: string = 'Cargando...';
+  locationName: string = 'Cargando...';
+
+  isEditing = false;
+  editedTitle = '';
+  editedDescription = '';
+  editedDueDate = '';
+  editedPriority: Service['prioridad'] = 'baja';
+  editedStatus: Service['estado'] = 'pendiente';
+  selectedTechnicianId: number | null = null;
+  selectedLocationId: number | null = null;
+
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -85,6 +124,7 @@ export class ServiceDetailComponent implements OnInit {
     });
   }
 
+<<<<<<< HEAD
   // Carga todos los datos necesarios en paralelo para optimizar
   async loadInitialData(id: number): Promise<void> {
     this.isLoading = true;
@@ -139,10 +179,54 @@ export class ServiceDetailComponent implements OnInit {
       this.editedStatus = this.service.estado;
       this.editedTechnicianId = this.service.tecnico_asignado;
     }
+=======
+  loadInitialData(id: number): void {
+    this.isLoading = true;
+    forkJoin({
+      users: this.http.get<User[]>(this.usersApiUrl),
+      ubicaciones: this.http.get<Ubicacion[]>(this.locationsApiUrl),
+      service: this.http.get<Service>(`${this.apiBaseUrl}${id}/`)
+    }).pipe(
+      catchError(error => {
+        console.error('Error al cargar datos iniciales:', error);
+        this.router.navigate(['/services']);
+        return throwError(() => new Error('Error al cargar datos'));
+      }),
+      finalize(() => this.isLoading = false)
+    ).subscribe(({ users, ubicaciones, service }) => {
+      this.users = users;
+      this.ubicaciones = ubicaciones;
+      this.service = service;
+      this.setInitialValues();
+    });
+  }
+
+  setInitialValues(): void {
+    if (this.service) {
+      const creator = this.users.find(u => u.id === this.service!.usuario_creador);
+      this.creatorName = creator ? creator.nombre : 'Desconocido';
+
+      const location = this.ubicaciones.find(u => u.id === this.service!.ubicacion);
+      this.locationName = location ? location.nombre : 'Desconocido';
+      this.selectedLocationId = this.service.ubicacion;
+
+      this.editedTitle = this.service.titulo;
+      this.editedDescription = this.service.descripcion;
+      this.editedDueDate = this.service.fecha_limite || '';
+      this.editedPriority = this.service.prioridad;
+      this.editedStatus = this.service.estado;
+      this.selectedTechnicianId = this.service.tecnico_asignado;
+    }
+  }
+
+  enterEditMode(): void {
+    this.isEditing = true;
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
   }
 
   cancelEditMode(): void {
     this.isEditing = false;
+<<<<<<< HEAD
   }
 
   saveChanges(): void {
@@ -162,16 +246,64 @@ export class ServiceDetailComponent implements OnInit {
     };
 
     this.updateService(payload, 'Los campos del servicio han sido actualizados.');
+=======
+    this.setInitialValues(); // Restaurar valores originales
+  }
+
+  saveChanges(): void {
+    if (!this.service) {
+      console.error('Servicio no cargado.');
+      return;
+    }
+
+    const payload: Partial<Service> = {};
+    let changesMade = false;
+
+    if (this.editedTitle !== this.service.titulo) { payload.titulo = this.editedTitle; changesMade = true; }
+    if (this.editedDescription !== this.service.descripcion) { payload.descripcion = this.editedDescription; changesMade = true; }
+    const editedDueDateValue = this.editedDueDate === '' ? null : this.editedDueDate;
+    if (editedDueDateValue !== this.service.fecha_limite) { payload.fecha_limite = editedDueDateValue; changesMade = true; }
+    if (this.editedPriority !== this.service.prioridad) { payload.prioridad = this.editedPriority; changesMade = true; }
+    if (this.editedStatus !== this.service.estado) { payload.estado = this.editedStatus; changesMade = true; }
+    
+    if (this.selectedTechnicianId !== this.service.tecnico_asignado) {
+      payload.tecnico_asignado = this.selectedTechnicianId;
+      changesMade = true;
+    }
+    
+    if (this.selectedLocationId !== this.service.ubicacion) {
+      payload.ubicacion = this.selectedLocationId;
+      changesMade = true;
+    }
+
+    if (changesMade) {
+      this.updateService(payload, 'Los campos del servicio han sido actualizados.');
+    } else {
+      console.log('No se hicieron cambios.');
+    }
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
     this.isEditing = false;
   }
 
   private updateService(payload: Partial<Service>, successMessage: string): void {
     if (!this.serviceId || Object.keys(payload).length === 0) return;
 
+<<<<<<< HEAD
     this.http.patch(`${API_BASE_URL}tickets/${this.serviceId}/`, payload)
       .pipe(
         catchError(error => {
           console.error('Error al actualizar el servicio:', error);
+=======
+    this.http.patch(`${this.apiBaseUrl}${this.serviceId}/`, payload)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al actualizar el servicio:', error);
+          if (error.error && typeof error.error === 'object') {
+            console.error('Detalles del error del backend:', JSON.stringify(error.error));
+          } else if (error.error) {
+            console.error('Mensaje de error del backend:', error.error);
+          }
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
           return of(null);
         })
       )
@@ -193,6 +325,7 @@ export class ServiceDetailComponent implements OnInit {
       case 'media': return 'priority-medium';
       case 'baja': return 'priority-low';
       default: return '';
+<<<<<<< HEAD
     }
   }
 
@@ -205,4 +338,21 @@ export class ServiceDetailComponent implements OnInit {
         return '';
     }
   }
+=======
+    }
+  }
+
+  getStatusClass(status: Service['estado']): string {
+    switch (status) {
+      case 'completado':
+      case 'cerrado':
+        return 'status-success';
+      case 'en_proceso':
+        return 'status-in-progress';
+      case 'pendiente':
+        return 'status-pending';
+      default: return '';
+    }
+  }
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
 }

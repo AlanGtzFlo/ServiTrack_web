@@ -52,6 +52,7 @@
       </div>
 
       <div class="card-body">
+<<<<<<< HEAD
         <p class="client-info" *ngIf="service.usuario_creador?.nombre">
           <i class="material-icons small-icon">business</i> Cliente:
           {{ service.usuario_creador?.nombre }}
@@ -73,6 +74,13 @@
           <i class="material-icons small-icon">schedule</i> Límite:
           {{ service.fecha_limite }}
         </p>
+=======
+        <p class="client-info"><i class="material-icons small-icon">business</i> Cliente: {{ service.usuario_creador.nombre }}</p>
+        <p class="service-meta"><i class="material-icons small-icon">category</i> Tipo: Correctivo</p>
+        <p class="service-meta"><i class="material-icons small-icon">label_important</i> Prioridad: <span [ngClass]="getPriorityClass(service.prioridad)">{{ service.prioridad }}</span></p>
+        <p class="service-meta" *ngIf="service.tecnico_asignado"><i class="material-icons small-icon">build</i> Técnico: {{ service.tecnico_asignado.nombre }}</p>
+        <p class="service-meta" *ngIf="service.fecha_limite"><i class="material-icons small-icon">schedule</i> Límite: {{ service.fecha_limite }}</p>
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
       </div>
 
       <div class="card-footer">
