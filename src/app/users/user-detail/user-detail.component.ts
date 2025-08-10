@@ -38,11 +38,7 @@ export class UserDetailComponent implements OnInit {
   roles = ['Administrador', 'Técnico', 'Atención a Cliente', 'Supervisor'];
   statuses = ['Activo', 'Inactivo'];
 
-<<<<<<< HEAD
   private apiUrl = 'https://fixflow-backend.onrender.com/api/usuarios/';
-=======
-  private apiUrl = 'https://54f8a907472b.ngrok-free.app/api/usuarios/';
->>>>>>> 6cecdab48fee5f4832f7a7ad520fce6db685ea73
 
   constructor(
     private route: ActivatedRoute,
@@ -115,7 +111,7 @@ export class UserDetailComponent implements OnInit {
     formData.append('correo', this.user.email);
     formData.append('rol', this.mapRoleToApi(this.user.role));
     formData.append('is_active', (this.user.status === 'Activo').toString());
-    
+
     if (this.user.phone) {
       formData.append('telefono', this.user.phone);
     }
@@ -129,7 +125,7 @@ export class UserDetailComponent implements OnInit {
     if (this.selectedFile) {
       formData.append('foto', this.selectedFile, this.selectedFile.name);
     }
-    
+
     this.http.patch(`${this.apiUrl}${this.user.id}/`, formData).subscribe({
       next: () => {
         console.log('Usuario actualizado correctamente.');
