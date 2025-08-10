@@ -25,6 +25,11 @@ export interface User {
 export class UsersComponent implements OnInit {
   // La URL de la API se define aquí, como en tu NewUserComponent
   private apiUrl = 'https://fixflow-backend.onrender.com/api/usuarios/';
+<<<<<<< HEAD
+  // Nueva URL para exportar el PDF de usuarios
+  private exportPdfUrl = 'https://fixflow-backend.onrender.com/api/usuarios/exportar_usuarios/';
+=======
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
 
   allUsers: User[] = [];
   filteredUsers: User[] = [];
@@ -126,4 +131,30 @@ export class UsersComponent implements OnInit {
     this.filterStatus = 'all';
     this.applyFilters();
   }
+<<<<<<< HEAD
+
+  /**
+   * Exporta la lista de usuarios a un archivo PDF.
+   * Realiza una solicitud HTTP a la API de exportación y descarga el archivo.
+   */
+  exportUsersPdf(): void {
+    this.isLoading = true;
+    this.http.get(this.exportPdfUrl, { responseType: 'blob' }).subscribe({
+      next: (data: Blob) => {
+        const fileURL = URL.createObjectURL(data);
+        const link = document.createElement('a');
+        link.href = fileURL;
+        link.download = 'usuarios.pdf';
+        link.click();
+        URL.revokeObjectURL(fileURL);
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error al exportar PDF de usuarios:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+=======
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
 }

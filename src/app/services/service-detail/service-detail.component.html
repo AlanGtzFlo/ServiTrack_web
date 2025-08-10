@@ -1,3 +1,84 @@
+<<<<<<< HEAD
+<div class="min-h-screen p-4 sm:p-6 lg:p-8">
+
+  <!-- Mensaje de Carga -->
+  <div *ngIf="isLoading" class="text-center py-10">
+    <div class="loader"></div>
+    <p class="text-gray-600 mt-4">Cargando detalles del servicio...</p>
+  </div>
+
+  <!-- Contenido Principal cuando el servicio está cargado -->
+  <div *ngIf="!isLoading && service" class="max-w-xl mx-auto">
+
+    <!-- Modo de Visualización -->
+    <div *ngIf="!isEditing" class="bg-white p-6 rounded-lg shadow-lg">
+      <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <h1 class="text-3xl font-bold text-gray-800">{{ service.titulo }}</h1>
+        <div class="space-x-2">
+          <button
+            (click)="enterEditMode()"
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
+          >
+            Editar
+          </button>
+          <button
+            (click)="goToServicesList()"
+            class="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition duration-300"
+          >
+            Volver a la lista
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <!-- Tarjeta de Detalles del Servicio -->
+        <div>
+          <h2 class="text-xl font-semibold mb-4 text-gray-700">Detalles del Servicio</h2>
+          <div class="space-y-4">
+            <div>
+              <p class="font-medium text-gray-600">Descripción:</p>
+              <p class="text-gray-800">{{ service.descripcion }}</p>
+            </div>
+            <div>
+              <p class="font-medium text-gray-600">Prioridad:</p>
+              <span [ngClass]="getPriorityClass(service.prioridad)" class="px-3 py-1 rounded-full text-white text-sm font-semibold">
+                {{ service.prioridad | titlecase }}
+              </span>
+            </div>
+            <div>
+              <p class="font-medium text-gray-600">Estado:</p>
+              <span [ngClass]="getStatusClass(service.estado)" class="px-3 py-1 rounded-full text-sm font-semibold">
+                {{ service.estado | titlecase }}
+              </span>
+            </div>
+            <div>
+              <p class="font-medium text-gray-600">Fecha Límite:</p>
+              <p class="text-gray-800">{{ service.fecha_limite | date:'longDate' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Información de Usuario y Ubicación -->
+        <div class="mt-8">
+          <h2 class="text-xl font-semibold mb-4 text-gray-700">Asignación</h2>
+          <div class="space-y-4">
+            <div>
+              <p class="font-medium text-gray-600">Creado Por:</p>
+              <p class="text-gray-800">{{ creatorName }}</p>
+            </div>
+            <div>
+              <p class="font-medium text-gray-600">Técnico Asignado:</p>
+              <p class="text-gray-800">{{ assignedTechnicianName }}</p>
+            </div>
+            <div>
+              <p class="font-medium text-gray-600">Ubicación:</p>
+              <p class="text-gray-800">{{ locationName }}</p>
+            </div>
+            <div>
+              <p class="font-medium text-gray-600">Fecha de Creación:</p>
+              <p class="text-gray-800">{{ service.fecha_creacion | date:'longDate' }}</p>
+            </div>
+=======
 <!-- src/app/services/service-detail/service-detail.component.html -->
 <div class="min-h-screen p-4 md:p-8 font-sans bg-gray-100">
   <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8">
@@ -20,6 +101,7 @@
                   [ngClass]="getPriorityClass(service.prioridad)">{{ service.prioridad }}</span>
             <span class="px-3 py-1 rounded-full text-sm font-semibold text-white"
                   [ngClass]="getStatusClass(service.estado)">{{ service.estado }}</span>
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
           </div>
         </div>
         <button (click)="goToServicesList()" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
@@ -124,5 +206,132 @@
     <div *ngIf="!isLoading && !service" class="text-center text-gray-500 w-full py-12">
       <p>No se pudo cargar la información del servicio.</p>
     </div>
+
+    <!-- Modo de Edición -->
+    <div *ngIf="isEditing" class="max-w-xl mx-auto p-6 sm:p-8 bg-white rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold mb-6 text-gray-800">Editar Servicio</h1>
+      <form (ngSubmit)="saveChanges()">
+        <div class="space-y-4">
+          <!-- Título -->
+          <div>
+            <label for="editedTitle" class="block text-sm font-medium text-gray-700">Título</label>
+            <input id="editedTitle" type="text" [(ngModel)]="editedTitle" name="editedTitle" required
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          </div>
+
+          <!-- Descripción -->
+          <div>
+            <label for="editedDescription" class="block text-sm font-medium text-gray-700">Descripción</label>
+            <textarea id="editedDescription" [(ngModel)]="editedDescription" name="editedDescription" rows="4"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+          </div>
+
+          <!-- Prioridad -->
+          <div>
+            <label for="editedPriority" class="block text-sm font-medium text-gray-700">Prioridad</label>
+            <select id="editedPriority" [(ngModel)]="editedPriority" name="editedPriority"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <option value="baja">Baja</option>
+              <option value="media">Media</option>
+              <option value="alta">Alta</option>
+            </select>
+          </div>
+
+          <!-- Estado -->
+          <div>
+            <label for="editedStatus" class="block text-sm font-medium text-gray-700">Estado</label>
+            <select id="editedStatus" [(ngModel)]="editedStatus" name="editedStatus"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <option value="pendiente">Pendiente</option>
+              <option value="en_proceso">En Proceso</option>
+              <option value="completado">Completado</option>
+              <option value="cerrado">Cerrado</option>
+            </select>
+          </div>
+          
+          <!-- Técnico Asignado -->
+          <div>
+            <label for="editedTechnician" class="block text-sm font-medium text-gray-700">Asignar Técnico</label>
+            <select id="editedTechnician" [(ngModel)]="editedTechnicianId" name="editedTechnicianId"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <option [ngValue]="null">Sin asignar</option>
+              <option *ngFor="let technician of technicians" [ngValue]="technician.id">
+                {{ technician.nombre }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Ubicación -->
+          <div>
+            <label for="editedLocation" class="block text-sm font-medium text-gray-700">Ubicación</label>
+            <select id="editedLocation" [(ngModel)]="editedLocation" name="editedLocation"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <option [ngValue]="null">Sin especificar</option>
+              <option *ngFor="let location of locations" [ngValue]="location.id">
+                {{ location.nombre }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Fecha Límite -->
+          <div>
+            <label for="editedDueDate" class="block text-sm font-medium text-gray-700">Fecha Límite</label>
+            <input id="editedDueDate" type="date" [(ngModel)]="editedDueDate" name="editedDueDate"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          </div>
+
+          <div class="flex justify-end space-x-2 mt-6">
+            <button type="submit"
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-700 transition duration-300">
+              Guardar Cambios
+            </button>
+            <button type="button" (click)="cancelEditMode()"
+                    class="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition duration-300">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
+
+  <!-- Mensaje si no se encuentra el servicio -->
+  <div *ngIf="!isLoading && !service" class="text-center py-10 text-gray-600">
+    <p>No se pudo encontrar el servicio con el ID especificado.</p>
+    <button (click)="goToServicesList()" class="mt-4 text-blue-600 hover:underline">
+      Volver a la lista de servicios
+    </button>
+  </div>
+<<<<<<< HEAD
 </div>
+
+<style>
+  /* Clases de prioridad */
+  .priority-low { background-color: #4CAF50; } /* Verde */
+  .priority-medium { background-color: #FFC107; } /* Amarillo */
+  .priority-high { background-color: #F44336; } /* Rojo */
+
+  /* Clases de estado */
+  .status-pending { background-color: #FF9800; color: #fff; } /* Naranja */
+  .status-en_proceso { background-color: #2196F3; color: #fff; } /* Azul */
+  .status-completado { background-color: #4CAF50; color: #fff; } /* Verde */
+  .status-cerrado { background-color: #607D8B; color: #fff; } /* Gris */
+  
+  .loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+=======
+</div>
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0

@@ -1,64 +1,133 @@
-<div class="refaccion-detail-container">
-  <div class="section-header">
-    <a routerLink="/refacciones" class="back-button">
-      <i class="material-icons">arrow_back</i> Volver a Refacciones
-    </a>
-    <h1 class="section-title">Detalles de la Refacción</h1>
-    <div class="header-actions">
-      <button class="btn btn-primary" routerLink="/refacciones/editar/{{ refaccionId }}">
-        <i class="material-icons">edit</i> Editar
-      </button>
-      <button class="btn btn-delete">
-        <i class="material-icons">delete</i> Eliminar
-      </button>
-    </div>
-  </div>
-
-  <div class="detail-content-card">
-    <p *ngIf="refaccionId">Mostrando detalles para la refacción con ID: {{ refaccionId }}</p>
-    <p *ngIf="!refaccionId">No se encontró el ID de la refacción.</p>
-
-    <div class="image-wrapper" [class.no-image]="!refaccionImageUrl">
-      <img *ngIf="refaccionImageUrl" [src]="refaccionImageUrl" alt="Imagen de la refacción" class="refaccion-image">
-      <div *ngIf="!refaccionImageUrl" class="placeholder-image">
-        <p>No hay imagen disponible para esta refacción.</p>
-      </div>
+<div class="p-8 max-w-4xl mx-auto bg-white shadow-lg rounded-xl mt-10">
+    <div *ngIf="isLoading" class="text-center">
+        <p>Cargando detalles de la refacción...</p>
     </div>
 
-    <h2 class="panel-title">Información General</h2>
-    <div class="info-group">
-      <span class="label">Nombre:</span>
-      <span class="value">{{ refaccionName || 'N/A' }}</span>
-    </div>
-    <div class="info-group">
-      <span class="label">Número de Parte:</span>
-      <span class="value">{{ refaccionPartNumber || 'N/A' }}</span>
-    </div>
-    <div class="info-group">
-      <span class="label">Modelo Máquina:</span>
-      <span class="value">{{ refaccionMachineModel || 'N/A' }}</span>
-    </div>
-    <div class="info-group">
-      <span class="label">Stock:</span>
-      <span class="value">{{ refaccionStock !== undefined ? refaccionStock : 'N/A' }}</span>
-    </div>
-    <div class="info-group">
-      <span class="label">Estado:</span>
-      <span class="status-badge" 
-            [ngClass]="{
-              'status-success': refaccionStock !== undefined && refaccionStock > 0, 
-              'status-error': refaccionStock !== undefined && refaccionStock === 0,  
-              'status-pending': refaccionStock !== undefined && refaccionStock > 0 && refaccionStock < 10 
-            }">
-        {{ refaccionStock !== undefined ? (refaccionStock > 0 ? 'Disponible' : 'Agotado') : 'Cargando...' }}
-      </span>
+    <div *ngIf="errorMessage" class="text-center text-red-500">
+        <p>{{ errorMessage }}</p>
     </div>
 
-    <h2 class="panel-title">Notas</h2>
-    <div class="info-group notes-group">
-      <span class="label">Notas Adicionales:</span>
-      <span class="notes-text">{{ refaccionNotes || 'No hay notas.' }}</span>
+    <div *ngIf="!isLoading && !errorMessage && refaccion">
+        <div class="flex justify-between items-start mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">{{ refaccion.nombre }}</h1>
+            <div *ngIf="!isEditing && isAdmin" class="flex space-x-2">
+                <button (click)="onEditClick()"
+                    class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-colors">
+                    Editar
+                </button>
+            </div>
+            <div *ngIf="isEditing && isAdmin" class="flex space-x-2">
+                <button (click)="onSaveEdit()"
+                    class="px-4 py-2 bg-green-600 text-white font-medium rounded-lg shadow-md hover:bg-green-700 transition-colors">
+                    Guardar
+                </button>
+                <button (click)="onCancelEdit()"
+                    class="px-4 py-2 bg-gray-500 text-white font-medium rounded-lg shadow-md hover:bg-gray-600 transition-colors">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="flex justify-center items-center">
+                <img [src]="getRefaccionImageUrl(refaccion.imagen)" alt="Imagen de la refacción"
+                    class="w-full h-auto max-w-sm rounded-lg shadow-lg object-contain">
+            </div>
+
+            <div>
+                <form *ngIf="isEditing && isAdmin" [formGroup]="refaccionForm" class="space-y-4">
+                    <div>
+                        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+                        <input id="nombre" type="text" formControlName="nombre"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
+                        <textarea id="descripcion" formControlName="descripcion" rows="3"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                    </div>
+                    <div>
+                        <label for="codigo" class="block text-sm font-medium text-gray-700">Código</label>
+                        <input id="codigo" type="text" formControlName="codigo"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="fabricante" class="block text-sm font-medium text-gray-700">Fabricante</label>
+                        <input id="fabricante" type="text" formControlName="fabricante"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="vida_util" class="block text-sm font-medium text-gray-700">Vida Útil Estimada</label>
+                        <input id="vida_util" type="text" formControlName="vida_util_estimada"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="imagen_file" class="block text-sm font-medium text-gray-700">Imagen</label>
+                        <input id="imagen_file" type="file" (change)="onFileSelected($event)"
+                            class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
+                        <span *ngIf="selectedFile" class="mt-2 text-sm text-gray-600">Archivo seleccionado: {{
+                            selectedFile.name }}</span>
+                    </div>
+                </form>
+
+                <dl *ngIf="!isEditing" class="divide-y divide-gray-200">
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Nombre</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ refaccion.nombre }}</dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Descripción</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ refaccion.descripcion }}</dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Código</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ refaccion.codigo }}</dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Fabricante</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ refaccion.fabricante }}</dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Vida Útil Estimada</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ refaccion.vida_util_estimada }}</dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Estatus</dt>
+                        <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+                            <span
+                                [class]="refaccion.estatus ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                                {{ refaccion.estatus ? 'Activo' : 'Inactivo' }}
+                            </span>
+                            <button (click)="onToggleStatusClick()" *ngIf="isAdmin"
+                                class="ml-4 text-blue-600 hover:text-blue-900 transition-colors">
+                                {{ refaccion.estatus ? 'Desactivar' : 'Activar' }}
+                            </button>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
     </div>
 
+    <div *ngIf="showStatusConfirmation && isAdmin" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 class="text-lg font-medium leading-6 text-gray-900">Confirmar cambio de estado</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    ¿Estás seguro de que quieres cambiar el estado de esta refacción?
+                </p>
+            </div>
+            <div class="mt-4 flex justify-end space-x-2">
+                <button (click)="confirmToggleStatus()"
+                    class="px-4 py-2 bg-blue-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-blue-700">
+                    Sí, cambiar
+                </button>
+                <button (click)="cancelToggleStatus()"
+                    class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md shadow-sm hover:bg-gray-400">
+                    Cancelar
+                </button>
+            </div>
+        </div>
     </div>
 </div>

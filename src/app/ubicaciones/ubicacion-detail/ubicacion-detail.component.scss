@@ -1,0 +1,137 @@
+// src/app/ubicaciones/ubicacion-detail/ubicacion-detail.component.scss
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+@use "sass:color";
+
+.detail-container {
+  padding: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .detail-title-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .detail-title {
+      font-family: global.$font-headings;
+      font-weight: 700;
+      font-size: 32px;
+      color: global.$white;
+      margin: 0;
+    }
+
+    .ubicacion-status {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      
+      &.status-active {
+        background-color: global.$success-green;
+        color: global.$white;
+      }
+      &.status-inactive {
+        background-color: global.$soft-red;
+        color: global.$white;
+      }
+    }
+  }
+
+  .detail-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+
+      &.btn-primary {
+        background-color: global.$teal;
+        color: global.$white;
+        border: 1px solid global.$teal;
+        &:hover {
+          background-color: color.adjust(global.$teal, $lightness: -10%);
+        }
+      }
+      &.btn-secondary {
+        background-color: transparent;
+        color: global.$white;
+        border: 1px solid global.$white;
+        &:hover {
+          background-color: global.$white;
+          color: global.$dark-blue;
+        }
+      }
+    }
+  }
+}
+
+.detail-card {
+  background-color: global.$white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.card-section {
+  .section-title {
+    font-family: global.$font-headings;
+    font-weight: 600;
+    font-size: 20px;
+    color: global.$dark-blue;
+    margin: 0 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid global.$light-gray;
+  }
+}
+
+.info-item {
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .info-label {
+    font-family: global.$font-body;
+    font-weight: 600;
+    font-size: 16px;
+    color: global.$dark-blue;
+    margin-right: 10px;
+    flex-shrink: 0;
+    min-width: 120px;
+  }
+  .info-value {
+    font-family: global.$font-body;
+    font-size: 16px;
+    color: color.adjust(global.$dark-blue, $lightness: 20%);
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+

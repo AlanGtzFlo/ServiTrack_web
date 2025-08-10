@@ -1,0 +1,132 @@
+/* src/app/ubicaciones/ubicacion-form/ubicacion-form.component.scss */
+
+// Importa las variables y funciones de styles.scss con el namespace 'global'
+@use "../../../styles.scss" as global;
+// Importa el módulo de color de Sass para usar color.adjust()
+@use "sass:color";
+
+.form-container {
+  padding: 30px;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.form-title {
+  font-family: global.$font-headings;
+  font-weight: 700;
+  font-size: 32px;
+  color: global.$white;
+  margin: 0 0 30px 0;
+  text-align: center;
+}
+
+.form-content {
+  background-color: global.$white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08);
+  padding: 40px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+
+  .form-label {
+    display: block;
+    font-family: global.$font-body;
+    font-size: 16px;
+    font-weight: 600;
+    color: global.$dark-blue;
+    margin-bottom: 8px;
+  }
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid global.$light-gray;
+  border-radius: 6px;
+  font-family: global.$font-body;
+  font-size: 16px;
+  color: global.$dark-blue;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: global.$teal;
+    box-shadow: 0 0 0 3px rgba(global.$teal, 0.2);
+  }
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-select {
+  // Estilo para el icono de la flecha del select
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23003F4E%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4h-263.8c-7.9%200-14.4%206.5-14.4%2014.4s6.5%2014.4%2014.4%2014.4h263.8c4.5%200%208.5-2.2%2010.9-5.9%202.4-3.7%202.9-8.4%201.2-12.4l-11.2-22.4z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+
+  .form-checkbox {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    // Estilo para el checkbox
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid global.$light-gray;
+    border-radius: 4px;
+    position: relative;
+    
+    &:checked {
+      background-color: global.$teal;
+      border-color: global.$teal;
+    }
+    
+    &:checked::after {
+      content: '✔';
+      color: global.$white;
+      font-size: 14px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .form-label {
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 15px;
+  background-color: global.$teal;
+  color: global.$white;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: color.adjust(global.$teal, $lightness: -10%);
+  }
+}

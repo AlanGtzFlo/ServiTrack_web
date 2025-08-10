@@ -1,4 +1,3 @@
-
 /* src/app/refacciones/refacciones-list/refacciones-list.component.scss */
 
 // Importa las variables y funciones de styles.scss con el namespace 'global'
@@ -6,12 +5,19 @@
 // Importa el módulo de color de Sass para usar color.adjust()
 @use "sass:color";
 
+/*
+* Contenedor principal
+*/
 .refacciones-container {
   padding: 30px;
   max-width: 1200px;
   margin: 0 auto;
+  background-color: transparent; /* Fondo oscuro como en el componente de pólizas */
 }
 
+/*
+* Encabezado
+*/
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -19,162 +25,234 @@
   margin-bottom: 30px;
   flex-wrap: wrap;
   gap: 20px;
+}
 
-  .section-title {
-    font-family: global.$font-headings;
-    font-weight: 700;
-    font-size: 48px; /* Título más grande, consistente con otros formularios */
-    color: global.$white; /* Título blanco, consistente con otros formularios */
-    margin: 0;
-    flex-grow: 1; /* Permite que el título ocupe el espacio restante */
-  }
+.section-title {
+  font-family: global.$font-headings;
+  font-weight: 700;
+  font-size: 32px;
+  color: global.$white;
+  margin: 0;
+}
 
-  .header-actions {
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  .search-box {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-
-    .search-box {
-      position: relative;
-      display: flex;
-      align-items: center;
-      .search-icon {
-        position: absolute;
-        left: 12px;
-        color: global.$dark-blue;
-        font-size: 20px;
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      color: color.adjust(global.$white, $lightness: 30%);
+      font-size: 20px;
+    }
+    .search-input {
+      min-width: 250px;
+      padding-left: 40px;
+      border: 1px solid color.adjust(global.$white, $lightness: 60%);
+      border-radius: 6px;
+      font-size: 16px;
+      color: global.$white;
+      background-color: transparent;
+      &::placeholder {
+        color: color.adjust(global.$white, $lightness: 40%);
       }
-      .search-input {
-        min-width: 200px;
-        padding: 10px 15px 10px 40px;
-        border: 1px solid color.adjust(global.$dark-blue, $lightness: 60%);
-        border-radius: 6px;
-        font-size: 16px;
-        background-color: global.$white;
-        color: global.$dark-blue;
-        
-        &::placeholder {
-          color: color.adjust(global.$dark-blue, $lightness: 40%);
-        }
-        &:focus {
-          outline: none;
-          border-color: global.$yellow-orange;
-          box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
-        }
+      &:focus {
+        outline: none;
+        border-color: global.$yellow-orange;
+        box-shadow: 0 0 0 2px rgba(global.$yellow-orange, 0.2);
       }
     }
+  }
 
-    .btn-primary {
-      display: flex;
-      align-items: center;
-      justify-content: center; /* Centra el contenido dentro del botón */
-      gap: 8px;
-      font-size: 15px; /* Tamaño de fuente consistente */
-      padding: 10px 18px; /* Padding consistente */
-      border-radius: 8px; /* Borde redondeado consistente */
-      min-width: 120px; /* Ancho mínimo para consistencia con otros botones */
-      text-align: center; /* Asegura que el texto esté centrado */
+  .btn {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: global.$font-body;
+  }
 
-      .material-icons {
-        font-size: 20px;
-      }
+  .btn-primary {
+    background-color: global.$teal;
+    color: global.$white;
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+
+  .btn-primary:hover {
+    background-color: color.adjust(global.$teal, $lightness: -10%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  // Aquí agregamos el estilo para el botón exportar PDF
+  .btn-export-pdf {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    border: 2px solid global.$dark-blue;
+    color: global.$dark-blue;
+    background-color: transparent;
+    cursor: pointer;
+    font-family: global.$font-body;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    i.material-icons {
+      font-size: 20px;
+    }
+
+    &:hover {
+      background-color: 
+#78eaf7;
+      
+      border: 2px solid global.$dark-blue;
     }
   }
 }
 
+/*
+* Grid de refacciones (grid para alineación flexible)
+*/
 .refacciones-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 25px;
+}
 
-  .refaccion-card {
-    background-color: global.$white;
-    border-radius: 8px; /* Cambiado de global.$card-border-radius a 8px */
-    box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08);
-    padding: 25px;
+/*
+* Tarjetas de refacción
+*/
+.refaccion-card {
+  background-color: global.$white;
+  border-radius: 10px;
+  overflow: hidden; /* Importante para que la imagen no se salga del borde redondeado */
+  box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.08);
+  position: relative;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(global.$dark-blue, 0.15);
+  }
+
+  /* Imagen de la refacción */
+  .card-image-container {
+    height: 180px; /* Altura fija para todas las imágenes */
+    overflow: hidden;
     position: relative;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    cursor: pointer;
+  }
+  
+  .refaccion-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Recorta la imagen para que cubra todo el contenedor */
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  &:hover .refaccion-image {
+    transform: scale(1.05); /* Efecto de zoom al pasar el cursor */
+  }
 
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(global.$dark-blue, 0.15);
-    }
+  .card-content {
+    padding: 20px 30px 30px 30px; /* Padding ajustado para el contenido */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  
+  .card-header-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
 
-    .card-header {
+  .refaccion-name-compact {
+    font-family: global.$font-headings;
+    font-weight: 700;
+    font-size: 26px;
+    color: global.$dark-blue;
+    margin: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Estatus: Mantenemos las clases originales */
+  .refaccion-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .status-success {
+    background-color: global.$success-green;
+    color: global.$white;
+  }
+
+  .status-error {
+    background-color: global.$soft-red;
+    color: global.$white;
+  }
+
+  /* Detalles */
+  .card-body-compact {
+    font-family: global.$font-body;
+    font-size: 15px;
+    color: global.$dark-blue;
+    margin-bottom: 20px;
+    line-height: 1.5;
+
+    p {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 15px;
-
-      .refaccion-name {
-        font-family: global.$font-headings;
-        font-weight: 700;
-        font-size: 24px;
-        color: global.$dark-blue;
-        margin: 0;
-        line-height: 1.3;
-        flex-grow: 1;
-        padding-right: 10px;
-      }
-      .refaccion-status {
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
-        text-transform: uppercase;
-        flex-shrink: 0;
-        
-        &.status-success {
-          background-color: global.$success-green; /* Usar la variable correcta */
-          color: global.$white;
-        }
-        &.status-error {
-          background-color: global.$soft-red; /* Usar la variable correcta */
-          color: global.$white;
-        }
-        &.status-pending {
-          background-color: global.$yellow-orange; /* Usar yellow-orange para bajo stock */
-          color: global.$white;
-        }
-      }
+      margin-bottom: 8px;
+      color: color.adjust(global.$dark-blue, $lightness: 20%);
     }
 
-    .card-body {
-      margin-bottom: 20px;
-
-      .refaccion-part-number, .refaccion-machine-model, .refaccion-stock {
-        font-family: global.$font-body;
-        font-size: 15px;
-        color: color.adjust(global.$dark-blue, $lightness: 20%);
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        .small-icon {
-          font-size: 18px;
-          color: global.$teal;
-          margin-right: 8px;
-        }
-      }
-    }
-
-    .card-footer {
-      margin-top: 15px;
-      padding-top: 15px;
-      border-top: 1px solid global.$light-gray;
-      text-align: right;
-    }
-    .btn-text {
-      font-family: global.$font-body;
-      font-weight: 500;
-      font-size: 15px;
+    .small-icon {
+      font-size: 20px;
       color: global.$teal;
-      text-decoration: none;
-      &:hover {
-        text-decoration: underline;
-        color: color.adjust(global.$teal, $lightness: -10%);
-      }
+      margin-right: 8px;
+    }
+  }
+
+  .card-footer {
+    margin-top: auto;
+    text-align: right;
+  }
+  .btn-text {
+    font-family: global.$font-body;
+    font-weight: 500;
+    font-size: 15px;
+    color: global.$teal;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+      color: color.adjust(global.$teal, $lightness: -10%);
     }
   }
 }
@@ -186,17 +264,30 @@
   font-size: 18px;
   color: color.adjust(global.$dark-blue, $lightness: 20%);
   padding: 40px;
-  .btn-secondary {
-    margin-top: 20px;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 16px;
-    border: 1px solid global.$yellow-orange;
-    color: global.$yellow-orange;
-    background-color: transparent;
-    &:hover {
-      background-color: global.$yellow-orange;
-      color: global.$white;
-    }
+  background-color: global.$white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(global.$dark-blue, 0.05);
+}
+
+.btn-secondary {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 16px;
+  border: 2px solid global.$yellow-orange;
+  color: global.$yellow-orange;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: global.$yellow-orange;
+    color: global.$white;
   }
 }
+
+.btn-rounded {
+  border-radius: 50px !important;
+}
+
+/* Botón con esquinas redondeadas */

@@ -1,0 +1,143 @@
+<!-- src/app/ubicaciones/ubicacion-detail/ubicacion-detail.component.html -->
+<div class="p-8 max-w-4xl mx-auto bg-white shadow-lg rounded-xl mt-10">
+  <div *ngIf="isLoading" class="text-center">
+    <p>Cargando detalles de la ubicación...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="text-center text-red-500">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && ubicacion">
+    <div class="flex justify-between items-start mb-6">
+      <div class="flex items-center">
+        <h1 class="text-3xl font-bold text-gray-800">{{ ubicacion.nombre }}</h1>
+        <span [ngClass]="ubicacion.estatus ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+              class="ml-4 px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+          {{ ubicacion.estatus ? 'ACTIVO' : 'INACTIVO' }}
+        </span>
+      </div>
+      <div class="flex space-x-2">
+        <button *ngIf="!isEditing" (click)="onEditClick()"
+                class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-colors">
+          Editar
+        </button>
+        <button *ngIf="isEditing" (click)="onSaveEdit()"
+                [disabled]="ubicacionForm.invalid"
+                class="px-4 py-2 bg-green-600 text-white font-medium rounded-lg shadow-md hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+          Guardar
+        </button>
+        <button *ngIf="isEditing" (click)="onCancelEdit()"
+                class="px-4 py-2 bg-gray-500 text-white font-medium rounded-lg shadow-md hover:bg-gray-600 transition-colors">
+          Cancelar
+        </button>
+        <button (click)="goBack()"
+                class="px-4 py-2 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+          Volver
+        </button>
+      </div>
+    </div>
+
+    <div class="detail-card bg-gray-50 p-6 rounded-lg shadow-inner">
+      <form *ngIf="isEditing" [formGroup]="ubicacionForm" class="space-y-6">
+        <!-- Información General (Modo de edición) -->
+        <div class="space-y-4">
+          <h3 class="text-xl font-semibold text-gray-700">Información General</h3>
+          <div>
+            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+            <input id="nombre" type="text" formControlName="nombre"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección</label>
+            <textarea id="direccion" formControlName="direccion" rows="2"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+          </div>
+          <div>
+            <!-- Usamos el formControlName 'clienteId' para vincular al ID -->
+            <label for="cliente" class="block text-sm font-medium text-gray-700">Cliente</label>
+            <select id="cliente" formControlName="clienteId"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <option *ngFor="let cliente of clientes" [ngValue]="cliente.id">{{ cliente.nombre }}</option>
+            </select>
+          </div>
+          <div>
+            <!-- Agregamos el dropdown de Empresa para que sea editable -->
+            <label for="empresa" class="block text-sm font-medium text-gray-700">Empresa</label>
+            <select id="empresa" formControlName="empresaId"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <option *ngFor="let empresa of empresas" [ngValue]="empresa.id">{{ empresa.nombre }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="contacto" class="block text-sm font-medium text-gray-700">Contacto</label>
+            <input id="contacto" type="text" formControlName="contacto"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          </div>
+        </div>
+      </form>
+      
+      <dl *ngIf="!isEditing" class="divide-y divide-gray-200">
+        <!-- Información General (Modo de visualización) -->
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-gray-500">Nombre</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ ubicacion.nombre }}</dd>
+        </div>
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-gray-500">Dirección</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ ubicacion.direccion }}</dd>
+        </div>
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-gray-500">Cliente</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ ubicacion.cliente?.nombre || 'N/A' }}</dd>
+        </div>
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-gray-500">Empresa</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ ubicacion.empresa?.nombre || 'N/A' }}</dd>
+        </div>
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-gray-500">Contacto</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ ubicacion.contacto }}</dd>
+        </div>
+        
+        <!-- Estatus -->
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-gray-500">Estatus</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <span
+              [class]="ubicacion.estatus ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+              class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+              {{ ubicacion.estatus ? 'ACTIVO' : 'INACTIVO' }}
+            </span>
+            <button (click)="onToggleStatusClick()"
+                    class="ml-4 text-blue-600 hover:text-blue-900 transition-colors">
+              {{ ubicacion.estatus ? 'Desactivar' : 'Activar' }}
+            </button>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación de estatus -->
+  <div *ngIf="showStatusConfirmation" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+      <h3 class="text-lg font-medium leading-6 text-gray-900">Confirmar cambio de estado</h3>
+      <div class="mt-2 px-7 py-3">
+        <p class="text-sm text-gray-500">
+          ¿Estás seguro de que quieres cambiar el estado de esta ubicación?
+        </p>
+      </div>
+      <div class="mt-4 flex justify-end space-x-2">
+        <button (click)="confirmToggleStatus()"
+                class="px-4 py-2 bg-blue-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-blue-700">
+          Sí, cambiar
+        </button>
+        <button (click)="cancelToggleStatus()"
+                class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md shadow-sm hover:bg-gray-400">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

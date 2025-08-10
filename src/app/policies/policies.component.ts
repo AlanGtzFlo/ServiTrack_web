@@ -24,11 +24,18 @@ interface Policy {
 export class PoliciesComponent implements OnInit {
 
   policies: Policy[] = [];
+<<<<<<< HEAD
+=======
 
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
   searchTerm: string = '';
   filterStatus: 'all' | 'Activo' | 'Inactivo' = 'all';
 
   private apiUrl = 'https://fixflow-backend.onrender.com/api/empresas/';
+<<<<<<< HEAD
+  private exportUrl = 'https://fixflow-backend.onrender.com/api/empresas/exportar_empresas/';
+=======
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
 
   constructor(private router: Router, private http: HttpClient) {}
 
@@ -67,8 +74,31 @@ export class PoliciesComponent implements OnInit {
     return result;
   }
 
+  // Nueva función para exportar a PDF (usando la API)
+  exportToPdf(): void {
+    this.http.get(this.exportUrl, { responseType: 'blob' }).subscribe({
+      next: (data: Blob) => {
+        // Crea una URL temporal para el blob
+        const downloadUrl = window.URL.createObjectURL(data);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = 'empresas.pdf';
+        link.click();
+        // Libera el objeto URL
+        window.URL.revokeObjectURL(downloadUrl);
+      },
+      error: err => {
+        console.error('Error al exportar el PDF', err);
+        alert('Error al exportar el PDF. Por favor, inténtelo de nuevo.');
+      }
+    });
+  }
+
   addNewPolicy(): void {
+<<<<<<< HEAD
+=======
     // Navegar o abrir modal para crear nueva póliza
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
     console.log('Abrir formulario para nueva póliza');
     this.router.navigate(['/policies/new']);
   }

@@ -1,57 +1,163 @@
-// src/app/new-report/new-report.component.ts
-import { Component } from '@angular/core';
-import { CommonModule, Location } from '@angular/common'; // Importa Location
-import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+
+// Interfaz para el ticket
+interface Ticket {
+  id: number;
+  titulo: string;
+}
+
+// Interfaz para el usuario/técnico - CORREGIDA
+interface Usuario {
+  id: number;
+  correo: string; // <-- Corregido para que coincida con el dato de la API
+  rol: string;
+}
+
+// Interfaz para la ubicación
+interface Ubicacion {
+  id: number;
+  nombre: string;
+}
+
+// Interfaz para la empresa
+interface Empresa {
+  id: number;
+  nombre: string;
+}
 
 @Component({
   selector: 'app-new-report',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './new-report.component.html',
   styleUrls: ['./new-report.component.scss']
 })
-export class NewReportComponent {
-  reportForm;
+export class NewReportComponent implements OnInit {
+  reportForm: FormGroup;
+  
+  private reportesUrl = 'https://fixflow-backend.onrender.com/api/reportes/';
+  private ticketsUrl = 'https://fixflow-backend.onrender.com/api/tickets/'; 
+  private tecnicosUrl = 'https://fixflow-backend.onrender.com/api/usuarios/';
+  private ubicacionesUrl = 'https://fixflow-backend.onrender.com/api/ubicaciones/';
+  private empresasUrl = 'https://fixflow-backend.onrender.com/api/empresas/';
+  
+  tickets: Ticket[] = [];
+  tecnicos: Usuario[] = [];
+  ubicaciones: Ubicacion[] = [];
+  empresas: Empresa[] = [];
+
+  isLoading: boolean = true;
 
   constructor(
     private fb: FormBuilder,
-    private location: Location // Inyecta el servicio Location
+    private location: Location,
+    private http: HttpClient
   ) {
     this.reportForm = this.fb.group({
-      tecnico: ['test@test.com', Validators.required],
+      ticket: ['', Validators.required],
+      tecnico: ['', Validators.required],
       ubicacion: ['', Validators.required],
       empresa: ['', Validators.required],
       descripcion: ['', [Validators.required, Validators.minLength(3)]],
-      esPoliza: [false],
-      tipoPoliza: [''],
-      categoria: ['En Asignacion', Validators.required],
-      informacionReporte: [''],
-      mediaType: ['multipart/form-data', Validators.required],
-      content: ['', Validators.required]
+      es_poliza: [false],
+      tipo_poliza: [{ value: '', disabled: true }],
+      categoria: ['correctivo', Validators.required],
+      informacion_reporte: ['']
     });
   }
 
-  onSubmit() {
+  ngOnInit(): void {
+    this.fetchData();
+    this.onChanges();
+  }
+
+  fetchData(): void {
+    forkJoin({
+      tickets: this.http.get<Ticket[]>(this.ticketsUrl),
+      tecnicos: this.http.get<Usuario[]>(this.tecnicosUrl),
+      ubicaciones: this.http.get<Ubicacion[]>(this.ubicacionesUrl),
+      empresas: this.http.get<Empresa[]>(this.empresasUrl)
+    }).pipe(
+      finalize(() => this.isLoading = false)
+    ).subscribe({
+      next: (results) => {
+        this.tickets = results.tickets;
+        this.tecnicos = results.tecnicos.filter(user => user.rol === 'tecnico');
+        this.ubicaciones = results.ubicaciones;
+        this.empresas = results.empresas;
+        
+        console.log('Datos cargados correctamente:', {
+          tickets: this.tickets,
+          tecnicos: this.tecnicos,
+          ubicaciones: this.ubicaciones,
+          empresas: this.empresas
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar datos desde las APIs:', error);
+      }
+    });
+  }
+  
+  onChanges(): void {
+    this.reportForm.get('es_poliza')?.valueChanges.subscribe(val => {
+      const tipoPolizaControl = this.reportForm.get('tipo_poliza');
+      if (val) {
+        tipoPolizaControl?.enable();
+        tipoPolizaControl?.setValidators(Validators.required);
+      } else {
+        tipoPolizaControl?.disable();
+        tipoPolizaControl?.clearValidators();
+      }
+      tipoPolizaControl?.updateValueAndValidity();
+    });
+  }
+
+  onSubmit(): void {
     if (this.reportForm.valid) {
-      console.log('Formulario válido. Datos:', this.reportForm.value);
-      // Aquí puedes enviar los datos a un servicio o API
-      // En lugar de alert, usaremos console.log o un modal personalizado
-      console.log('Reporte creado con éxito! (Simulado)');
-      // Resetea el formulario a sus valores iniciales
-      this.reportForm.reset({
-        tecnico: 'test@test.com',
-        categoria: 'En Asignacion',
-        mediaType: 'multipart/form-data',
-        esPoliza: false
+      const formValue = this.reportForm.value;
+      
+      const formData = new FormData();
+      formData.append('ticket', formValue.ticket);
+      formData.append('tecnico', formValue.tecnico);
+      formData.append('ubicacion', formValue.ubicacion);
+      formData.append('empresa', formValue.empresa);
+      formData.append('descripcion', formValue.descripcion);
+      formData.append('es_poliza', formValue.es_poliza);
+      formData.append('categoria', formValue.categoria);
+      formData.append('informacion_reporte', formValue.informacion_reporte);
+
+      if (formValue.es_poliza) {
+        formData.append('tipo_poliza', formValue.tipo_poliza);
+      }
+
+      this.http.post(this.reportesUrl, formData).subscribe({
+        next: (response) => {
+          console.log('Reporte creado con éxito!', response);
+          this.reportForm.reset({
+            categoria: 'correctivo',
+            es_poliza: false
+          });
+          alert('Reporte creado con éxito!');
+          this.location.back();
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al crear el reporte:', error);
+          alert(`Error: ${JSON.stringify(error.error)}`);
+        }
       });
     } else {
       console.error('Por favor, completa todos los campos requeridos correctamente.');
-      // Marca todos los campos como "touched" para mostrar los errores de validación
       this.reportForm.markAllAsTouched();
     }
   }
 
   goBack(): void {
-    this.location.back(); // Función para regresar a la vista anterior
+    this.location.back();
   }
 }

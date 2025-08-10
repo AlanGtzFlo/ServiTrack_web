@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './auth.guard'; // Importamos el nuevo guardian de ruta
 
 
 
@@ -67,8 +68,12 @@ import { RefaccionDetailComponent } from './refacciones/refaccion-detail/refacci
 import { ReportsComponent } from './reports/reports.component';
 
 import { NewReportComponent} from './reports/new-report/new-report.component';
+<<<<<<< HEAD
+import { MessageReportFormComponent } from './reports/message-report-form/message-report-form.component';
+=======
 
 import { MessageReportFormComponent } from './reports/message-report-form/message-report-form.component'; // Importación necesaria
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
 
 
 
@@ -104,6 +109,96 @@ import { FeedbackFormComponent } from './public-portal/feedback-form/feedback-fo
 
 import { AboutPageComponent } from './public-portal/about-page/about-page.component';
 
+<<<<<<< HEAD
+// NUEVO: Componentes de Ubicaciones
+import { UbicacionesListComponent } from './ubicaciones/ubicaciones-list/ubicaciones-list.component';
+import { UbicacionFormComponent } from './ubicaciones/ubicacion-form/ubicacion-form.component';
+import { UbicacionDetailComponent } from './ubicaciones/ubicacion-detail/ubicacion-detail.component';
+
+export const routes: Routes = [
+  // Ruta raíz y login
+  { path: '', redirectTo: '/public/home', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+
+  // Rutas accesibles por todos (admin y tecnico)
+  { path: 'inicio', component: InicioComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
+  
+  // Clientes y Políticas
+  { path: 'clients', component: ClientsComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
+  { path: 'clients/new', component: NewClientComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
+  { path: 'clients/edit/:id', component: NewClientComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
+  { path: 'clients/:id', component: ClientDetailComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } }, // Acceso a detalle para técnico
+
+  { path: 'policies', component: PoliciesComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
+  { path: 'policies/new', component: NewPolicyComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
+  { path: 'policies/:id', component: PolicyDetailComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } }, // Acceso a detalle para técnico
+
+  // Servicios y Reportes (accesibles por todos)
+  { path: 'services', component: ServicesComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
+  { path: 'services/new', component: NewServiceComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
+  { path: 'services/:id', component: ServiceDetailComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
+
+  {
+    path: 'reports',
+    component: ReportsComponent,
+    canActivate: [authGuard],
+    data: { roles: ['admin', 'tecnico'] },
+    children: [
+      { path: 'new', component: NewReportComponent },
+      { path: 'message-report-form', component: MessageReportFormComponent },
+      { path: '', redirectTo: 'overview', pathMatch: 'full' }
+    ]
+  },
+
+  // Usuarios y Refacciones
+  { path: 'users', component: UsersComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
+  { path: 'users/new', component: NewUserComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
+  { path: 'users/:id', component: UserDetailComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } }, // Acceso a detalle para técnico
+
+  { path: 'refacciones', component: RefaccionesListComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
+  { path: 'refacciones/nueva', component: NuevaRefaccionComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } },
+  { path: 'refacciones/:id', component: RefaccionDetailComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } }, // Acceso a detalle para técnico
+  
+  // Ubicaciones, Satisfacción y Configuración
+  { path: 'satisfaction', component: SatisfactionComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
+  
+  { path: 'ubicaciones', component: UbicacionesListComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
+  { path: 'ubicaciones/nueva', component: UbicacionFormComponent, canActivate: [authGuard], data: { roles: ['admin'] } },
+  { path: 'ubicaciones/:id', component: UbicacionDetailComponent, canActivate: [authGuard], data: { roles: ['admin', 'tecnico'] } }, // Acceso a detalle para técnico
+  
+  {
+    path: 'settings',
+    component: SettingsComponent,
+    canActivate: [authGuard],
+    data: { roles: ['admin'] },
+    children: [
+      { path: '', redirectTo: 'general', pathMatch: 'full' },
+      { path: 'general', component: GeneralSettingsComponent },
+      { path: 'user-roles', component: UserRolesPermissionsComponent },
+      { path: 'service-master-data', component: ServiceMasterDataComponent },
+      { path: 'notifications', component: NotificationsSettingsComponent },
+      { path: '**', redirectTo: 'general' }
+    ]
+  },
+
+  // Rutas del portal público (sin protección)
+  {
+    path: 'public',
+    component: PublicLayoutComponent,
+    children: [
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: HomePageComponent },
+      { path: 'status', component: ServiceStatusComponent },
+      { path: 'feedback', component: FeedbackFormComponent },
+      { path: 'about', component: AboutPageComponent }
+    ]
+  },
+
+  // Ruta comodín (redirección por defecto si no hay coincidencias)
+  { path: '**', redirectTo: '/dashboard' }
+];
+=======
 
 
 export const routes: Routes = [
@@ -275,3 +370,4 @@ export const routes: Routes = [
   { path: '**', redirectTo: '/dashboard' }
 
 ];
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0

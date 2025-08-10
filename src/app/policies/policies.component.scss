@@ -252,3 +252,12 @@
     }
   }
 }
+.btn-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  .material-icons {
+    font-size: 20px;
+  }
+}

@@ -5,10 +5,12 @@
     </button>
     <h1 class="section-title">Póliza: #{{ policy.nombre }}</h1>
     <div class="header-actions">
-      <button class="btn btn-secondary" (click)="editPolicy()">
+      <!-- Botón de Editar: se muestra solo si el usuario es un administrador -->
+      <button *ngIf="isAdmin" class="btn btn-secondary" (click)="editPolicy()">
         <i class="material-icons">edit</i> Editar
       </button>
-      <button class="btn btn-delete" (click)="deletePolicy()">
+      <!-- Botón de Eliminar: se muestra solo si el usuario es un administrador -->
+      <button *ngIf="isAdmin" class="btn btn-delete" (click)="deletePolicy()">
         <i class="material-icons">delete</i> Eliminar
       </button>
     </div>
@@ -43,6 +45,13 @@
           </span>
         </p>
       </div>
+<<<<<<< HEAD
+    </div>
+  </div>
+</div>
+<!-- El formulario de edición solo se muestra si el usuario es un administrador y está editando -->
+<div class="policy-edit-container" *ngIf="policyToEdit && isEditing && isAdmin">
+=======
       <div class="info-group description-group">
         <p class="label">Descripción:</p>
         <p class="value description-text">{{ policy.description || 'No hay descripción disponible.' }}</p>
@@ -66,6 +75,7 @@
   </div>
 </div>
 <div class="policy-edit-container" *ngIf="policyToEdit && isEditing">
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
   <div class="section-header">
     <h1 class="section-title">Editando Póliza: #{{ policyToEdit.nombre }}</h1>
   </div>
@@ -98,6 +108,8 @@
             <option [ngValue]="false">Vencida</option>
           </select>
         </div>
+<<<<<<< HEAD
+=======
         <div class="form-group">
           <label for="description">Descripción</label>
           <textarea id="description" [(ngModel)]="policyToEdit.description" name="description"></textarea>
@@ -106,6 +118,7 @@
           <label for="notes">Notas Internas</label>
           <textarea id="notes" [(ngModel)]="policyToEdit.notes" name="notes"></textarea>
         </div>
+>>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
       </div>
       <div class="form-actions" style="margin-top: 1rem;">
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>

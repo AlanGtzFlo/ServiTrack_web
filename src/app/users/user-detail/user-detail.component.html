@@ -5,14 +5,16 @@
     </button>
     <h1 class="section-title">Perfil de Usuario: {{ user.name }}</h1>
     <div class="header-actions">
-      <button class="btn btn-secondary" (click)="toggleEditMode()">
+      <!-- Botón de Editar: se muestra solo si el usuario es un administrador -->
+      <button *ngIf="isAdmin" class="btn btn-secondary" (click)="toggleEditMode()">
         <i class="material-icons">{{ isEditing ? 'close' : 'edit' }}</i> {{ isEditing ? 'Cancelar' : 'Editar' }}
       </button>
-      <button class="btn btn-primary" *ngIf="isEditing" (click)="saveUser()">
+      <!-- Botón de Guardar: se muestra solo si el usuario es un administrador y está editando -->
+      <button *ngIf="isEditing && isAdmin" class="btn btn-primary" (click)="saveUser()">
         <i class="material-icons">save</i> Guardar
       </button>
-      <!-- Botón para cambiar estado en vez de eliminar -->
-      <button class="btn btn-secondary" (click)="changeUserStatus()" *ngIf="!isEditing">
+      <!-- Botón de Cambiar Estado: se muestra solo si el usuario es un administrador y no está editando -->
+      <button *ngIf="!isEditing && isAdmin" class="btn btn-secondary" (click)="changeUserStatus()">
         <i class="material-icons">toggle_on</i> Cambiar Estado
       </button>
     </div>
@@ -36,63 +38,95 @@
       </div>
     </div>
 
-    <div class="profile-details-grid">
+    <div class="profile-details-grid" *ngIf="!isEditing">
       <div class="info-group">
         <p class="label">Email:</p>
-        <p class="value" *ngIf="!isEditing">{{ user.email }}</p>
-        <input type="email" [(ngModel)]="user.email" *ngIf="isEditing" class="form-control" />
+        <p class="value">{{ user.email }}</p>
       </div>
 
       <div class="info-group">
         <p class="label">Nombre Completo:</p>
-        <p class="value" *ngIf="!isEditing">{{ user.name }}</p>
-        <input type="text" [(ngModel)]="user.name" *ngIf="isEditing" class="form-control" />
+        <p class="value">{{ user.name }}</p>
       </div>
 
       <div class="info-group">
         <p class="label">Rol:</p>
-        <p class="value" *ngIf="!isEditing">{{ user.role }}</p>
-        <select [(ngModel)]="user.role" *ngIf="isEditing" class="form-control">
+        <p class="value">{{ user.role }}</p>
+      </div>
+
+      <div class="info-group">
+        <p class="label">Estado:</p>
+        <p class="value">{{ user.status }}</p>
+      </div>
+
+      <div class="info-group">
+        <p class="label">Teléfono:</p>
+        <p class="value">{{ user.phone || 'N/A' }}</p>
+      </div>
+
+      <div class="info-group">
+        <p class="label">Fecha de Registro:</p>
+        <p class="value">{{ user.hireDate || 'N/A' }}</p>
+      </div>
+
+      <div class="info-group full-width">
+        <p class="label">Dirección:</p>
+        <p class="value">{{ user.address || 'No especificada' }}</p>
+      </div>
+    </div>
+
+    <!-- Formulario de edición: visible solo si el usuario es administrador y está editando -->
+    <div class="profile-details-grid" *ngIf="isEditing && isAdmin">
+      <div class="info-group">
+        <p class="label">Email:</p>
+        <input type="email" [(ngModel)]="user.email" class="form-control" />
+      </div>
+
+      <div class="info-group">
+        <p class="label">Nombre Completo:</p>
+        <input type="text" [(ngModel)]="user.name" class="form-control" />
+      </div>
+
+      <div class="info-group">
+        <p class="label">Rol:</p>
+        <select [(ngModel)]="user.role" class="form-control">
           <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
         </select>
       </div>
 
       <div class="info-group">
         <p class="label">Estado:</p>
-        <p class="value" *ngIf="!isEditing">{{ user.status }}</p>
-        <select [(ngModel)]="user.status" *ngIf="isEditing" class="form-control">
+        <select [(ngModel)]="user.status" class="form-control">
           <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
         </select>
       </div>
 
       <div class="info-group">
         <p class="label">Teléfono:</p>
-        <p class="value" *ngIf="!isEditing">{{ user.phone || 'N/A' }}</p>
-        <input
-          type="text"
-          [(ngModel)]="user.phone"
-          *ngIf="isEditing"
-          class="form-control"
-          placeholder="Ej: 5512345678"
-        />
+        <input type="text" [(ngModel)]="user.phone" class="form-control" placeholder="Ej: 5512345678"/>
       </div>
 
       <div class="info-group">
         <p class="label">Fecha de Registro:</p>
-        <p class="value" *ngIf="!isEditing">{{ user.hireDate || 'N/A' }}</p>
-        <input type="date" [(ngModel)]="user.hireDate" *ngIf="isEditing" class="form-control" />
+        <input type="date" [(ngModel)]="user.hireDate" class="form-control" />
       </div>
 
       <div class="info-group full-width">
         <p class="label">Dirección:</p>
-        <p class="value" *ngIf="!isEditing">{{ user.address || 'No especificada' }}</p>
-        <textarea
-          [(ngModel)]="user.address"
-          *ngIf="isEditing"
-          class="form-control"
-          rows="3"
-          placeholder="Calle, número, colonia..."
-        ></textarea>
+        <textarea [(ngModel)]="user.address" class="form-control" rows="3" placeholder="Calle, número, colonia..."></textarea>
+      </div>
+    </div>
+    
+    <div class="photo-upload-section" *ngIf="isEditing && isAdmin">
+      <div class="info-group full-width">
+        <p class="label">Foto de Perfil:</p>
+        <label for="file-upload" class="custom-file-upload">
+          <i class="material-icons">camera_alt</i>
+          Cambiar Foto
+        </label>
+        <input id="file-upload" type="file" (change)="onFileSelected($event)" accept="image/*" />
+        <span *ngIf="selectedFile" class="file-name">{{ selectedFile.name }}</span>
+        <span *ngIf="!selectedFile" class="file-name">Selecciona un archivo</span>
       </div>
     </div>
   </div>
