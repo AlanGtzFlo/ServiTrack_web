@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div class="min-h-screen p-4 sm:p-6 lg:p-8">
 
   <!-- Mensaje de Carga -->
@@ -15,24 +14,17 @@
       <div class="flex justify-between items-center mb-6 border-b pb-4">
         <h1 class="text-3xl font-bold text-gray-800">{{ service.titulo }}</h1>
         <div class="space-x-2">
-          <button
-            (click)="enterEditMode()"
-            class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
-          >
+          <button (click)="enterEditMode()" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
             Editar
           </button>
-          <button
-            (click)="goToServicesList()"
-            class="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition duration-300"
-          >
+          <button (click)="goToServicesList()" class="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition duration-300">
             Volver a la lista
           </button>
         </div>
       </div>
 
       <div>
-        <!-- Tarjeta de Detalles del Servicio -->
-        <div>
+        <!-- Detalles del Servicio -->
           <h2 class="text-xl font-semibold mb-4 text-gray-700">Detalles del Servicio</h2>
           <div class="space-y-4">
             <div>
@@ -54,11 +46,10 @@
             <div>
               <p class="font-medium text-gray-600">Fecha Límite:</p>
               <p class="text-gray-800">{{ service.fecha_limite | date:'longDate' }}</p>
-            </div>
           </div>
         </div>
 
-        <!-- Tarjeta de Información de Usuario y Ubicación -->
+        <!-- Información de usuario y ubicación -->
         <div class="mt-8">
           <h2 class="text-xl font-semibold mb-4 text-gray-700">Asignación</h2>
           <div class="space-y-4">
@@ -78,155 +69,44 @@
               <p class="font-medium text-gray-600">Fecha de Creación:</p>
               <p class="text-gray-800">{{ service.fecha_creacion | date:'longDate' }}</p>
             </div>
-=======
-<!-- src/app/services/service-detail/service-detail.component.html -->
-<div class="min-h-screen p-4 md:p-8 font-sans bg-gray-100">
-  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8">
-    <!-- Indicador de carga -->
-    <div *ngIf="isLoading" class="flex justify-center items-center py-12 w-full">
-      <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-    </div>
-
-    <ng-container *ngIf="!isLoading && service">
-      <!-- Encabezado y botones de acción -->
-      <div class="flex justify-between items-center mb-6 border-b pb-4">
-        <div class="flex flex-col md:flex-row md:items-center">
-          <h1 class="text-3xl font-bold text-gray-800 mr-4">
-            <span *ngIf="!isEditing">{{ service.titulo }}</span>
-            <input *ngIf="isEditing" type="text" [(ngModel)]="editedTitle" name="editedTitle"
-                   class="w-full text-3xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg px-2">
-          </h1>
-          <div class="flex items-center space-x-2 mt-2 md:mt-0">
-            <span class="px-3 py-1 rounded-full text-sm font-semibold text-white"
-                  [ngClass]="getPriorityClass(service.prioridad)">{{ service.prioridad }}</span>
-            <span class="px-3 py-1 rounded-full text-sm font-semibold text-white"
-                  [ngClass]="getStatusClass(service.estado)">{{ service.estado }}</span>
->>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
           </div>
         </div>
-        <button (click)="goToServicesList()" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+
+        <button (click)="goToServicesList()" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors mt-6">
           <i class="material-icons mr-1 text-base">arrow_back</i>
           Volver
         </button>
       </div>
-
-      <!-- Formulario de detalles y edición -->
-      <form class="space-y-6">
-        <!-- Título (no editable en el formulario) -->
-        <div *ngIf="!isEditing" class="mb-4">
-          <label class="block text-sm font-medium text-gray-700">Título</label>
-          <p class="mt-1 text-lg text-gray-900">{{ service.titulo }}</p>
-        </div>
-        
-        <!-- Descripción -->
-        <div>
-          <label for="editedDescription" class="block text-sm font-medium text-gray-700">Descripción</label>
-          <textarea id="editedDescription" [(ngModel)]="editedDescription" name="editedDescription" [disabled]="!isEditing" rows="4"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900"
-                    [ngClass]="{'bg-gray-100 cursor-not-allowed': !isEditing}"></textarea>
-        </div>
-        
-        <!-- Ubicación, Fecha Límite, Prioridad, Estado y Técnico Asignado -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div>
-            <label for="editedLocation" class="block text-sm font-medium text-gray-700">Ubicación</label>
-            <ng-container *ngIf="!isEditing">
-              <p class="mt-1 text-gray-900">{{ locationName }}</p>
-            </ng-container>
-            <select *ngIf="isEditing" id="editedLocation" [(ngModel)]="selectedLocationId" name="editedLocation"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900">
-              <option [ngValue]="null">No asignada</option>
-              <option *ngFor="let ubicacion of ubicaciones" [ngValue]="ubicacion.id">{{ ubicacion.nombre }}</option>
-            </select>
-          </div>
-          <div>
-            <label for="editedDueDate" class="block text-sm font-medium text-gray-700">Fecha Límite</label>
-            <input id="editedDueDate" type="date" [(ngModel)]="editedDueDate" name="editedDueDate" [disabled]="!isEditing"
-                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900"
-                   [ngClass]="{'bg-gray-100 cursor-not-allowed': !isEditing}">
-          </div>
-          <div>
-            <label for="editedPriority" class="block text-sm font-medium text-gray-700">Prioridad</label>
-            <select id="editedPriority" [(ngModel)]="editedPriority" name="editedPriority" [disabled]="!isEditing"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900"
-                    [ngClass]="{'bg-gray-100 cursor-not-allowed': !isEditing}">
-              <option value="baja">Baja</option>
-              <option value="media">Media</option>
-              <option value="alta">Alta</option>
-            </select>
-          </div>
-          <div>
-            <label for="editedStatus" class="block text-sm font-medium text-gray-700">Estado</label>
-            <select id="editedStatus" [(ngModel)]="editedStatus" name="editedStatus" [disabled]="!isEditing"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900"
-                    [ngClass]="{'bg-gray-100 cursor-not-allowed': !isEditing}">
-              <option value="pendiente">Pendiente</option>
-              <option value="en_proceso">En proceso</option>
-              <option value="completado">Completado</option>
-              <option value="cerrado">Cerrado</option>
-            </select>
-          </div>
-        </div>
-        
-        <!-- Campos de usuario creador y técnico asignado -->
-        <div class="border-t pt-6 space-y-4">
-          <p class="text-sm text-gray-600">
-            <span class="font-semibold text-gray-800">Creado por:</span> {{ creatorName }}
-          </p>
-          <div>
-            <label for="assignedTechnician" class="block text-sm font-medium text-gray-700">Técnico asignado</label>
-            <select id="assignedTechnician" [(ngModel)]="selectedTechnicianId" name="assignedTechnician" [disabled]="!isEditing"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors mt-1 text-gray-900"
-                    [ngClass]="{'bg-gray-100 cursor-not-allowed': !isEditing}">
-              <option [ngValue]="null">No asignado</option>
-              <option *ngFor="let user of users" [ngValue]="user.id">{{ user.nombre }}</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Botones de edición y guardado -->
-        <div class="flex justify-end space-x-4 pt-6">
-          <button *ngIf="!isEditing" type="button" (click)="enterEditMode()"
-                  class="px-6 py-2 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
-            Editar
-          </button>
-          <button *ngIf="isEditing" type="button" (click)="cancelEditMode()"
-                  class="px-6 py-2 rounded-lg font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors">
-            Cancelar
-          </button>
-          <button *ngIf="isEditing" type="button" (click)="saveChanges()"
-                  class="px-6 py-2 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors">
-            Guardar Cambios
-          </button>
-        </div>
-      </form>
-    </ng-container>
-
-    <!-- Mensaje si no se encuentra el servicio -->
-    <div *ngIf="!isLoading && !service" class="text-center text-gray-500 w-full py-12">
-      <p>No se pudo cargar la información del servicio.</p>
     </div>
 
-    <!-- Modo de Edición -->
-    <div *ngIf="isEditing" class="max-w-xl mx-auto p-6 sm:p-8 bg-white rounded-lg shadow-lg">
-      <h1 class="text-3xl font-bold mb-6 text-gray-800">Editar Servicio</h1>
-      <form (ngSubmit)="saveChanges()">
-        <div class="space-y-4">
-          <!-- Título -->
+    <!-- Formulario de edición -->
+    <form *ngIf="isEditing" class="space-y-6 bg-white p-6 rounded-lg shadow-lg">
           <div>
             <label for="editedTitle" class="block text-sm font-medium text-gray-700">Título</label>
             <input id="editedTitle" type="text" [(ngModel)]="editedTitle" name="editedTitle" required
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
           </div>
 
-          <!-- Descripción -->
           <div>
             <label for="editedDescription" class="block text-sm font-medium text-gray-700">Descripción</label>
             <textarea id="editedDescription" [(ngModel)]="editedDescription" name="editedDescription" rows="4"
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
           </div>
 
-          <!-- Prioridad -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div>
+          <label for="selectedLocationId" class="block text-sm font-medium text-gray-700">Ubicación</label>
+          <select id="selectedLocationId" [(ngModel)]="selectedLocationId" name="selectedLocationId"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <option [ngValue]="null">Sin asignar</option>
+            <option *ngFor="let ubicacion of ubicaciones" [ngValue]="ubicacion.id">{{ ubicacion.nombre }}</option>
+          </select>
+        </div>
+        <div>
+          <label for="editedDueDate" class="block text-sm font-medium text-gray-700">Fecha Límite</label>
+          <input id="editedDueDate" type="date" [(ngModel)]="editedDueDate" name="editedDueDate"
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+        </div>
           <div>
             <label for="editedPriority" class="block text-sm font-medium text-gray-700">Prioridad</label>
             <select id="editedPriority" [(ngModel)]="editedPriority" name="editedPriority"
@@ -236,8 +116,6 @@
               <option value="alta">Alta</option>
             </select>
           </div>
-
-          <!-- Estado -->
           <div>
             <label for="editedStatus" class="block text-sm font-medium text-gray-700">Estado</label>
             <select id="editedStatus" [(ngModel)]="editedStatus" name="editedStatus"
@@ -248,51 +126,27 @@
               <option value="cerrado">Cerrado</option>
             </select>
           </div>
+      </div>
           
-          <!-- Técnico Asignado -->
           <div>
-            <label for="editedTechnician" class="block text-sm font-medium text-gray-700">Asignar Técnico</label>
-            <select id="editedTechnician" [(ngModel)]="editedTechnicianId" name="editedTechnicianId"
+        <label for="selectedTechnicianId" class="block text-sm font-medium text-gray-700">Técnico asignado</label>
+        <select id="selectedTechnicianId" [(ngModel)]="selectedTechnicianId" name="selectedTechnicianId"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
               <option [ngValue]="null">Sin asignar</option>
-              <option *ngFor="let technician of technicians" [ngValue]="technician.id">
-                {{ technician.nombre }}
-              </option>
+          <option *ngFor="let user of users" [ngValue]="user.id">{{ user.nombre }}</option>
             </select>
           </div>
 
-          <!-- Ubicación -->
-          <div>
-            <label for="editedLocation" class="block text-sm font-medium text-gray-700">Ubicación</label>
-            <select id="editedLocation" [(ngModel)]="editedLocation" name="editedLocation"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-              <option [ngValue]="null">Sin especificar</option>
-              <option *ngFor="let location of locations" [ngValue]="location.id">
-                {{ location.nombre }}
-              </option>
-            </select>
-          </div>
-
-          <!-- Fecha Límite -->
-          <div>
-            <label for="editedDueDate" class="block text-sm font-medium text-gray-700">Fecha Límite</label>
-            <input id="editedDueDate" type="date" [(ngModel)]="editedDueDate" name="editedDueDate"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-          </div>
-
-          <div class="flex justify-end space-x-2 mt-6">
-            <button type="submit"
-                    class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-700 transition duration-300">
+      <div class="flex justify-end space-x-4 pt-6">
+        <button type="button" (click)="cancelEditMode()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+          Cancelar
+        </button>
+        <button type="button" (click)="saveChanges()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
               Guardar Cambios
             </button>
-            <button type="button" (click)="cancelEditMode()"
-                    class="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition duration-300">
-              Cancelar
-            </button>
-          </div>
         </div>
       </form>
-    </div>
+
   </div>
 
   <!-- Mensaje si no se encuentra el servicio -->
@@ -302,7 +156,6 @@
       Volver a la lista de servicios
     </button>
   </div>
-<<<<<<< HEAD
 </div>
 
 <style>
@@ -332,6 +185,3 @@
     100% { transform: rotate(360deg); }
   }
 </style>
-=======
-</div>
->>>>>>> 23687cc9e835377831bebdbc1ffeb927aad3fcc0
