@@ -52,7 +52,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadUserInfo();
-    
+
     // Nos suscribimos al rol del usuario para actualizar el estado y cargar datos.
     // Esto asegura que la interfaz se actualice en cuanto el rol esté disponible.
     this.authService.userRole$.subscribe(role => {

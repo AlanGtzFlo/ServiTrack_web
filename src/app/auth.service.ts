@@ -3,61 +3,58 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root'
 })
 export class AuthService {
 
-  // Un BehaviorSubject para gestionar y emitir el rol del usuario
-  private userRoleSubject = new BehaviorSubject<string | null>(null);
-  public userRole$: Observable<string | null> = this.userRoleSubject.asObservable();
+  private userRoleSubject = new BehaviorSubject<string | null>(null);
+  public userRole$: Observable<string | null> = this.userRoleSubject.asObservable();
 
-  constructor() {
-    // Intentar cargar el rol del usuario desde el localStorage al iniciar el servicio
-    const user = localStorage.getItem('user_data');
-    if (user) {
-      try {
-        const userData = JSON.parse(user);
-        if (userData.user && userData.user.rol) {
-          this.userRoleSubject.next(userData.user.rol);
-        }
-      } catch (e) {
-        console.error('Error al parsear user_data de localStorage en AuthService:', e);
-        localStorage.removeItem('user_data');
-      }
-    }
-  }
+  private currentUserIdSubject = new BehaviorSubject<number | null>(null);
+  public currentUserId$: Observable<number | null> = this.currentUserIdSubject.asObservable();
 
-  /**
-   * Método para actualizar el rol del usuario y notificar a los suscriptores.
-   * Este método debe ser llamado desde el LoginComponent después de un login exitoso.
-   */
-  setUserRole(userData: any): void {
-    // Almacenar el objeto completo del usuario en localStorage
-    localStorage.setItem('user_data', JSON.stringify(userData));
-    // Y emitir el rol a los suscriptores
-    if (userData.user && userData.user.rol) {
-      this.userRoleSubject.next(userData.user.rol);
-    } else {
-      this.userRoleSubject.next(null);
-    }
-  }
+  constructor() {
+    const user = localStorage.getItem('user_data');
+    if (user) {
+      try {
+        const userData = JSON.parse(user);
+        if (userData.user) {
+          if (userData.user.rol) {
+            this.userRoleSubject.next(userData.user.rol);
+          }
+          if (userData.user.id) {
+            this.currentUserIdSubject.next(userData.user.id);
+          }
+        }
+      } catch (e) {
+        console.error('Error al parsear user_data de localStorage en AuthService:', e);
+        localStorage.removeItem('user_data');
+      }
+    }
+  }
 
-  /**
-   * Obtiene el rol del usuario de forma síncrona (si está disponible).
-   * Útil para la visibilidad de elementos de la UI.
-   */
-  getUserRole(): string | null {
-    return this.userRoleSubject.value;
-  }
-  
-  /**
-   * Método para cerrar la sesión y limpiar todos los datos del usuario.
-   */
-  logoutAndClearData(): void {
-    // Eliminar los datos del localStorage
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user_data');
-    // Notificar a los suscriptores que el usuario ha cerrado sesión
-    this.userRoleSubject.next(null);
-  }
+  setUserRole(userData: any): void {
+    localStorage.setItem('user_data', JSON.stringify(userData));
+    if (userData.user && userData.user.rol) {
+      this.userRoleSubject.next(userData.user.rol);
+    } else {
+      this.userRoleSubject.next(null);
+    }
+    if (userData.user && userData.user.id) {
+      this.currentUserIdSubject.next(userData.user.id);
+    } else {
+      this.currentUserIdSubject.next(null);
+    }
+  }
+
+  getUserRole(): string | null {
+    return this.userRoleSubject.value;
+  }
+
+  logoutAndClearData(): void {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_data');
+    this.userRoleSubject.next(null);
+    this.currentUserIdSubject.next(null);
+  }
 }
