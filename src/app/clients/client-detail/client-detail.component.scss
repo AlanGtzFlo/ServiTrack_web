@@ -184,4 +184,20 @@
       width: 100%;
     }
   }
+  .btn-status-toggle {
+  background-color: #2563eb; /* azul azul intenso */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-left: 10px; /* un poco de espacio con respecto a otros botones */
+}
+
+.btn-status-toggle:hover {
+  background-color: #1e40af; /* azul más oscuro al hacer hover */
+}
+
 }

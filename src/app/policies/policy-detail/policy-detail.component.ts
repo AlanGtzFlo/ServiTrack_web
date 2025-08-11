@@ -1,14 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { catchError } from 'rxjs/operators';
-import { of, EMPTY } from 'rxjs';
+import { of } from 'rxjs';
 
-import { AuthService } from '../../auth.service'; // Importa el servicio de autenticación
-
-// Interfaz con los campos que solicitaste
+import { AuthService } from '../../auth.service';
 
 interface Policy {
   id: number;
@@ -27,22 +25,29 @@ interface Policy {
   styleUrls: ['./policy-detail.component.scss']
 })
 export class PolicyDetailComponent implements OnInit {
+  @ViewChild('policyForm') policyForm!: NgForm;
+
   policyId: number | null = null;
   policy?: Policy;
   policyToEdit?: Policy;
   isEditing: boolean = false;
 
-  isAdmin: boolean = false; // Nueva propiedad para controlar el rol
+  isAdmin: boolean = false;
+
+  // Solo los tipos que aparecen en tu JSON
+  tiposPoliza = [
+    { value: 'externa', label: 'Externa' },
+    { value: 'interna', label: 'Interna' }
+  ];
 
   private apiUrl = 'https://fixflow-backend.onrender.com/api/empresas/';
 
   constructor(
-    private route: ActivatedRoute, 
-    private router: Router, 
+    private route: ActivatedRoute,
+    private router: Router,
     private http: HttpClient,
-    private authService: AuthService // Inyecta el servicio de autenticación
+    private authService: AuthService
   ) {}
-
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -56,78 +61,87 @@ export class PolicyDetailComponent implements OnInit {
       }
     });
 
-    // Suscribirse al rol del usuario para actualizar el estado de 'isAdmin'
     this.authService.userRole$.subscribe(role => {
       this.isAdmin = role === 'admin';
     });
   }
 
   loadPolicyData(id: number): void {
-    this.http.get<Policy>(`${this.apiUrl}${id}/`).pipe(
-      catchError((err: HttpErrorResponse) => {
-        console.error('Error cargando póliza:', err);
-
-        // Reemplazar alert() por un manejo de errores en consola o un modal
-        console.error('No se pudo cargar la información de la póliza.'); 
-
-        this.router.navigate(['/policies']);
-        return EMPTY;
-      })
-    ).subscribe(policy => {
-      this.policy = policy;
-      this.policyToEdit = policy ? { ...policy } : undefined;
-    });
-  }
-
-  editPolicy(): void {
-
-    if (this.isAdmin) {
-      this.isEditing = true;
-    }
-  }
-
-  saveChanges(): void {
-    if (!this.policyToEdit || !this.policyToEdit.id) return;
-    this.http.put(`${this.apiUrl}${this.policyToEdit.id}/`, this.policyToEdit).subscribe({
-      next: () => {
-        // Reemplazar alert()
-        console.log('Póliza actualizada con éxito.');
-        this.isEditing = false;
-        this.loadPolicyData(this.policyToEdit!.id);
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Error al guardar cambios:', err);
-        // Reemplazar alert()
-        console.error('No se pudieron guardar los cambios.');
-      }
-    });
-  }
-
-  cancelEditing(): void {
-    this.isEditing = false;
-    this.policyToEdit = this.policy ? { ...this.policy } : undefined;
-  }
-
-  deletePolicy(): void {
-    if (!this.policy || !this.policy.id) return;
-    // Reemplazar confirm() por un manejo de confirmación en consola o un modal
-    console.log(`Petición para eliminar la póliza ${this.policy.nombre}`);
-    this.http.delete(`${this.apiUrl}${this.policy.id}/`).subscribe({
-      next: () => {
-        // Reemplazar alert()
-        console.log('Póliza eliminada correctamente.');
-        this.router.navigate(['/policies']);
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Error eliminando póliza:', err);
-        // Reemplazar alert()
-        console.error('No se pudo eliminar la póliza.');
-      }
-    });
+    this.http.get<Policy>(`${this.apiUrl}${id}/`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al cargar la póliza', error);
+          return of(undefined);
+        })
+      )
+      .subscribe(data => {
+        if (data) {
+          this.policy = data;
+        } else {
+          this.policy = undefined;
+        }
+      });
   }
 
   goToPoliciesList(): void {
     this.router.navigate(['/policies']);
   }
 
+  editPolicy(): void {
+    if (this.policy) {
+      this.policyToEdit = { ...this.policy };
+      this.isEditing = true;
+    }
+  }
+
+  cancelEditing(): void {
+    this.isEditing = false;
+    this.policyToEdit = undefined;
+  }
+
+  getTipoPolizaLabel(tipoValue: string): string {
+    const tipo = this.tiposPoliza.find(t => t.value === tipoValue);
+    return tipo ? tipo.label : tipoValue || 'No especificado';
+  }
+
+  saveChanges(): void {
+    if (!this.policyToEdit || !this.policyId) return;
+
+    if (this.policyForm.invalid) {
+      this.policyForm.control.markAllAsTouched();
+      return;
+    }
+
+    this.http.put<Policy>(`${this.apiUrl}${this.policyId}/`, this.policyToEdit)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al guardar cambios', error);
+          return of(undefined);
+        })
+      )
+      .subscribe(updatedPolicy => {
+        if (updatedPolicy) {
+          this.policy = updatedPolicy;
+          this.isEditing = false;
+          this.policyToEdit = undefined;
+        }
+      });
+  }
+
+  deletePolicy(): void {
+    if (!this.policyId) return;
+
+    if (confirm('¿Estás seguro de eliminar esta póliza?')) {
+      this.http.delete(`${this.apiUrl}${this.policyId}/`)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.error('Error al eliminar la póliza', error);
+            return of(undefined);
+          })
+        )
+        .subscribe(() => {
+          this.router.navigate(['/policies']);
+        });
+    }
+  }
 }

@@ -5,11 +5,9 @@
     </button>
     <h1 class="section-title">Póliza: #{{ policy.nombre }}</h1>
     <div class="header-actions">
-      <!-- Botón de Editar: se muestra solo si el usuario es un administrador -->
       <button *ngIf="isAdmin" class="btn btn-secondary" (click)="editPolicy()">
         <i class="material-icons">edit</i> Editar
       </button>
-      <!-- Botón de Eliminar: se muestra solo si el usuario es un administrador -->
       <button *ngIf="isAdmin" class="btn btn-delete" (click)="deletePolicy()">
         <i class="material-icons">delete</i> Eliminar
       </button>
@@ -24,7 +22,7 @@
       </div>
       <div class="info-group">
         <p class="label">Tipo de Póliza:</p>
-        <p class="value">{{ policy.tipo_poliza || 'No especificado' }}</p>
+        <p class="value">{{ getTipoPolizaLabel(policy.tipo_poliza) }}</p>
       </div>
       <div class="info-group">
         <p class="label">Fecha de Inicio:</p>
@@ -45,37 +43,42 @@
           </span>
         </p>
       </div>
-
     </div>
   </div>
 </div>
-<!-- El formulario de edición solo se muestra si el usuario es un administrador y está editando -->
+
 <div class="policy-edit-container" *ngIf="policyToEdit && isEditing && isAdmin">
   <div class="section-header">
     <h1 class="section-title">Editando Póliza: #{{ policyToEdit.nombre }}</h1>
   </div>
   <div class="edit-policy-form card">
-    <form (ngSubmit)="saveChanges()">
+    <form #policyForm="ngForm" (ngSubmit)="saveChanges()">
       <div class="form-grid">
         <div class="form-group">
           <label for="nombre">Nombre</label>
           <input type="text" id="nombre" [(ngModel)]="policyToEdit.nombre" name="nombre" required>
         </div>
+
         <div class="form-group">
-          <label for="tipo_poliza">Tipo de Póliza</label>
+          <label for="tipo_poliza">Tipo de Póliza <span class="required">*</span></label>
           <select id="tipo_poliza" [(ngModel)]="policyToEdit.tipo_poliza" name="tipo_poliza" required>
-            <option value="Interna">Interna</option>
-            <option value="Externa">Externa</option>
+            <option *ngFor="let tipo of tiposPoliza" [value]="tipo.value">{{ tipo.label }}</option>
           </select>
+          <div *ngIf="policyForm.submitted && !policyForm.controls['tipo_poliza']?.valid" class="validation-error">
+            El tipo de póliza es obligatorio.
+          </div>
         </div>
+
         <div class="form-group">
           <label for="fecha_inicio_poliza">Fecha de Inicio</label>
           <input type="date" id="fecha_inicio_poliza" [(ngModel)]="policyToEdit.fecha_inicio_poliza" name="fecha_inicio_poliza" required>
         </div>
+
         <div class="form-group">
           <label for="fecha_fin_poliza">Fecha de Fin</label>
           <input type="date" id="fecha_fin_poliza" [(ngModel)]="policyToEdit.fecha_fin_poliza" name="fecha_fin_poliza" required>
         </div>
+
         <div class="form-group">
           <label for="estatus">Estatus</label>
           <select id="estatus" [(ngModel)]="policyToEdit.estatus" name="estatus" required>
@@ -84,6 +87,7 @@
           </select>
         </div>
       </div>
+
       <div class="form-actions" style="margin-top: 1rem;">
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
         <button type="button" class="btn btn-secondary" (click)="cancelEditing()">Cancelar</button>
@@ -91,6 +95,7 @@
     </form>
   </div>
 </div>
+
 <div *ngIf="!policy && !isEditing" class="loading-or-error">
   <p>Cargando información de la póliza o la póliza no fue encontrada...</p>
 </div>

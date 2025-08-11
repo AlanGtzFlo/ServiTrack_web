@@ -28,8 +28,8 @@ export class NewPolicyComponent implements OnInit {
     estatus: true
   };
 
-  // ✅ CORREGIDO: Valores en minúsculas para coincidir con la validación del backend.
-  tiposPoliza: string[] = ['completa', 'preventivos', 'correctivos'];
+  // Actualizado con los tipos reales
+  tiposPoliza: string[] = ['interna', 'externa'];
 
   constructor(private router: Router, private http: HttpClient) {}
 

@@ -1,13 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { switchMap, catchError, map } from 'rxjs/operators';
-import { of, EMPTY } from 'rxjs';
-import { AuthService } from '../../auth.service'; // Importa el servicio de autenticación
+import { switchMap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { AuthService } from '../../auth.service';
 
-// Define the interface for the spare part, based on your API's structure
 export interface Refaccion {
     id: number;
     nombre: string;
@@ -35,18 +34,16 @@ export class RefaccionDetailComponent implements OnInit {
     isEditing: boolean = false;
     refaccionForm!: FormGroup;
     selectedFile: File | null = null;
-    isAdmin: boolean = false; // Propiedad para el control de roles
+    isAdmin: boolean = false;
 
     private apiUrl = 'https://fixflow-backend.onrender.com/api/refacciones';
-    
-    // URL base de Cloudinary
-    private cloudinaryBaseUrl = 'http://res.cloudinary.com/dfdcovbqs/';
 
     constructor(
         private route: ActivatedRoute,
         private http: HttpClient,
         private fb: FormBuilder,
-        private authService: AuthService // Inyecta el servicio de autenticación
+        private authService: AuthService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -75,8 +72,7 @@ export class RefaccionDetailComponent implements OnInit {
                 this.initForm();
             }
         });
-        
-        // Suscribirse al rol del usuario para actualizar el estado de 'isAdmin'
+
         this.authService.userRole$.subscribe(role => {
             this.isAdmin = role === 'admin';
         });
@@ -92,28 +88,19 @@ export class RefaccionDetailComponent implements OnInit {
         });
     }
 
-    /**
-     * Constructs the full image URL.
-     * @param imagePath The image path returned by the API.
-     * @returns The complete image URL.
-     */
-   getRefaccionImageUrl(imagePath: string, width: number = 400, height: number = 200): string {
-    if (!imagePath) {
-        return `https://placehold.co/${width}x${height}/cccccc/ffffff?text=No+Image`;
+    getRefaccionImageUrl(imagePath: string, width: number = 400, height: number = 200): string {
+        if (!imagePath) {
+            return `https://placehold.co/${width}x${height}/cccccc/ffffff?text=No+Image`;
+        }
+        const match = imagePath.match(/https?:\/\/[^\s]+/);
+        if (match) {
+            return match[0].replace(
+                '/upload/',
+                `/upload/f_auto,q_auto,w_${width},h_${height},c_fill/`
+            );
+        }
+        return `https://res.cloudinary.com/dfdcovbqs/image/upload/f_auto,q_auto,w_${width},h_${height},c_fill/${imagePath}`;
     }
-
-    // Si contiene una URL completa incrustada después de "upload/", la extraemos
-    const match = imagePath.match(/https?:\/\/[^\s]+/);
-    if (match) {
-        return match[0].replace(
-            '/upload/',
-            `/upload/f_auto,q_auto,w_${width},h_${height},c_fill/`
-        );
-    }
-
-    // Si es ruta relativa, la armamos optimizada
-    return `https://res.cloudinary.com/dfdcovbqs/image/upload/f_auto,q_auto,w_${width},h_${height},c_fill/${imagePath}`;
-}
 
     onFileSelected(event: Event): void {
         const element = event.currentTarget as HTMLInputElement;
@@ -125,12 +112,12 @@ export class RefaccionDetailComponent implements OnInit {
     }
 
     onEditClick(): void {
-        if (!this.isAdmin) return; // Restringir el acceso a la edición
+        if (!this.isAdmin) return;
         this.isEditing = true;
     }
 
     onSaveEdit(): void {
-        if (!this.isAdmin) return; // Restringir el guardado
+        if (!this.isAdmin) return;
         if (this.refaccionForm.valid && this.refaccion) {
             const url = `${this.apiUrl}/${this.refaccion.id}/`;
             const payload = new FormData();
@@ -141,7 +128,7 @@ export class RefaccionDetailComponent implements OnInit {
             payload.append('fabricante', this.refaccionForm.value.fabricante);
             payload.append('vida_util_estimada', this.refaccionForm.value.vida_util_estimada);
             payload.append('estatus', this.refaccion.estatus.toString());
-            
+
             if (this.selectedFile) {
                 payload.append('imagen', this.selectedFile, this.selectedFile.name);
             }
@@ -167,31 +154,35 @@ export class RefaccionDetailComponent implements OnInit {
     }
 
     onToggleStatusClick(): void {
-        if (!this.isAdmin) return; // Restringir el cambio de estado
+        if (!this.isAdmin) return;
         if (this.refaccion) {
             this.showStatusConfirmation = true;
         }
     }
 
     confirmToggleStatus(): void {
-        if (!this.isAdmin) return; // Restringir la confirmación
-        if (this.refaccion) {
-            const nuevoEstatus = !this.refaccion.estatus;
-            const id = this.refaccion.id;
-            
-            this.http.patch<Refaccion>(`${this.apiUrl}/${id}/`, { estatus: nuevoEstatus }).subscribe({
-                next: (response) => {
-                    console.log('Status updated successfully:', response);
-                    this.refaccion!.estatus = response.estatus;
-                    this.showStatusConfirmation = false;
-                },
-                error: (error) => {
-                    console.error('Error updating status:', error);
-                    this.showStatusConfirmation = false;
-                }
-            });
-        }
+    if (!this.isAdmin) return;
+    if (this.refaccion) {
+        const nuevoEstatus = !this.refaccion.estatus;
+        const id = this.refaccion.id;
+
+        // Crear FormData para enviar
+        const formData = new FormData();
+        formData.append('estatus', nuevoEstatus.toString());
+
+        this.http.patch<Refaccion>(`${this.apiUrl}/${id}/`, formData).subscribe({
+            next: (response) => {
+                console.log('Status updated successfully:', response);
+                this.refaccion!.estatus = nuevoEstatus;
+                this.showStatusConfirmation = false;
+            },
+            error: (error) => {
+                console.error('Error updating status:', error);
+                this.showStatusConfirmation = false;
+            }
+        });
     }
+}
 
     cancelToggleStatus(): void {
         this.showStatusConfirmation = false;

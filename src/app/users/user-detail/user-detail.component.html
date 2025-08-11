@@ -116,7 +116,7 @@
         <textarea [(ngModel)]="user.address" class="form-control" rows="3" placeholder="Calle, número, colonia..."></textarea>
       </div>
     </div>
-    
+
     <div class="photo-upload-section" *ngIf="isEditing && isAdmin">
       <div class="info-group full-width">
         <p class="label">Foto de Perfil:</p>
@@ -135,3 +135,4 @@
 <div *ngIf="!user" class="loading-or-error">
   <p>Cargando información del usuario o el usuario no fue encontrado...</p>
 </div>
+

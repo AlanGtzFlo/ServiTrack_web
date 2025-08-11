@@ -11,7 +11,7 @@ interface User {
   id: number;
   name: string;
   email: string;
-  role: 'Administrador' | 'Técnico' | 'Atención a Cliente' | 'Supervisor';
+  role: 'Administrador' | 'Técnico';
   status: 'Activo' | 'Inactivo';
   hireDate?: string;
   photo?: string;
@@ -35,7 +35,7 @@ export class UserDetailComponent implements OnInit {
   selectedFile: File | null = null; // Propiedad para la nueva imagen
   isAdmin: boolean = false; // Propiedad para el control de roles
 
-  roles = ['Administrador', 'Técnico', 'Atención a Cliente', 'Supervisor'];
+  roles = ['Administrador', 'Técnico'];
   statuses = ['Activo', 'Inactivo'];
 
   private apiUrl = 'https://fixflow-backend.onrender.com/api/usuarios/';
@@ -187,8 +187,6 @@ export class UserDetailComponent implements OnInit {
     switch (role) {
       case 'Administrador': return 'role-admin';
       case 'Técnico': return 'role-technician';
-      case 'Atención a Cliente': return 'role-customer-service';
-      case 'Supervisor': return 'role-supervisor';
       default: return '';
     }
   }
@@ -212,9 +210,7 @@ export class UserDetailComponent implements OnInit {
     switch (apiRole.toLowerCase()) {
       case 'admin': return 'Administrador';
       case 'tecnico': return 'Técnico';
-      case 'cliente': return 'Atención a Cliente';
-      case 'supervisor': return 'Supervisor';
-      default: return 'Atención a Cliente';
+      default: return 'Técnico';
     }
   }
 
@@ -222,9 +218,7 @@ export class UserDetailComponent implements OnInit {
     switch (role) {
       case 'Administrador': return 'admin';
       case 'Técnico': return 'tecnico';
-      case 'Atención a Cliente': return 'cliente';
-      case 'Supervisor': return 'supervisor';
-      default: return 'cliente';
+      default: return 'tecnico';
     }
   }
 
