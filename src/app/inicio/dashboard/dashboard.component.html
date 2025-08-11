@@ -7,7 +7,7 @@
         <p>Rol: <span>{{ userMatricula }}</span></p>
       </div>
     </div>
-    <img [src]="userImage" alt="Foto de perfil del usuario" class="user-profile-image">
+    <img [src]="userImage" alt="Foto de perfil del usuario" class="user-profile-image" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover;">
   </div>
 
   <div class="tickets-notification card" (click)="viewTickets()" *ngIf="!isAdmin">

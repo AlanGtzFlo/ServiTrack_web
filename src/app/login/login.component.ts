@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('user_data', JSON.stringify(response));
           console.log('LoginComponent: user_data guardado en localStorage:', JSON.stringify(response));
 
-          this.router.navigate(['/inicio']); // Navega a la página de inicio
+          this.router.navigate(['/dashboard']); // Navega a la página de inicio
         } else {
           this.errorMessage = 'Login exitoso, pero no se recibió un token de acceso válido.';
           console.warn('LoginComponent: No se recibió un token de acceso válido en la respuesta.');

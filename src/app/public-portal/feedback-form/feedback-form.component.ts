@@ -3,6 +3,29 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+// Interfaces para tipado seguro
+interface Ticket {
+  id: number;
+  titulo: string;
+  descripcion: string;
+  tecnico_asignado: number;
+}
+
+interface Usuario {
+  id: number;
+  nombre: string;
+  rol: string;
+}
+
+interface Feedback {
+  calificacion: number;
+  comentario: string;
+  ticket: number | null;
+  tecnico: number | null;
+}
 
 @Component({
   selector: 'app-feedback-form',
@@ -21,9 +44,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
             <label for="calificacion">Calificación</label>
             <div class="rating-stars">
               <span class="material-icons star"
-                    *ngFor="let star of [1, 2, 3, 4, 5]"
-                    [ngClass]="{'filled': star <= feedback.calificacion}"
-                    (click)="setRating(star)">
+                      *ngFor="let star of [1, 2, 3, 4, 5]"
+                      [ngClass]="{'filled': star <= feedback.calificacion}"
+                      (click)="setRating(star)">
                 star
               </span>
             </div>
@@ -35,17 +58,12 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
           </div>
 
           <div class="form-group">
-            <label for="ticket">Ticket</label>
-            <select id="ticket" name="ticket" [(ngModel)]="feedback.ticket" (ngModelChange)="onTicketChange()" required>
-              <option value="" disabled>Selecciona un Ticket</option>
-              <option *ngFor="let ticket of tickets" [ngValue]="ticket.id">
-                {{ ticket.titulo }}
-              </option>
-            </select>
+            <label for="ticket_id">ID del Ticket</label>
+            <input type="number" id="ticket_id" name="ticket_id" [(ngModel)]="feedback.ticket" (ngModelChange)="onTicketIdChange()" placeholder="Ingresa el ID del ticket" required>
           </div>
 
           <div class="form-group">
-            <label for="tecnico">Técnico</label>
+            <label for="tecnico">Técnico Asignado</label>
             <input type="text" id="tecnico" name="tecnico" [value]="tecnicoSeleccionado ? tecnicoSeleccionado.nombre : '-----'" disabled>
           </div>
 
@@ -58,115 +76,38 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="btn btn-primary">POST</button>
+            <button type="submit" class="btn btn-primary">Enviar comentario</button>
           </div>
         </form>
       </div>
     </div>
   `,
   styles: [`
-    .form-container {
-      max-width: 600px;
-      margin: 2rem auto;
-      padding: 2rem;
-      background-color: #f0f2f5;
-      border-radius: 8px;
-    }
-    .form-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .page-title {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #333;
-    }
-    .page-description {
-      color: #777;
-    }
-    .feedback-form-card {
-      background-color: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      color: #555;
-      margin-bottom: 0.5rem;
-    }
-    .form-group input[type="text"],
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-sizing: border-box;
-      font-size: 1rem;
-    }
-    .form-group input[type="text"]:disabled {
-      background-color: #f8f8f8;
-    }
-    .form-group textarea {
-      resize: vertical;
-    }
-    .rating-stars {
-      display: flex;
-      align-items: center;
-    }
-    .rating-stars .star {
-      font-size: 2rem;
-      color: #ccc;
-      cursor: pointer;
-      transition: color 0.2s ease-in-out;
-    }
-    .rating-stars .star.filled {
-      color: #f6ad55;
-    }
-    .alert {
-      padding: 1rem;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-    }
-    .alert-error {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-    .alert-success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    .form-actions {
-      text-align: right;
-    }
-    .btn-primary {
-      background-color: #007bff;
-      color: #fff;
-      font-weight: bold;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      border: none;
-      transition: background-color 0.2s ease-in-out;
-    }
-    .btn-primary:hover {
-      background-color: #0056b3;
-    }
+    .form-container { max-width: 600px; margin: 2rem auto; padding: 2rem; background-color: #f0f2f5; border-radius: 8px; }
+    .form-header { text-align: center; margin-bottom: 2rem; }
+    .page-title { font-size: 2rem; font-weight: bold; color: #333; }
+    .page-description { color: #777; }
+    .feedback-form-card { background-color: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-weight: 600; color: #555; margin-bottom: 0.5rem; }
+    .form-group input[type="text"], .form-group textarea, .form-group input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+    .form-group input:disabled { background-color: #f8f8f8; }
+    .form-group textarea { resize: vertical; }
+    .rating-stars { display: flex; align-items: center; }
+    .rating-stars .star { font-size: 2rem; color: #ccc; cursor: pointer; transition: color 0.2s ease-in-out; }
+    .rating-stars .star.filled { color: #f6ad55; }
+    .alert { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
+    .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .form-actions { text-align: right; }
+    .btn-primary { background-color: #007bff; color: #fff; font-weight: bold; padding: 10px 20px; border-radius: 4px; cursor: pointer; border: none; transition: background-color 0.2s ease-in-out; }
+    .btn-primary:hover { background-color: #0056b3; }
   `],
 })
 export class FeedbackFormComponent implements OnInit {
-  // URL de la API
   private apiUrl = 'https://fixflow-backend.onrender.com/api';
 
-  // Modelo para el formulario de feedback
-  feedback = {
+  feedback: Feedback = {
     calificacion: 0,
     comentario: '',
     ticket: null,
@@ -175,51 +116,49 @@ export class FeedbackFormComponent implements OnInit {
 
   submitted: boolean = false;
   errorMessage: string = '';
-  tickets: any[] = [];
-  tecnicos: any[] = [];
-  tecnicoSeleccionado: any = null;
+  tickets: Ticket[] = [];
+  tecnicos: Usuario[] = [];
+  tecnicoSeleccionado: Usuario | null = null;
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.fetchTickets();
-    this.fetchTecnicos();
-  }
-
-  // Obtiene la lista de tickets de la API
-  fetchTickets(): void {
-    this.http.get<any[]>(`${this.apiUrl}/tickets/`).subscribe({
-      next: (data) => {
-        this.tickets = data;
-      },
-      error: (err) => {
-        console.error('Error al obtener los tickets:', err);
-        this.errorMessage = 'No se pudieron cargar los tickets. Inténtalo de nuevo más tarde.';
-      }
+    // Usamos forkJoin para obtener ambos datos de forma eficiente y en paralelo
+    forkJoin({
+      tickets: this.http.get<Ticket[]>(`${this.apiUrl}/tickets/`).pipe(
+        catchError(err => {
+          console.error('Error al obtener los tickets:', err);
+          this.errorMessage = 'No se pudieron cargar los tickets. Inténtalo de nuevo más tarde.';
+          return of([]);
+        })
+      ),
+      tecnicos: this.http.get<Usuario[]>(`${this.apiUrl}/usuarios/`).pipe(
+        catchError(err => {
+          console.error('Error al obtener los técnicos:', err);
+          this.errorMessage = 'No se pudieron cargar los técnicos. Inténtalo de nuevo más tarde.';
+          return of([]);
+        })
+      )
+    }).subscribe(({ tickets, tecnicos }) => {
+      this.tickets = tickets;
+      // Filtra solo los usuarios que tienen el rol de 'tecnico'
+      this.tecnicos = tecnicos.filter(user => user.rol === 'tecnico');
     });
   }
 
-  // Obtiene la lista de técnicos de la API
-  fetchTecnicos(): void {
-    this.http.get<any[]>(`${this.apiUrl}/usuarios/`).subscribe({
-      next: (data) => {
-        // Filtra solo los usuarios que tienen el rol de 'tecnico'
-        this.tecnicos = data.filter(user => user.rol === 'tecnico');
-      },
-      error: (err) => {
-        console.error('Error al obtener los técnicos:', err);
-        this.errorMessage = 'No se pudieron cargar los técnicos. Inténtalo de nuevo más tarde.';
+  // Maneja el cambio de selección del ticket por su ID
+  onTicketIdChange(): void {
+    const ticketId = this.feedback.ticket;
+    if (ticketId) {
+      const selectedTicket = this.tickets.find(t => t.id === Number(ticketId));
+      if (selectedTicket) {
+        // Busca el técnico por el ID asignado en el ticket
+        this.tecnicoSeleccionado = this.tecnicos.find(t => t.id === selectedTicket.tecnico_asignado) || null;
+        this.feedback.tecnico = this.tecnicoSeleccionado?.id || null;
+      } else {
+        this.tecnicoSeleccionado = null;
+        this.feedback.tecnico = null;
       }
-    });
-  }
-
-  // Maneja el cambio de selección del ticket
-  onTicketChange(): void {
-    const selectedTicket = this.tickets.find(t => t.id === this.feedback.ticket);
-    if (selectedTicket) {
-      // Busca el técnico por el ID asignado en el ticket
-      this.tecnicoSeleccionado = this.tecnicos.find(t => t.id === selectedTicket.tecnico_asignado);
-      this.feedback.tecnico = this.tecnicoSeleccionado ? this.tecnicoSeleccionado.id : null;
     } else {
       this.tecnicoSeleccionado = null;
       this.feedback.tecnico = null;
@@ -231,13 +170,11 @@ export class FeedbackFormComponent implements OnInit {
     this.submitted = false;
     this.errorMessage = '';
 
-    // Validación
     if (!this.feedback.calificacion || !this.feedback.comentario || !this.feedback.ticket || !this.feedback.tecnico) {
       this.errorMessage = 'Por favor, completa todos los campos requeridos.';
       return;
     }
 
-    // El objeto a enviar debe coincidir con la estructura de la API
     const feedbackData = {
       calificacion: this.feedback.calificacion,
       comentario: this.feedback.comentario,
@@ -245,12 +182,10 @@ export class FeedbackFormComponent implements OnInit {
       tecnico: this.feedback.tecnico
     };
 
-    // Envía el feedback a la API
     this.http.post(`${this.apiUrl}/satisfaccion/`, feedbackData).subscribe({
       next: (response) => {
         console.log('Comentario enviado:', response);
         this.submitted = true;
-        // Resetear el formulario
         this.feedback = { calificacion: 0, comentario: '', ticket: null, tecnico: null };
         this.tecnicoSeleccionado = null;
       },
