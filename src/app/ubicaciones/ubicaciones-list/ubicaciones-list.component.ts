@@ -46,7 +46,7 @@ export class UbicacionesListComponent implements OnInit {
   private ubicacionesApiUrl = 'https://fixflow-backend.onrender.com/api/ubicaciones/';
   private clientesApiUrl = 'https://fixflow-backend.onrender.com/api/clientes/';
   private empresasApiUrl = 'https://fixflow-backend.onrender.com/api/empresas/';
-  private exportPdfUrl = 'https://fixflow-backend.onrender.com/api/usuarios/exportar_ubicaciones/';
+  private exportPdfUrl = 'https://fixflow-backend.onrender.com/api/ubicaciones/exportar_ubicaciones/';
   
   ubicaciones: Ubicacion[] = [];
   isLoading = true;

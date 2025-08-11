@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AuthService } from '../auth.service'; // Importa el AuthService
 
 // Interfaz para la estructura del cliente
 interface Client {
@@ -23,21 +24,24 @@ interface Client {
   styleUrls: ['./clients.component.scss']
 })
 export class ClientsComponent implements OnInit {
-  
+
   clients: Client[] = [];
   searchTerm: string = '';
   filterStatus: 'all' | true | false = 'all';
   isLoading = false;
-
+  isAdmin: boolean = false; // Nueva variable para controlar la visibilidad de los botones
 
   private apiUrl = 'https://fixflow-backend.onrender.com/api/clientes/';
   // URL para exportar el PDF
   private exportPdfUrl = 'https://fixflow-backend.onrender.com/api/clientes/exportar_pdf/';
 
-
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient, private authService: AuthService) { }
 
   ngOnInit(): void {
+    // Suscribirse al rol del usuario para determinar los permisos
+    this.authService.userRole$.subscribe(role => {
+      this.isAdmin = (role === 'admin');
+    });
     this.loadClients();
   }
 

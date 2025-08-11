@@ -22,12 +22,13 @@
         <option value="Inactivo">Inactivo</option>
       </select>
       
-      <!-- Nuevo botón para exportar a PDF -->
-      <button class="btn btn-secondary" (click)="exportUsersPdf()">
+      <!-- Nuevo botón para exportar a PDF (Visible solo para administradores) -->
+      <button class="btn btn-secondary" (click)="exportUsersPdf()" *ngIf="isAdmin">
         <i class="material-icons">picture_as_pdf</i> Exportar PDF
       </button>
 
-      <button class="btn btn-primary" routerLink="/users/new">
+      <!-- Botón para añadir usuario (Visible solo para administradores) -->
+      <button class="btn btn-primary" routerLink="/users/new" *ngIf="isAdmin">
         <i class="material-icons">person_add</i> Nuevo Usuario
       </button>
     </div>

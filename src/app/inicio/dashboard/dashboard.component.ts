@@ -7,13 +7,24 @@ import { catchError } from 'rxjs/operators';
 import Chart from 'chart.js/auto';
 import { AuthService } from '../../auth.service';
 
-// Interfaz para la API de estados por usuario
+// Interfaz para la API de estados por usuario (técnicos)
 interface TicketsByTechnicianResponse {
   cerrado: number;
   completado: number;
   en_proceso: number;
   pendiente: number;
   total: number;
+}
+
+// Interfaz para la API de clientes (admins)
+interface ClientesResponse {
+  id: number;
+  nombre: string;
+  rfc: string;
+  telefono: string;
+  correo: string;
+  direccion: string;
+  estatus: boolean;
 }
 
 const COLORS = {
@@ -41,8 +52,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     cerrado: 0, completado: 0, en_proceso: 0, pendiente: 0, total: 0
   };
 
+  clientesActivos: number = 0;
+  clientesInactivos: number = 0;
+
   @ViewChild('ticketsByTechnicianChart') ticketsByTechnicianChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('clientesChart') clientesChartRef!: ElementRef<HTMLCanvasElement>;
+
   ticketsByTechnicianChart: Chart | null = null;
+  clientesChart: Chart | null = null;
 
   constructor(
     private router: Router,
@@ -53,27 +70,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.loadUserInfo();
 
-    // Nos suscribimos al rol del usuario para actualizar el estado y cargar datos.
-    // Esto asegura que la interfaz se actualice en cuanto el rol esté disponible.
+    // Detecta el rol del usuario
     this.authService.userRole$.subscribe(role => {
-        this.isAdmin = role === 'admin';
-        // Solo cargar los tickets y crear el gráfico si el usuario no es admin.
-        if (!this.isAdmin) {
-          this.fetchTicketsToResolve();
-        } else {
-          // Destruir el gráfico si existe, en caso de que el rol cambie a admin.
-          if (this.ticketsByTechnicianChart) {
-            this.ticketsByTechnicianChart.destroy();
-            this.ticketsByTechnicianChart = null;
-          }
-        }
+      this.isAdmin = role === 'admin';
+      if (!this.isAdmin) {
+        // Gráfica de tickets para técnicos
+        this.fetchTicketsToResolve();
+      } else {
+        // Gráfica de clientes para administradores
+        this.fetchClientesData();
+      }
     });
   }
 
-  // ngAfterViewInit ya no es necesario para crear el gráfico, ya que la lógica
-  // ahora está en la suscripción del rol.
   ngAfterViewInit(): void { }
 
+  // Cargar datos del usuario desde localStorage
   loadUserInfo(): void {
     const userDataString = localStorage.getItem('user_data');
     if (userDataString) {
@@ -97,6 +109,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // -------------------- Técnicos --------------------
   fetchTicketsToResolve(): void {
     const ticketsByTechnicianApiUrl = 'https://fixflow-backend.onrender.com/api/tickets/contar_estados_por_usuario/';
     this.http.get<TicketsByTechnicianResponse>(ticketsByTechnicianApiUrl).pipe(
@@ -107,7 +120,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     ).subscribe(data => {
       this.ticketsByTechnicianData = data;
       this.ticketsToResolve = data.pendiente + data.en_proceso;
-      // La creación del gráfico se realiza aquí, después de que los datos están disponibles
       this.createTicketsByTechnicianChart();
     });
   }
@@ -116,7 +128,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (this.ticketsByTechnicianChart) {
       this.ticketsByTechnicianChart.destroy();
     }
-    // Añadir una comprobación para asegurar que el gráfico solo se crea si el elemento existe
     if (!this.ticketsByTechnicianChartRef) return;
     const ctx = this.ticketsByTechnicianChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
@@ -153,17 +164,71 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             align: 'start',
             labels: {
               usePointStyle: true,
-              font: {
-                size: 14 // Aumenta el tamaño de la fuente de la leyenda
-              }
+              font: { size: 14 }
             }
           },
           title: {
             display: true,
             text: 'Estados de Tickets',
-            font: {
-              size: 16 // Aumenta el tamaño de la fuente del título
+            font: { size: 16 }
+          },
+        },
+      },
+    });
+  }
+
+  // -------------------- Administradores --------------------
+  fetchClientesData(): void {
+    const clientesApiUrl = 'https://fixflow-backend.onrender.com/api/clientes/';
+    this.http.get<ClientesResponse[]>(clientesApiUrl).pipe(
+      catchError(error => {
+        console.error('Error al obtener clientes:', error);
+        return of([]);
+      })
+    ).subscribe(clientes => {
+      this.clientesActivos = clientes.filter(c => c.estatus).length;
+      this.clientesInactivos = clientes.length - this.clientesActivos;
+      this.createClientesChart();
+    });
+  }
+
+  createClientesChart(): void {
+    if (this.clientesChart) {
+      this.clientesChart.destroy();
+    }
+    if (!this.clientesChartRef) return;
+    const ctx = this.clientesChartRef.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    this.clientesChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Activos', 'Inactivos'],
+        datasets: [{
+          label: 'Clientes',
+          data: [this.clientesActivos, this.clientesInactivos],
+          backgroundColor: [
+            COLORS.successGreen,
+            COLORS.softRed,
+          ],
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            align: 'start',
+            labels: {
+              usePointStyle: true,
+              font: { size: 14 }
             }
+          },
+          title: {
+            display: true,
+            text: 'Clientes por Estado',
+            font: { size: 16 }
           },
         },
       },

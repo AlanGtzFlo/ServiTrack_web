@@ -17,15 +17,14 @@
         <option [ngValue]="false">Inactivo</option>
       </select>
 
-      <!-- Botón para exportar a PDF -->
-  <button class="btn btn-secondary btn-with-icon" (click)="exportPdf()">
-  <i class="material-icons">picture_as_pdf</i>
-  <span>Exportar PDF</span>
-</button>
-
+      <!-- Botón para exportar a PDF (Visible solo para administradores) -->
+      <button class="btn btn-secondary btn-with-icon" (click)="exportPdf()" *ngIf="isAdmin">
+        <i class="material-icons">picture_as_pdf</i>
+        <span>Exportar PDF</span>
+      </button>
     
-      <!-- Botón para añadir cliente -->
-      <button class="btn btn-primary" (click)="addNewClient()">
+      <!-- Botón para añadir cliente (Visible solo para administradores) -->
+      <button class="btn btn-primary" (click)="addNewClient()" *ngIf="isAdmin">
         <i class="material-icons">add</i> Nuevo Cliente
       </button>
     </div>

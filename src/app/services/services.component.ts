@@ -5,12 +5,15 @@ import { RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { AuthService } from '../auth.service';
 
+// Interfaz para el usuario, no se requiere cambio
 interface User {
   id: number;
   nombre: string;
 }
 
+// Interfaz para el servicio, no se requiere cambio
 interface Service {
   id: number;
   titulo: string;
@@ -39,10 +42,20 @@ export class ServicesComponent implements OnInit {
   private _filterPriority: string = 'all';
 
   isLoading = true;
-  apiBaseUrl = 'https://fixflow-backend.onrender.com/api/tickets/';
+  private apiBaseUrl = 'https://fixflow-backend.onrender.com/api/tickets/';
   private exportPdfUrl = 'https://fixflow-backend.onrender.com/api/tickets/exportar_tickets/';
 
-  constructor(private http: HttpClient) {}
+  isAdmin: boolean = false;
+  currentUserId: number | null = null;
+
+  constructor(private http: HttpClient, private authService: AuthService) {
+    this.authService.userRole$.subscribe(role => {
+      this.isAdmin = role === 'admin';
+    });
+    this.authService.currentUserId$.subscribe(id => {
+      this.currentUserId = id;
+    });
+  }
 
   ngOnInit(): void {
     this.loadServices();
@@ -72,6 +85,8 @@ export class ServicesComponent implements OnInit {
     this.applyFilters();
   }
 
+  // Se eliminó filterTechnicianId y su lógica asociada.
+
   loadServices(): void {
     this.isLoading = true;
     this.http.get<Service[]>(this.apiBaseUrl)
@@ -83,7 +98,16 @@ export class ServicesComponent implements OnInit {
         })
       )
       .subscribe(servicesData => {
-        this.allServices = servicesData;
+        // La lógica de filtrado por técnico se realiza aquí.
+        if (this.isAdmin) {
+          this.allServices = servicesData;
+        } else if (this.currentUserId !== null) {
+          this.allServices = servicesData.filter(service => 
+            service.tecnico_asignado && service.tecnico_asignado.id === this.currentUserId
+          );
+        } else {
+          this.allServices = [];
+        }
         this.applyFilters();
         this.isLoading = false;
       });
@@ -127,7 +151,7 @@ export class ServicesComponent implements OnInit {
       },
       error: err => {
         console.error('Error al exportar los tickets a PDF:', err);
-        alert('Error al exportar el archivo. Por favor, inténtelo de nuevo.');
+        console.log('Error al exportar el archivo. Por favor, inténtelo de nuevo.');
       }
     });
   }
@@ -136,6 +160,8 @@ export class ServicesComponent implements OnInit {
     this.searchTerm = '';
     this.filterStatus = 'all';
     this.filterPriority = 'all';
+    // No se necesita recargar la lista completa si el filtrado se hace en el cliente.
+    this.applyFilters();
   }
 
   getStatusClass(status: Service['estado']): string {
@@ -153,6 +179,7 @@ export class ServicesComponent implements OnInit {
         return '';
     }
   }
+
   getPriorityClass(priority: Service['prioridad']): string {
     switch (priority) {
       case 'Urgente':

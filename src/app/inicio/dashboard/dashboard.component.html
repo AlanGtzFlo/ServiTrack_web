@@ -7,9 +7,12 @@
         <p>Rol: <span>{{ userMatricula }}</span></p>
       </div>
     </div>
-    <img [src]="userImage" alt="Foto de perfil del usuario" class="user-profile-image" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover;">
+    <img [src]="userImage" alt="Foto de perfil del usuario"
+         class="user-profile-image"
+         style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover;">
   </div>
 
+  <!-- Gráfica y notificación para técnicos -->
   <div class="tickets-notification card" (click)="viewTickets()" *ngIf="!isAdmin">
     <i class="material-icons notification-icon">notifications</i>
     <p>
@@ -17,8 +20,12 @@
       tickets por resolver
     </p>
   </div>
-
   <div class="tickets-by-technician-chart-container card" *ngIf="!isAdmin">
     <canvas #ticketsByTechnicianChart></canvas>
+  </div>
+
+  <!-- Gráfica para administradores -->
+  <div class="clientes-chart-container card" *ngIf="isAdmin">
+    <canvas #clientesChart></canvas>
   </div>
 </div>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../auth.service'; // Importa el AuthService
 
 // Interfaz para el usuario, actualizada para coincidir con el HTML
 export interface User {
@@ -28,7 +29,6 @@ export class UsersComponent implements OnInit {
   // Nueva URL para exportar el PDF de usuarios
   private exportPdfUrl = 'https://fixflow-backend.onrender.com/api/usuarios/exportar_usuarios/';
 
-
   allUsers: User[] = [];
   filteredUsers: User[] = [];
 
@@ -38,11 +38,16 @@ export class UsersComponent implements OnInit {
 
   isLoading: boolean = true;
   errorMessage: string | null = null;
+  isAdmin: boolean = false; // Nueva variable para controlar la visibilidad de los botones
 
-  // Inyectamos HttpClient directamente en el constructor
-  constructor(private http: HttpClient, private router: Router) {}
+  // Inyectamos HttpClient y AuthService directamente en el constructor
+  constructor(private http: HttpClient, private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
+    // Suscribirse al rol del usuario para determinar los permisos
+    this.authService.userRole$.subscribe(role => {
+      this.isAdmin = (role === 'admin');
+    });
     this.fetchUsers();
   }
 
