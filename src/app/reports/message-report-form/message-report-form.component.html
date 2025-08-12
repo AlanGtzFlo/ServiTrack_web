@@ -1,248 +1,107 @@
-<!-- Bloque de estilo personalizado para no usar SCSS -->
 <style>
-    /* Estilos del cuerpo y la fuente */
-    body {
-        background: linear-gradient(135deg, #2a9d8f, #e76f51);
-        font-family: 'Inter', sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
+  /* aquí va todo tu CSS que antes estaba en el primer mensaje */
+  body {
+    background: linear-gradient(135deg, #2a9d8f, #e76f51);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
 
-    /* Estilos de la tarjeta/card del formulario */
-    .form-card {
-        width: 100%;
-        max-width: 640px;
-        /* Fondo blanco */
-        background-color: #ffffff;
-        border-radius: 1rem;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
-        padding: 2.5rem;
-        /* Color de texto oscuro para que se lea en el fondo blanco */
-        color: #333333;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    /* Estilos del encabezado del formulario */
-    .form-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-    }
+  .form-card {
+    width: 100%;
+    max-width: 640px;
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
+      0 4px 6px -2px rgba(0, 0, 0, 0.15);
+    padding: 2.5rem;
+    color: #333333;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .form-title {
-        font-size: 1.875rem;
-        font-weight: 700;
-        /* Color de texto oscuro */
-        color: #333333;
-        line-height: 2.25rem;
-        margin: 0;
-    }
-
-    /* Estilos del botón para volver */
-    .back-button {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        /* Color de texto oscuro */
-        color: #333333;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-    .back-button:hover {
-        /* Color de texto más oscuro al pasar el ratón */
-        color: #555555;
-    }
-
-    /* Estilos para los mensajes de estado (cargando, error) */
-    .status-message {
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 0.75rem;
-        text-align: center;
-    }
-
-    .loading-message {
-        background-color: rgba(42, 157, 143, 0.2);
-        color: #2a9d8f;
-    }
-
-    .error-message {
-        background-color: rgba(231, 111, 81, 0.2);
-        color: #e76f51;
-    }
-
-    /* Estilos para los grupos de campos (label + input) */
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 1rem;
-    }
-
-    .form-label {
-        font-size: 0.875rem;
-        font-weight: 500;
-        /* Color de texto oscuro */
-        color: #333333;
-        margin-bottom: 0.25rem;
-    }
-
-    /* Estilos para los inputs, select y textarea */
-    .form-input, .form-select, .form-textarea {
-        padding: 0.75rem;
-        /* Borde y fondo claros */
-        border: 1px solid #cccccc;
-        border-radius: 0.5rem;
-        background-color: #f0f0f0;
-        /* Color de texto oscuro */
-        color: #333333;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
-        outline: none;
-        border-color: #f4a261;
-        box-shadow: 0 0 0 2px rgba(244, 162, 97, 0.5);
-    }
-    .form-textarea {
-        resize: vertical;
-    }
-    .form-select option {
-        background-color: #f0f0f0;
-        color: #333333;
-    }
-    
-    /* Estilos para el input de archivo personalizado */
-    .file-upload {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    .file-input-label {
-        cursor: pointer;
-        background-color: #f4a261;
-        color: #ffffff;
-        font-weight: 600;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s ease;
-    }
-    .file-input-label:hover {
-        background-color: #e58a43;
-    }
-    .file-input {
-        display: none;
-    }
-    .file-name {
-        /* Color de texto oscuro para el nombre del archivo */
-        color: #555555;
-        font-size: 0.875rem;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-
-    /* Estilos del contenedor de los botones */
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 1.5rem;
-    }
-
-    /* Estilos del botón de "Publicar Mensaje" */
-    .submit-button {
-        padding: 0.75rem 1.5rem;
-        background-color: #2a9d8f;
-        color: #ffffff;
-        font-weight: 600;
-        border-radius: 9999px; /* Para un botón redondo */
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        border: none;
-        cursor: pointer;
-    }
-    .submit-button:hover {
-        background-color: #217c71;
-    }
-    .submit-button:disabled {
-        background-color: #cccccc;
-        color: #999999;
-        cursor: not-allowed;
-    }
+  /* ... el resto de tus estilos ... */
 </style>
 
-<!-- Aquí comienza el template del componente -->
 <div class="form-card">
-    <div class="form-header">
-        <h1 class="form-title">Crear Nuevo Mensaje</h1>
-        <!-- Conectado al método goBack() del componente -->
-        <a href="#" class="back-button" (click)="goBack()">
-            <i class="fa-solid fa-arrow-left"></i>
-            Volver
-        </a>
-    </div>
-
-    <!-- Mensajes de estado: cargando o error -->
-    <div *ngIf="isLoading" class="status-message loading-message">
-        Cargando tickets...
-    </div>
-    <div *ngIf="errorMessage" class="status-message error-message">
-        {{ errorMessage }}
-    </div>
-
-    <!-- El formulario se conecta al 'messageForm' del componente .ts -->
-    <form [formGroup]="messageForm" (ngSubmit)="onSubmit()">
-        <!-- Grupo para el select de reportes -->
-        <div class="form-group">
-            <label for="reporte" class="form-label">Reporte</label>
-            <!-- Conectado al control 'reporte' del formulario -->
-            <select name="reporte" id="reporte" class="form-select" formControlName="reporte">
-                <option value="" disabled selected>Seleccione un reporte</option>
-                <!-- Genera las opciones dinámicamente con la lista de tickets -->
-                <option *ngFor="let ticket of tickets" [value]="ticket.id">
-                    {{ ticket.titulo }}
-                </option>
-            </select>
-        </div>
-
-        <!-- Grupo para el textarea del mensaje -->
-        <div class="form-group">
-            <label for="mensaje" class="form-label">Mensaje</label>
-            <!-- Conectado al control 'mensaje' del formulario -->
-            <textarea name="mensaje" id="mensaje" class="form-textarea" rows="4" placeholder="Escribe el mensaje del reporte aquí..." formControlName="mensaje"></textarea>
-        </div>
-
-        <!-- Grupo para el input de imagen personalizado -->
-        <div class="form-group">
-            <label for="imagen" class="form-label">Imagen</label>
-            <div class="file-upload">
-                <label for="imagen" class="file-input-label">Seleccionar archivo</label>
-                <!-- Conectado al método onFileSelected() y el control 'imagen' -->
-                <input type="file" id="imagen" class="file-input" name="imagen" (change)="onFileSelected($event)">
-                <span id="fileNameDisplay" class="file-name">{{ selectedImageName }}</span>
-            </div>
-        </div>
-
-        <!-- Contenedor de acciones, con el botón de submit -->
-        <div class="form-actions">
-            <button type="submit" class="submit-button" [disabled]="messageForm.invalid">
-                <i class="fa-solid fa-paper-plane"></i>
-                Publicar Mensaje
-            </button>
-        </div>
-    </form>
+  <!-- contenido del formulario que ya te pasé -->
 </div>
 
-<!-- Incluye el script de Font Awesome para los iconos -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<div class="form-card" >
+  <div class="form-header">
+    <h1 class="form-title">Crear Nuevo Mensaje</h1>
+    <a href="#" class="back-button" (click)="goBack()">
+      <i class="fa-solid fa-arrow-left"></i>
+      Volver
+    </a>
+  </div>
+
+  <!-- Mensajes de estado: cargando o error -->
+  <div *ngIf="isLoading" class="status-message loading-message">
+    Cargando reportes...
+  </div>
+  <div *ngIf="errorMessage" class="status-message error-message">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="messageForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="reporte" class="form-label">Reporte</label>
+      <select name="reporte" id="reporte" class="form-select" formControlName="reporte">
+        <option value="" disabled selected>Seleccione un reporte</option>
+        <option *ngFor="let reporte of reportes" [value]="reporte.id">
+          {{ reporte.descripcion }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="mensaje" class="form-label">Mensaje</label>
+      <textarea
+        name="mensaje"
+        id="mensaje"
+        class="form-textarea"
+        rows="4"
+        placeholder="Escribe el mensaje del reporte aquí..."
+        formControlName="mensaje"
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="imagen" class="form-label">Imagen</label>
+      <div class="file-upload">
+        <label for="imagen" class="file-input-label">Seleccionar archivo</label>
+        <input
+          type="file"
+          id="imagen"
+          class="file-input"
+          name="imagen"
+          (change)="onFileSelected($event)"
+        />
+        <span id="fileNameDisplay" class="file-name">{{ selectedImageName }}</span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="submit-button" [disabled]="messageForm.invalid">
+        <i class="fa-solid fa-paper-plane"></i>
+        Publicar Mensaje
+      </button>
+    </div>
+  </form>
+</div>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
